@@ -95,3 +95,121 @@ Q-4: Some param accept multiple values and some not
 
 Ans-4:
     if in Name Parameter bracket number 5 and 6 is available, then it will accept multiple values
+
+what is switch parametr?
+    if we run get-help get-service -showwindow , if there will be any param which will not accept value, then it will be 
+    used without value, and called as switch parameter.
+        for example:
+            get-service -name bits -dependentservices
+
+WhatIf - will explain what the command is going to do
+    get-service | stop-service -whatif
+
+#Chapter -4-----------------------------------Understanding Object-------------------------------------------------------------------------
+
+
+VImp: Pipeline:
+    stop-service  bits-->> no output 
+    stop-service bits | get-service
+        if there is not output before the pipeline , then next command is not going to execute.
+    to overcome this problem , we can use
+    stop-service bits -passthru | get-service
+        here -passthru is switch command
+
+How to check Properties and methods of an object in powershell?
+    get-service bits |get-member
+    get-service bits -computername localhost | select-object -property machinename,status
+
+to get all the property:
+    get-service bits -computername localhost | select-object -property *
+
+
+to get operating system of machine:
+    get-wmiobject win32_operatingsystem | get-member
+
+    get-wmiobject win32_operatingsystem | select-object -property *
+
+get-service
+stop-service
+start-service
+
+as noun of stop and start is same as get-service so properties will also be same
+(we can't get the property of stop-service/stop-service so services will be same as get-service)
+
+same will be apply for below as well beacuse noun is same.
+
+get-process
+stop-process
+start-process
+
+
+#Chapter -5-----------------------------------Pipeline in depth-------------------------------------------------------------------------
+How to check whether cmdlet will accept the input or not?
+    Get-Service | Get-Member
+    TypeName: System.ServiceProcess.ServiceController
+
+    Get-Process | Get-Member
+    TypeName: System.Diagnostics.Process
+
+So condition: 1-
+    1-both cmdlet should be of same type
+    2-check the help of second cmdlet whether it will accept the input or not
+    3-and check the pipeline input as well whether it is accepting or not
+if the above three condtion will be satisfy then only second cmdlet will accept the pipeline input.
+
+condition: 2-
+    1-check if parameter and properties are matching:
+         Get-Service | Get-Member
+            TypeName: System.ServiceProcess.ServiceController
+
+            Name                      MemberType    Definition
+            ----                      ----------    ----------
+            Name                      AliasProperty Name = ServiceName
+    
+    2-check if parameter name accept pipeline input or not?
+    -Name
+        accpet pipeliine input or notaccept pipeline input ? true
+
+         get-help Get-Process -ShowWindow
+         Accept pipeline input?       True (ByPropertyName)
+
+
+#Chapter -6-----------------------------------Types of formatting-------------------------------------------------------------------------
+There are basically 4 types of formatting:
+    1-Format-list--mostly used
+    2-Format-table--mostly used
+    3-format-custom
+    4-format-wide
+
+If output is coming in .. format   
+    get-service | format-table -autosize
+    if output is not getting corrected even with auto size then
+
+    get-eventlog application -newest 10 | format-table -wrap
+
+
+--if we select more than 4 properties we get in list inetaed of table.
+    get-service | select-object -property name,machinename,displayname,status,canpauseandcontinue |format-table
+
+--if output coming in table and you need in list then:
+    get-service bits | select-object -property name,machinename,displayname | format-list
+
+
+Q-diffrence between select-object and format-table?
+
+ export the output in csv format
+    get-service bits | select-object -property name,status,displayname | export-csv c:\temp\select.csv
+    get-service bits | fomat-table -property name,status,displayname | export-csv c:\temp\format.csv
+
+VVVV-IMP: if you want to export any data in csv , then always use select command , format table command will return junk character.\
+
+Reason:
+    get-service bits | select-object -property name,status,displayname |get-member . type will be same after using select 
+but here
+    get-service bits | fomat-table -property name,status,displayname |get-member . type will be changed
+
+VVVIMP:
+    but if you want data of foramt-table command, then you have to use  
+        get-service bits | fomat-table -property name,status,displayname |out-file c:\temp\format.csv
+
+Note: format data is only good for display .
