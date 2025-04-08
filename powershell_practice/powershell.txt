@@ -28,5 +28,70 @@ if command's output is not comming properly
 if output required in txt or csv file:
     get-service | select-object displayname,status | format-table -autosize |out-file c:\output.txt -append
     Get-Service *cyberark*,*privateark* | Select-Object Name,DisplayName,Status | Format-Table -AutoSize | Out-File c:\outfile.txt -Append
+    Get-Service cyberark*,privateark* | Select-Object -Property Name,DisplayName,MachineName,ServiceType,Status,StartType | Export-Csv c:/temp/pvwa_cpm.csv
 
 
+#Chapter -3-----------------------------------Understanding syntax-------------------------------------------------------------------------
+Cmdlet:
+    it is powershell command.
+
+When we use get-help to check how many types of blades(mixture) get-help suuport, we will get below type:
+    -detailed
+    -examples
+    -Parameter
+    -online
+    -showwindow
+    -full
+Mostly used -showwindow.
+for example: get-help get-service -showwindow
+
+Q-1: Some commands run directly without input some not?
+    for example:
+    get-service   ->running
+    get-process   ->running
+    get-disk      ->running
+    get-eventlog  ->not running
+    stop-service  ->not running
+
+Hint::
+    get-help get-service -showwindow
+    result:
+        get-service [[-Name]<String[]>]
+                    13     4       56 2
+
+Ans-1:
+    if we get 1 and 2 bracket, cmdlet will be directly run (called commands with optional param)
+    but where we did not get 1 and 2 bracket, it will ask for input(commands with mandatory Parameter)
+
+
+
+Q-2: Some command Parameter value need to specify and for some Param we can skip?
+        get-service -name bits                   -->running
+        get-service bits                         -->running
+        get-service bits -computername localhost -->running
+        get-service bits localhost               -->not running
+
+Ans-2:
+    if 3 and 4 present in Parameter (while doing get-help get-service -showwindow) then , we can skip the Parameter 
+    else we have to provide the parameter name.
+
+
+Q-3:Some command Parameter accept wild card and some not.
+    for example:
+        get-service bit*,a*                      -->running
+        get-service b* -computername comp*       -->not running
+
+Ans-3:
+    while running the command get-help get-service -showwindow, and search for the param -name, if wild card accept 
+    it will be explicitly mentioned , else not mentioned about wildcard.
+
+
+Q-4: Some param accept multiple values and some not
+    for example:
+        get-service bits,alg                     -->running
+        get-process notepad,powershell,powerpnt  -->running
+        get-eventlog application,system          -->not running
+        get-eventlog system                      -->running
+
+Ans-4:
+    if in Name Parameter bracket number 5 and 6 is available, then it will accept multiple values
