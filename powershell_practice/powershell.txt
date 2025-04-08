@@ -1,1 +1,32 @@
+#Chapter -1-------------------------------------------Getting started with Powershell:-------------------------------------------------
+
+Powershell command:
+    every command start with verb-noun(action-thing). example get-content
+
+powershell Parameter:
+    every Parameter in powershell start with dash (-). example get-service -name bits
+    here -name is Parameter.
+
+Powershell help:
+    get-help *service*
+    get-help get-service -examples
+    for examples:
+        get-help get-aduser 
+        get-aduser -Identity arun -Properties *
+
+# Chapter -2-----------------------------------------Pipeline in Powershell:--------------------------------------------------------------
+
+get-service bits | start-service
+    result of get-service bits will be work as input for next cmdlet
+
+if you want only the selected colums, then command will be like:
+    get-service | select-object displayname,status
+
+if command's output is not comming properly
+    get-service | select-object displayname,status | format-table -autosize
+
+if output required in txt or csv file:
+    get-service | select-object displayname,status | format-table -autosize |out-file c:\output.txt -append
+    Get-Service *cyberark*,*privateark* | Select-Object Name,DisplayName,Status | Format-Table -AutoSize | Out-File c:\outfile.txt -Append
+
 
