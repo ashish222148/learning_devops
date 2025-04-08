@@ -213,3 +213,30 @@ VVVIMP:
         get-service bits | fomat-table -property name,status,displayname |out-file c:\temp\format.csv
 
 Note: format data is only good for display .
+
+
+#Chapter -7-----------------------------------Filtering and comparison-------------------------------------------------------------------------
+
+comparison: -gt,-ge,-lt,-le,-eq  -like and -match 
+    5 -lt 6
+        True
+    result: here when you compare single value, you will get result as boolean(True/False)
+    while:
+
+    5,6 -gt 4
+        5
+        6
+    result: if the input in multiple value and you are doing comparison, you will always get the result in form of value not boolean.
+    Note: highlighted - input value in multiple for example left side value only
+
+-like and -match used very frequently.
+    please note that in powershell -like means exact and -match means similar
+
+    for example:
+        "ashish" -like "ash"  --> False
+        "ashish" -match "ash" --> True
+
+    MImp: "ashish" -like "ash*" -->True
+          "ashish" -eq "ash*"   --False
+
+          -eq does not accept wild card.
