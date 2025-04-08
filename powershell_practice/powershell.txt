@@ -28,5 +28,215 @@ if command's output is not comming properly
 if output required in txt or csv file:
     get-service | select-object displayname,status | format-table -autosize |out-file c:\output.txt -append
     Get-Service *cyberark*,*privateark* | Select-Object Name,DisplayName,Status | Format-Table -AutoSize | Out-File c:\outfile.txt -Append
+    Get-Service cyberark*,privateark* | Select-Object -Property Name,DisplayName,MachineName,ServiceType,Status,StartType | Export-Csv c:/temp/pvwa_cpm.csv
 
 
+#Chapter -3-----------------------------------Understanding syntax-------------------------------------------------------------------------
+Cmdlet:
+    it is powershell command.
+
+When we use get-help to check how many types of blades(mixture) get-help suuport, we will get below type:
+    -detailed
+    -examples
+    -Parameter
+    -online
+    -showwindow
+    -full
+Mostly used -showwindow.
+for example: get-help get-service -showwindow
+
+Q-1: Some commands run directly without input some not?
+    for example:
+    get-service   ->running
+    get-process   ->running
+    get-disk      ->running
+    get-eventlog  ->not running
+    stop-service  ->not running
+
+Hint::
+    get-help get-service -showwindow
+    result:
+        get-service [[-Name]<String[]>]
+                    13     4       56 2
+
+Ans-1:
+    if we get 1 and 2 bracket, cmdlet will be directly run (called commands with optional param)
+    but where we did not get 1 and 2 bracket, it will ask for input(commands with mandatory Parameter)
+
+
+
+Q-2: Some command Parameter value need to specify and for some Param we can skip?
+        get-service -name bits                   -->running
+        get-service bits                         -->running
+        get-service bits -computername localhost -->running
+        get-service bits localhost               -->not running
+
+Ans-2:
+    if 3 and 4 present in Parameter (while doing get-help get-service -showwindow) then , we can skip the Parameter 
+    else we have to provide the parameter name.
+
+
+Q-3:Some command Parameter accept wild card and some not.
+    for example:
+        get-service bit*,a*                      -->running
+        get-service b* -computername comp*       -->not running
+
+Ans-3:
+    while running the command get-help get-service -showwindow, and search for the param -name, if wild card accept 
+    it will be explicitly mentioned , else not mentioned about wildcard.
+
+
+Q-4: Some param accept multiple values and some not
+    for example:
+        get-service bits,alg                     -->running
+        get-process notepad,powershell,powerpnt  -->running
+        get-eventlog application,system          -->not running
+        get-eventlog system                      -->running
+
+Ans-4:
+    if in Name Parameter bracket number 5 and 6 is available, then it will accept multiple values
+
+what is switch parametr?
+    if we run get-help get-service -showwindow , if there will be any param which will not accept value, then it will be 
+    used without value, and called as switch parameter.
+        for example:
+            get-service -name bits -dependentservices
+
+WhatIf - will explain what the command is going to do
+    get-service | stop-service -whatif
+
+#Chapter -4-----------------------------------Understanding Object-------------------------------------------------------------------------
+
+
+VImp: Pipeline:
+    stop-service  bits-->> no output 
+    stop-service bits | get-service
+        if there is not output before the pipeline , then next command is not going to execute.
+    to overcome this problem , we can use
+    stop-service bits -passthru | get-service
+        here -passthru is switch command
+
+How to check Properties and methods of an object in powershell?
+    get-service bits |get-member
+    get-service bits -computername localhost | select-object -property machinename,status
+
+to get all the property:
+    get-service bits -computername localhost | select-object -property *
+
+
+to get operating system of machine:
+    get-wmiobject win32_operatingsystem | get-member
+
+    get-wmiobject win32_operatingsystem | select-object -property *
+
+get-service
+stop-service
+start-service
+
+as noun of stop and start is same as get-service so properties will also be same
+(we can't get the property of stop-service/stop-service so services will be same as get-service)
+
+same will be apply for below as well beacuse noun is same.
+
+get-process
+stop-process
+start-process
+
+
+#Chapter -5-----------------------------------Pipeline in depth-------------------------------------------------------------------------
+How to check whether cmdlet will accept the input or not?
+    Get-Service | Get-Member
+    TypeName: System.ServiceProcess.ServiceController
+
+    Get-Process | Get-Member
+    TypeName: System.Diagnostics.Process
+
+So condition: 1-
+    1-both cmdlet should be of same type
+    2-check the help of second cmdlet whether it will accept the input or not
+    3-and check the pipeline input as well whether it is accepting or not
+if the above three condtion will be satisfy then only second cmdlet will accept the pipeline input.
+
+condition: 2-
+    1-check if parameter and properties are matching:
+         Get-Service | Get-Member
+            TypeName: System.ServiceProcess.ServiceController
+
+            Name                      MemberType    Definition
+            ----                      ----------    ----------
+            Name                      AliasProperty Name = ServiceName
+    
+    2-check if parameter name accept pipeline input or not?
+    -Name
+        accpet pipeliine input or notaccept pipeline input ? true
+
+         get-help Get-Process -ShowWindow
+         Accept pipeline input?       True (ByPropertyName)
+
+
+#Chapter -6-----------------------------------Types of formatting-------------------------------------------------------------------------
+There are basically 4 types of formatting:
+    1-Format-list--mostly used
+    2-Format-table--mostly used
+    3-format-custom
+    4-format-wide
+
+If output is coming in .. format   
+    get-service | format-table -autosize
+    if output is not getting corrected even with auto size then
+
+    get-eventlog application -newest 10 | format-table -wrap
+
+
+--if we select more than 4 properties we get in list inetaed of table.
+    get-service | select-object -property name,machinename,displayname,status,canpauseandcontinue |format-table
+
+--if output coming in table and you need in list then:
+    get-service bits | select-object -property name,machinename,displayname | format-list
+
+
+Q-diffrence between select-object and format-table?
+
+ export the output in csv format
+    get-service bits | select-object -property name,status,displayname | export-csv c:\temp\select.csv
+    get-service bits | fomat-table -property name,status,displayname | export-csv c:\temp\format.csv
+
+VVVV-IMP: if you want to export any data in csv , then always use select command , format table command will return junk character.\
+
+Reason:
+    get-service bits | select-object -property name,status,displayname |get-member . type will be same after using select 
+but here
+    get-service bits | fomat-table -property name,status,displayname |get-member . type will be changed
+
+VVVIMP:
+    but if you want data of foramt-table command, then you have to use  
+        get-service bits | fomat-table -property name,status,displayname |out-file c:\temp\format.csv
+
+Note: format data is only good for display .
+
+
+#Chapter -7-----------------------------------Filtering and comparison-------------------------------------------------------------------------
+
+comparison: -gt,-ge,-lt,-le,-eq  -like and -match 
+    5 -lt 6
+        True
+    result: here when you compare single value, you will get result as boolean(True/False)
+    while:
+
+    5,6 -gt 4
+        5
+        6
+    result: if the input in multiple value and you are doing comparison, you will always get the result in form of value not boolean.
+    Note: highlighted - input value in multiple for example left side value only
+
+-like and -match used very frequently.
+    please note that in powershell -like means exact and -match means similar
+
+    for example:
+        "ashish" -like "ash"  --> False
+        "ashish" -match "ash" --> True
+
+    MImp: "ashish" -like "ash*" -->True
+          "ashish" -eq "ash*"   --False
+
+          -eq does not accept wild card.
