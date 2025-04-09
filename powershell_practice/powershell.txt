@@ -252,3 +252,8 @@ get-aduser *
 VVVIMP-samaccountname is always loginid.
 
 Get-ADUser -SearchBase "dc=mahadev,dc=com" -Filter * |Where-Object {$_.samaccountname -like "*sh"}
+
+    DistinguishedName          Enabled GivenName Name  ObjectClass ObjectGUID                           SamAccountName SID                                            Surname UserPrincipalName
+-----------------          ------- --------- ----  ----------- ----------                           -------------- ---                                            ------- -----------------
+CN=yash,DC=mahadev,DC=com     True yash      yash  user        b6d00c6e-99f7-4f0c-965d-cb41f3051102 yash           S-1-5-21-1965782882-3507716561-2354912862-1118         yash@mahadev.com
+CN=harsh,DC=mahadev,DC=com    True harsh     harsh user        781097c8-ddaf-4892-9ead-d030d88e613c harsh          S-1-5-21-1965782882-3507716561-2354912862-1120         harsh@mahadev.com
