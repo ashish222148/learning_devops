@@ -240,3 +240,15 @@ comparison: -gt,-ge,-lt,-le,-eq  -like and -match
           "ashish" -eq "ash*"   --False
 
           -eq does not accept wild card.
+
+Filtering:
+    syntax:
+        get-service | where-object{$_.ByPropertyName -eq Propertyvalue}
+        get-service | where-object -filterScript{$_.status -eq "running"}
+        get-service | where-object -filterScript{$_.status -like "runn*"}
+
+get-aduser *
+
+VVVIMP-samaccountname is always loginid.
+
+Get-ADUser -SearchBase "dc=mahadev,dc=com" -Filter * |Where-Object {$_.samaccountname -like "*sh"}
