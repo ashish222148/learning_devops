@@ -1,1 +1,43 @@
+#10-4-205--------------------------------------------------Day-1-------------------------------------------------------------
+OSI Model: Open System Interconnection , developed by ISO in 1984.
+    it has 7 layers.
+        1-application-layer7
+        2-presentation-layer6
+        3-seesion-layer5
+        4-transport-layer4
+        5-network-layer3
+        6-data link-layer2
+        7-physical-layer1
 
+Top 3 layesr is- software layer, handled by application, network,data link and physical-hrdware layer
+transport layer is herat of OSI.
+
+1-Application layer: provide an interface to interact with network. for example-web browser, email client
+        there are some protocol which works on application layes.
+        for example: http,https,ftp,telnet,ssh,smtp,pop,imap,dns,dhcp etc 
+
+2-Presentation layer:data present in to correct format, so hat a user or an application can understand.
+    it also provide encrption and decryption
+    compress and decompression of data.
+
+3-Session layer:create maintain and terminate the session
+
+4-Transport layer:
+    1-segmantation
+    2-sequencing and reassemble on receiving 
+    3- providing end to end connection.
+    4-retransmission.
+    -acknowjedge
+
+    data cut in to small pices known as chunk.
+    two protol is being used.
+    TCP/UDP
+
+    transmission control protocol: it is connetion oriented protocol
+    user datagram protocol: connection less protocol
+    tcp is reliable proocl whereas udp is unreliable protocl.
+    tcp provides acknowledge and in udp no acknowledgement
+    tcp is a slow protol and udp is fast protocol. 
+    tcp uses 20-60 byte header while udp uses 4 bype header.
+
+    
