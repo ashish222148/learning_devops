@@ -39,5 +39,5 @@ transport layer is herat of OSI.
     tcp provides acknowledge and in udp no acknowledgement
     tcp is a slow protol and udp is fast protocol. 
     tcp uses 20-60 byte header while udp uses 4 bype header.
-
+-----------------------------------------------------------------------------end day-1----------------------------------------------------------------
     
