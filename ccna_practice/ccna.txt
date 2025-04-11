@@ -27,7 +27,7 @@ transport layer is herat of OSI.
     2-sequencing and reassemble on receiving 
     3- providing end to end connection.
     4-retransmission.
-    -acknowjedge
+    5-acknowjedge
 
     data cut in to small pices known as chunk.
     two protol is being used.
@@ -40,4 +40,17 @@ transport layer is herat of OSI.
     tcp is a slow protol and udp is fast protocol. 
     tcp uses 20-60 byte header while udp uses 4 bype header.
 -----------------------------------------------------------------------------end day-1----------------------------------------------------------------
-    
+
+#11-04-2025-------------------------------------------------------------------day-2-------------------------------------------------------------------
+   
+Coonection oriented:
+    connection oriented means tcp provide 3 way handshake.
+        end to end connection-virtual connection
+
+        client send syn packet-sequence number=0 , ack=0
+        server reply ->syn(0)+ack(1)
+        clent send ->ack(1)
+    port-0-65535
+    welll known port:0-1023 for http,https,ssh,ftp 20,21
+    registered port:1024-49151 for  sql,rdp
+    dynamic port:49152-65535 dandomly used.
