@@ -343,5 +343,16 @@ Q- What is required version in terraform?
 ----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 Logging:
+    if we want meaningful result, then we debug
+        we need to enable the logging in debug mode.
+    In terraform, logging can be enabled by setting the environment variable only.
+$TF_LOG="debug"
 
+debug
+trace-rarely used
+
+Q-to set the terraform log in a file:
+    $TF_LOG_PATH=mylog.txt
+when we set the path , log output will be save in to file while ret of details will be shown on screen.
+    unset TF_LOG_PATH
 
