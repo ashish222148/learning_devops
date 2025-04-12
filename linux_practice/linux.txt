@@ -273,12 +273,60 @@ Archive File:
         tar -cvf /mnt/backup.tar /usr/sbin  --> only archive happen
     c-compression:
         create archive with gzip compression:(-z)
-            tar -cvzf /mnt/backup.tar.gz /usr/sbin
+            tar -cvzf /mnt/backup.tar.gz /usr/sbin -fast
     d-create archive with bzip2 compression(-j)
-        tar -cvjf /mnt/backup.tar.bz2 /usr/sbin
+        tar -cvjf /mnt/backup.tar.bz2 /usr/sbin -slower
     e-create archive with xzip compression(-J)
-        tar -cvJf /mnt/backup.tar.xz /usr/sbin
+        tar -cvJf /mnt/backup.tar.xz /usr/sbin -slowest
+
+    f-check the content in archive file:
+        tar -tvf /mnt/backup.tar
     
+Unarchive File:
+    extract archive (default location)
+        tar -xvf /mnt/backup.tar
+    
+    create directory for extract purpose:
+        mkdir /gzip /bzip /xzip
+
+    extract archive compressed with gzip(custom location)
+        tar -xvzf /mnt/backup.tar.gz -C /gzip
+
+    extract archive compressed with bzip2 (custom location)
+        tar -xvjf /mnt/backup.tar.bz2 -C /bzip/
+
+    extract archive compressed with xzip (custom location) 
+        operations
+            -c create
+            -v verbose
+            -f forcefully
+            -t test
+            -C cutom location
+            -z gzip compression
+            -j bzip2 compression
+            -J xzip compression   
+----------------------------------------------------------------------------------------------------------
+
+job automation:
+    is a process of complete jon automatically basis on time.
+    it is usefule for routine work such as backup.
+    it is also helpful to do task when system administrator is not present.
+    for job use following command:
+        1- at
+        2-crontab
+
+    set system proper time and date 
+            date
+        disable and stop automation time syn(chronyd service)
+            systemctl disable chronyd
+            systemctl stop chronyd
+        set time and date manually
+            timedatectl set-time "2025-04-12 11:26:40"
+    
+    1-at:
+
+
+
 
 
 
