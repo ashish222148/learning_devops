@@ -211,5 +211,62 @@ local block-->> used to avoid repeated value in code.create another file with th
 
 
 
-//date-12-4-205 -----------------------------------------------------
+//date-12-4-205 -----------------------------------------------------local block------------------------------------------------------------------------
 
+------------------------------------------------------------------**------------------------------------------------------------------------------------
+local block-
+    always save with .tf 
+    used inside the code for the repeated value.
+    locals{
+        vpc_cidr="192.168.0.0./24"
+        tags={
+            name='ashish'
+            owner='ailiya'
+        }
+        region='ap-south-1'
+    }
+
+
+to call this we have to use local.name
+local.owner
+local.region
+
+---------------------------------------------------------------------------------------code--------------------------------------------------------------------
+main.tf:
+
+    terraform {
+        required_providers {
+            aws = {
+            source  = "hashicorp/aws"
+            version = "~> 5.0"
+            }
+        }
+        }
+
+
+provider.tf:
+
+    provider "aws" {
+        region = local.region_1
+        }
+
+
+
+resource.tf
+
+    resource "aws_vpc" "example1" {
+        cidr_block = local.cidr
+        tags = local.tags
+        }
+
+
+
+locals {
+    region_1="ap-south-1"
+    cidr="192.168.0.0/24"
+    tags={
+        "name"="ashish"
+    }
+} 
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------
