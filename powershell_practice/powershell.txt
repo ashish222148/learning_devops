@@ -256,4 +256,46 @@ Get-ADUser -SearchBase "dc=mahadev,dc=com" -Filter * |Where-Object {$_.samaccoun
     DistinguishedName          Enabled GivenName Name  ObjectClass ObjectGUID                           SamAccountName SID                                            Surname UserPrincipalName
 -----------------          ------- --------- ----  ----------- ----------                           -------------- ---                                            ------- -----------------
 CN=yash,DC=mahadev,DC=com     True yash      yash  user        b6d00c6e-99f7-4f0c-965d-cb41f3051102 yash           S-1-5-21-1965782882-3507716561-2354912862-1118         yash@mahadev.com
-CN=harsh,DC=mahadev,DC=com    True harsh     harsh user        781097c8-ddaf-4892-9ead-d030d88e613c harsh          S-1-5-21-1965782882-3507716561-2354912862-1120         harsh@mahadev.com
+CN=harsh,DC=mahadev,DC=com    True harsh     harsh user        781097c8-ddaf-4892-9ead-d030d88e613c harsh          S-1-5-21-1965782882-3507716561-2354912862-1120         harsh@mahad
+
+---------------------------------------------------------------------Remoting----------------------------------------------------------------------------------------------------------------
+Remoting:
+    is of two types:
+        one to one Remoting
+        one to many Remoting
+    
+    enable psremoting:
+        it actually run winrun service when we enable.
+        it uses two port , in case of http-port 5985 and for https-5986
+
+one to one remoting: enter ps-session comp -credential
+
+one to many remoting:
+    invoke-command -computername dc1,com1{get-disk}
+
+if we store variable in case of remoting and storing vaule in a variable. so we know after session disconnect, variable will not hold the value
+so we will not get the output.
+
+to overcome with this:
+$seesion1=new-session -computername comp1
+invoke-command -seesion $session1 {$disk=get-disk}
+invoke-command -seesion $session1 {$disk}
+
+
+Section-10------------------------------------------------understanding variable----------------------------------------------------------------------------------------------
+gettting know about symbol:
+    1:  get-service | where {$_.status -eq "stopped"}
+    in thing which is not specify in powershell, we hsve to provide as string either in "" or in '' .
+VIMP: diffrence between "" and ''
+    actually if we write any strng with ' for example "it's my birthday" , this time single quote will not work and vice versa
+variable:
+$serverlist=get-content c:\temp\abc.txt
+$serverlist
+get-service -computername $serverlist
+ 
+get-variable-default variable(defined variable)
+variable only store the result of cmdlet not the command.
+restart-computer -computername $computer
+
+always set variable , don't use existing beacuse it always contain the previous data.
+
