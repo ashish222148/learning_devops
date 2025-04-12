@@ -270,3 +270,35 @@ locals {
 } 
 
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Use Case: if you want to create vpc for prod and dev both.
+
+    locals {
+        dev={
+            region_1="ap-south-1"
+            cidr="192.168.0.0/24"
+            tags={
+                "name"="ashish"
+                }
+            },
+        prod={
+            locals {
+            region_1="ap-south-1"
+            cidr="192.168.0.0/24"
+            tags={
+                "name"="ashish"
+            }
+        } 
+        }
+        } 
+
+If you check formating is unreadable, so terraform support automatic formating.
+terraform validate
+terraform init
+terraform plan
+terraform apply
+FMT:
+    terraform fmt --check :
+        it will report the tf file name where formating is worng
+    terraform fmt:
+        it check and correct the formating in every files available in the current directory
+        
