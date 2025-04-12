@@ -232,4 +232,27 @@ VIMP        f- search ashish user ownership file and delete it.
             g- search ashish user ownership file and copy in backup .
                 find /india -user karan -exec cp -rvf {} /backup/ \;
 
+    3-head:
+        head command use for show top 10 line of the file
+            head /etc/passwd
+        show 5 lines:
+            head -n /etc/passwd
+    4-tail:
+        tail command used for show bottom 10 lines of the file:
+            tail /etc/passwd
+        show bottom 4 lines:
+            tail -n 4 /etc/passwd
+    5-wc:
+        wc command use for count characters, words and lines in a file.
+            wc /home/linux.txt
+            (in results: line words characters)
+            wc -l /home/linux.txt  for show line count
+            wc -c /home/linux.txt  for show character count
+            wc -w /home/linux.txt  for show word count
+---------------------------------------------------------------------------------------------------------------------------------------
+
+Archive File:
+
+
+
 
