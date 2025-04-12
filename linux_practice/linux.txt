@@ -1,1 +1,212 @@
 # this is linux notes.
+
+To check the password policy of system:
+    cat /etc/login.defs
+
+what is group?
+	Group is collection of user accounts, group is very useful for system administrator to manage permission number of users.
+
+Types of group:
+1-primary group:
+    this group account create and delete automatically with user account operations.
+2-secondry group account:
+    secondry group account create and delete by privilege users.
+
+group account database
+1-group account properties: /etc/group
+2-group admin properties: /etc/gshadow
+
+steps to manage group account:
+    crate group account:
+        groupadd ailiya
+    check group properties:
+        grep accountgroup /etc/group
+
+modify group id:
+    groupmod -g 2020 ailiya
+add single member in group:
+    gpasswd -a arun ailiya
+remove single member from group
+    gpasswd -d arun ailiya
+add/remove multiple users in a group:
+    gpassd -M user1,user2
+make group admin:
+    gpasswd -A arun ailiya
+delete group account:
+    groupdel accountant
+
+----------------------------------------------------------------Permission--------------------------------------------------------------------
+
+Permission:
+1-basic permission
+2-acl permission  - Access control list
+3-special permission
+
+1: Basic Permission:
+    basic permission is flexiable to manage.
+    we can assign permission to user , group and other.
+
+    to check permission of a file:
+        ls -l ./note.txt
+    to check permission of directory:
+        ls -ld /directory
+    
+    if lrwxrwxr-x , means start with l , then neither its file nor folder its basically shortcut of any application/file/folder
+
+    How to add permission:
+        chmod o+rw /test
+        o=other
+        g=group
+        u=user
+        chmod o-r-x /test
+        chmod g+rwx /test
+        or chmod 766 /test
+
+        remove all permission from user,group and other
+            chmod u-rwx,g-rwx,o-rwx /test
+            or
+            chmod ugo-rwx /test
+        add all permission from user,group and other
+            chmod u+rwx,g+rwx,o+rwx /test
+            or
+            chmod ugo+rwx /test
+
+    change the owership of file and folder
+        chown ashish:ailiya ./notes.txt
+    only owner change:
+        chown ashish ./notes.txt
+    only group change 
+        chgrp ailiya ./notes.txt
+
+2-ACL: Access Control list:
+    ACL permission use for provide permission to specific user or group
+    to check ACL:
+        getfacl /test
+
+    set ACL permission to user:
+        setfacl -m u:arun:rx test
+        setfacl -m u:arun:7 test
+
+    modify ACL permission:
+        setfacl -m u:arun:6 test
+
+    remove ACL permission from user:
+        setfacl -x u:arun:  test
+
+    remove all ACL permission at a time:
+        setfacl -b test
+
+    set ACL permission to group:
+        setfacl -m g:ailiya:7 test
+
+    remove ACL permission permission of group:
+        setfacl -x g:miowner: test
+Note: we can also explicilty remove permission from a user whether user have already by default permission
+
+3-Special Permission:
+    special permission design for executable file and directories.
+
+    It divied in to three parts
+        1-SUID (Set User ID)
+        2-SGID  (Set Group ID)
+        3-Sticky bit
+    
+
+    SUID:when we set suid permission on any executable file then any can ran/execute that file as a owner.
+        for set suid:
+            chmod u+s /usr/bin/nmtui
+        for remove suid:
+            chmod u-s /usr/bin/nmtui
+        result:dsrwr-xrw- like that, s donates suid, if s is in small case , then it means x is present, else if its S, x is not available
+
+        note: result will be any command will be run by any user once we set this.
+    SGID:
+        when we set gid permission on any directory then that directory group ownership inherited on child file/directories
+
+        for set sgid:
+            chmod g+s /tcs
+        for remove sgid:
+            chmod g-s /tcs
+
+    sticky bit:
+        when we set sticky bit permission on any directory then contents inside that directory can only delted by user.
+        it is popularly for publically shared directory
+
+        for set sticky bit
+        chmod o-t /database
+
+    special permission with number:
+        u+s=4
+        g+s=2
+        o+t=1
+
+    set suid:
+     chmod 4755 /usr/bin/su
+     chmod -4000 /usr/bin/su
+
+    ls -ld /test
+    chmod u+s /test
+
+    s=small  case , then x is also present
+
+    S= capital case, then X is absent
+
+---------------------------------------------------------------------------------------------------------------------------------------
+Regular expression:
+    Regular expression is process of search file/dir based on matching pattern such as name,owner,group ownership
+    permission size etc.
+    following command popularly use in Regular expression-
+
+    1-grep
+    2-find
+    3-head
+    4-tail
+    5-wc
+
+    1-grep (gloal Regular expression print)
+        vim /home/linux.txt
+        linux is secure owership
+        linux was developed by linus torvald
+        linux is fast
+        windows and linux os both are popular
+
+        1-search secure keyword
+        grep secure /home/linux.txt
+
+        2-search secure keyword in multiple file
+        grep secure /home/linux.txt /etc/password /etc/group
+
+        3-show matched file name(list)
+        grep -l secure /home/linux.txt /etc/passwd /etc/group
+
+        4-show unmatched file name (list)
+        grep -L secure /home/linux.txt /etc/passwd /etc/group
+
+        5-show matched line number:
+        grep -n secure /home/linux.txt
+
+        6-show match counting
+        grep -c os /home/linux.txt
+
+        7-incase senstive search:
+        grep -i linux /home/linux.txt
+
+        8-show inverse result:
+        grep -v secure /home/linux.txt
+
+        9-line starting with given keyword
+        grep ^linux  /etc/linux.txt
+
+        10-line ending with given keyword
+        grep os$ /etc/linux.txt
+
+        11-search recursively
+        grep -r linux /home/
+
+        12-redirect search result in to file
+        grep secure /home/linux.txt > /info.txt
+
+        13-append search result in to file:
+        grep os /home/linux >> /info.txt
+        
+    2-
