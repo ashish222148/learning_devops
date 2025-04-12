@@ -164,6 +164,7 @@ Regular expression:
     5-wc
 
     1-grep (gloal Regular expression print)
+        it is basically search in the content of file.
         vim /home/linux.txt
         linux is secure owership
         linux was developed by linus torvald
@@ -209,4 +210,22 @@ Regular expression:
         13-append search result in to file:
         grep os /home/linux >> /info.txt
         
-    2-
+    2-find:
+        find command use for serach file / dir on basis of name,owner ,groupowner,permission,size etc.
+
+            a-serach with name:
+                find /home -name linux.txt
+            b-seach with owner:
+                find / -user ashish
+            c-seach with groupownerhip:
+                find / -group tatagroup
+            d-seach with permission:
+                find /usr -perm 4755
+                find /usr -perm 2755
+                find /usr -perm 777
+            e-seach basis on size
+                find / -size -10M(less than 10 MB)
+                find / -size +100M(greater than 100MB)
+                find / -size +50M -size 100M(greater than 50 less than 100 MB)
+
+                
