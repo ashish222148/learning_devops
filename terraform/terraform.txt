@@ -1,1 +1,215 @@
+Harshicorp terraform:
+    Terraform comes in to two types:
+    terraform community(CLI) , terraform enterprise(GUI)
+    
+what is provisioning?
+    provisoning: create , destroy 
+what is configuration:
+    configuration: changes in the existing resources
+similar product: cloud formation, azure resource manager template(arm template),gcp configuration--just like terraform
+Terraform is cloud agnostic/platform agnostic so it can run any platform.
+
+
+Writing the terraform configuration file:
+    scope: identify the infrastructure for your project.
+    Author - Write the configuration for your infrastructure.
+    Initialize - Install the plugins, Terraform needs to manage the infrastructure.
+    Plan - Preview the changes Terraform will make to match your configuration.
+    Apply - Make the planned changes.
+
+What is service account: 
+    this account can't be interactive, means it will not ask for input.
+    password never expire
+    not multifactor authentication.
+
+User interface: CLI and GUI (uses useraccount for login)
+application interface: API (uses service account)
+
+if you want to increase the verbocity mode:
+curl www.google.com -vvvvv
+
+api and provider (plugins) should be available to run the terraform code.
+
+Installation of Terraform:
+    winget search terraform
+    winget install hashicorp.terraform
+    winget uninstall hashicorp.terraform
+    winget --help
+    winget list
+
+Commands in terraform:
+    --terraform init | download provider,initialize backend,download module |this is one time command oneless you change the terraform block.
+    --terraform plan | check the config drift and present the summary of what changes are going to be provisioned.
+    --terraform apply | apply the changes present in your plan i.e. provisoning the infra \resources.
+        backend: location where terraform init command keeps its statefile.
+            if backend location not mentioned , by default location will be current working directory
+
+*.tf is the terraform configuration file.
+configuration file written in HCL: hashicorp language
+blocks: json blocks , specific to specific use 
+    1-terraform block
+    2-provider block
+    3-resource block
+    4-variable block
+    5-data block
+    6-output block
+    7-module block
+    8-local block
+
+What is state file:
+    when we run command terraform apply, same will be excuted on cloud end and a copy of information of that resource(resource id) is going to be
+    stored on state file.
+    and next time when we run apply, it is going to check first in the statefile whether we have those information or not
+    then it reads on the cloud end, whether same resource is available on clould or not.
+    state file is written in json format.
+
+How to destroy resource created by terraform:
+    terraform apply --destroy
+
+If we manually do any modition in aws resource, then terraform is going to revert back the same because for terraform only source of truth is main.tf file.
+
+resource name should be always diffrent.
+
+terraform validate: this command will check the error if we will have in conguration file.
+terraform apply -auto approve
+
+semantic versioning:
+    1.0.0
+    major.minor.patch
+    major: incapitable api changes
+    minor: added functionality,backward compatibility
+    patch: incremented, backward compatibility, bugfixes
+
+version constraints:
+    version = ">= 1.2.0, < 2.0.0"
+    The following operators are valid:
+        = (or no operator): Allows only one exact version number. Cannot be combined with other conditions.
+        !=: Excludes an exact version number.
+        >, >=, <, <=: Comparisons against a specified version, allowing versions for which the comparison is true. "Greater-than" requests newer versions, and "less-than" requests older versions.
+        ~>: Allows only the rightmost version component to increment. For example, to allow new patch releases within a specific minor release, use the full version number: ~> 1.0.4 will allow installation of 1.0.5 and 1.0.10 but not 1.1.0. This is usually called the pessimistic constraint operator.
+    terraform inint -upgrade, it will upgrade the provider , keeps both version which is installed previosly and the latest one as you mentioned in the command.
+
+commenting:
+    single line comment: //
+    multiline comment: /*
+                        */
+
+provider alias:
+    suppose resource need to create in diffrent region, then alias provider comes in to picture.
+    Note: not recommanded
+
+data types:
+    string
+    integer
+    list
+    map
+    boolean
+string="ashish"
+integer=123
+list=
+    integer [2,3,5,7]
+    string ["ram","shaym"]
+boolean: true false
+map{name="ashish"
+    age=18}
+
+variable passing:
+
+1-  By argument:    either at the time of plan on command line
+    terraform plan -var v_name1=""
+2- by file name:    create a file with name like ashish or filename.tfvars(recommanded)-reading from file
+    
+        v_name1="192.168.0.0/24"
+
+    terraform plan -var-file=filename.tfvars
+3-terraform read variable file two extension
+    terraform.tfvars--> give the exact file name
+
+    if you want that given file name , terraform will read by default then file name should be:
+        ashish.auto.tfvars
+if you want to guive default value then we have to give default value in variable.tf
+    default="192.168.0.0/24"
+
+
+we have to variablised all the value with is written in map:
+
+very important which is used inn pipeline-variable passing:
+    enviornment variable:
+        if any variable will be in the form of TF_VAR_tags
+        for example in powershell:
+            $env:TF_VAR_cidr="192.168.0.0/24"
+
+        to get the child env value:
+            Get-ChildItem Env:TF_VAR_cidr
+This is specially used in pipeline like when we passing the password.
+
+local block-->> used to avoid repeated value in code.create another file with the name of locals.tf
+                while defining local block, don't need to create the variable file and also we don't need to mention the variable type in local block.
+                when calling its value to another block, just need to mention the local.variable name
+
+-----------------------------------------------------------code without local block---------------------------------------------------------------------------
+
+1-file:
+
+    main.tf
+
+        terraform {
+            required_providers {
+                aws = {
+                source  = "hashicorp/aws"
+                version = "~> 5.0"
+                }
+            }
+            }
+
+2-file:
+
+    provider.tf
+
+        provider "aws" {
+            region = var.region
+            }
+
+3-file:
+
+    resource.tf
+
+        resource "aws_vpc" "example" {
+            cidr_block = var.cidr
+            tags = var.tags
+            }
+
+4-file:
+
+    variable.tf
+
+        variable "cidr" {
+            type = string
+            }
+        variable "region" {
+            type = string
+            }
+        variable "tags" {
+            type = map(string)
+            default = {
+                "office" = "arun"
+            }
+            }
+
+5-file
+
+    terraform.AUTO.tfvars
+    
+        region = "ap-south-1"
+
+        tags = {
+        "Name" = "Yourvpc"
+        "village"="ailiya"
+}
+
+------------------------------------------------------------------**------------------------------------------------------------------------------------
+
+
+
+//date-12-4-205 -----------------------------------------------------
 
