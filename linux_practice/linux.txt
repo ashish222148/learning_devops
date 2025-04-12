@@ -227,5 +227,9 @@ Regular expression:
                 find / -size -10M(less than 10 MB)
                 find / -size +100M(greater than 100MB)
                 find / -size +50M -size 100M(greater than 50 less than 100 MB)
+VIMP        f- search ashish user ownership file and delete it.
+                find /india -user karan -exec rm -rvf {} \;
+            g- search ashish user ownership file and copy in backup .
+                find /india -user karan -exec cp -rvf {} /backup/ \;
 
-                
+
