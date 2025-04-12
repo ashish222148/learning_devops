@@ -301,4 +301,47 @@ FMT:
         it will report the tf file name where formating is worng
     terraform fmt:
         it check and correct the formating in every files available in the current directory
-        
+
+How to call variable if same is mentioned in two diffrent vpc?
+
+    local.dev.cidr
+    local.prod.cidr
+    local.dev.region_1
+    local.prod.region_1
+
+if you want that region should be same for both then:
+    region should be at the starting place.
+
+    locals {
+        region_1="ap-south-1"
+        dev={
+            cidr="192.168.0.0/24"
+            tags={
+                "name"="ashish"
+                }
+            },
+        prod={
+            locals {
+            cidr="192.168.0.0/24"
+            tags={
+                "name"="ashish"
+            }
+        } 
+        }
+        } 
+
+
+Q-What is default indentation for terraform?
+Ans: 2 spaces
+
+Q- What is required version in terraform?
+
+    check the required version on cmd terraform --version
+
+ Q-Why we use version: 
+    when the code will execute it will only depend on the downloaded version. even if latest version is available it will not pull the latest one.
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Logging:
+
+
