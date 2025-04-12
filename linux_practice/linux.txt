@@ -252,6 +252,34 @@ VIMP        f- search ashish user ownership file and delete it.
 ---------------------------------------------------------------------------------------------------------------------------------------
 
 Archive File:
+    archive is a process of combine multiple file and directory into a single bunch.
+        it usefull for backup purpose.
+        it can also supportable for compress size.
+        in linux tar command popularly use for create archive and compress file.
+
+    Tar: Tap Archive
+        tar command popularly use most of linux/unix administrator to archive and compression purpose.
+        tar command is use compression format(algorithm) to compression size.
+
+        gzip (.gz)
+        bzip2(.bz2)
+        xzip (.xz)
+
+    a-  du -sh /usr  --to check file size
+        du -sh /usr/bin
+        tree /usr/bin
+
+    b-create archive:
+        tar -cvf /mnt/backup.tar /usr/sbin  --> only archive happen
+    c-compression:
+        create archive with gzip compression:(-z)
+            tar -cvzf /mnt/backup.tar.gz /usr/sbin
+    d-create archive with bzip2 compression(-j)
+        tar -cvjf /mnt/backup.tar.bz2 /usr/sbin
+    e-create archive with xzip compression(-J)
+        tar -cvJf /mnt/backup.tar.xz /usr/sbin
+    
+
 
 
 
