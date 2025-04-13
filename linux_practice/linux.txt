@@ -324,9 +324,64 @@ job automation:
             timedatectl set-time "2025-04-12 11:26:40"
     
     1-at:
+        at command use execute/run job only one time.
 
+        a-set job with at command:
+            at 21.25
+            at>useradd ajay
+            at>
+            press "ctrl+d"
 
+        to check the scheduled job of at
+            atq
+        to check the job in detail:
+            cd /vat/spool/at
+            cat a00---- or tail a0000----
 
+        to remove job from pending list:
+            atrm jobnumber(4)
+
+    to restrict any user , who can not run aq command
+        vim /etc/at.deny
+
+        ashish
+
+    for future date:
+        man at
+        run job 3 days later:
+            at 16.00 + 3 days
+        run job 31dec
+            at 16:00 dec 31
+        run job tomorrow:
+            at 22:00 tomorrow
+
+    2-crontab:
+        crontab is use execute /run  job multiple times:
+
+        crontab -e 
+        * * * * * <job>
+
+        1*-minutes of an hour(0-59)
+        2*-Hours of a day(0-23)
+        3*-day of a month(1-31)
+        4*-month of a year(1-12)
+        5*-day of an a week (sun,mon,tues/0-6)
+
+        every day 6:30 pm 
+        30 18 * * *
+
+        every date 10
+        30 18 10 * * *
+
+        every 30 minutes
+        30 * * * *
+
+        30 18 10,11,12 
+
+        every saturday
+        20 18 * * * 6
+    
+    man crontab
 
 
 
