@@ -356,3 +356,78 @@ Q-to set the terraform log in a file:
 when we set the path , log output will be save in to file while ret of details will be shown on screen.
     unset TF_LOG_PATH
 
+#----------------------------------------------------------------------output block----------------------------------------------------------------------
+output block:
+    terraform apply --auto-approve -destroy
+
+    output block is basically display the values which we mention in output block.
+    output block can have one value at a time.
+    in multiple output block value should be unique.
+note: if you want to mention the output in one then , there is concept of interpolation.
+
+code::
+main.tf
+    terraform {
+    required_providers {
+        aws = {
+        source  = "hashicorp/aws"
+        version = "~> 5.0"
+        }
+    }
+    }
+
+
+provider.tf
+    # Configure the AWS Provider
+    provider "aws" {
+    region = var.region
+    }
+
+resource,tf
+    # Create a instance
+    resource "aws_instance" "main" {
+    ami           = var.ami
+    tags          = var.tags
+    instance_type = var.instance_type
+    }
+
+variable.tf
+    variable "region" {
+    type = string
+    }
+
+    variable "tags" {
+    type = map(string)
+    }
+    variable "ami" {
+    type = string
+    }
+    variable "instance_type" {
+    type = string
+    }
+
+terraform.auto.tfvars
+    region = "ap-south-1"
+
+    tags = {
+    "name" = "ashish"
+    }
+    ami           = "ami-002f6e91abff6eb96"
+    instance_type = "t2.micro"
+
+output.tf
+    output "instance_private_ip" {
+    value = aws_instance.main.private_ip
+    }
+    output "instance_public_ip" {
+    value = aws_instance.main.public_ip
+    }
+
+output.tf:(using interpolation)
+    output "ipsofec2"{
+        value="public ip is :${aws_instance.main.public_ip} and private ip is: ${aws_instance.main.private_ip}"
+    }
+
+------------------------------------------------------------------------datablock--------------------------------------------------------------------------
+datablock:
+    datasourcing: to fetch the details of resources from the correspondance 
