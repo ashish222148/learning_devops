@@ -408,6 +408,19 @@ job automation:
     check crontab log:
     cat /var/log/cron
     tail -f /var/log/cron  f means follow 
+
+
+    setting crontab job using script file:
+        a- create job script file:
+            mkdir /jobs
+            vim /jobs/script1.sh
+            #!/bin/bash
+            echo "My name is ashish" >> /computer.txt
+        provide execute permission :
+            chmod 755 /jobs/script1.sh
+        set crontab
+            crontab -e 
+            * * * * * /jobs/script1.sh
     
 
 
