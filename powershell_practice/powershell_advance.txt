@@ -1,0 +1,29 @@
+#chapter-1------------------------------------------Understanding Weired Symbols----------------------------------------------------------------------
+1-Reserved Variable($_ or $PSITEM):
+    get-service | where-object {$_}
+        data which we receive as a input for next cmdlet is going to store in a variable _. It is manadatory that | symbol data
+        will alsways be stored in _
+        suppose you want to get only one item from that input then command will be like:
+    get-service | where-object{$_.status -eg "stopped"}
+2-dot operator:
+    $service =get-service bits
+    $service.status
+
+IMP:   . operator will be used to access the property and menthod both, for example
+    $service.stop()
+    get-service bits
+     
+     use case:
+        if we have txt file, we use get-content whereas if there will be csv file then,
+        $computername =Import-csv c:\temp\computername.csv
+
+        and suppose our csv file will contain the cname as header
+        $computername.cname
+        get-service bits -computername 
+
+
+How to convert string in upper letter.
+    $username ="ashish"
+    $username | get-member
+    $username.toupper()
+    $username.tolower()
