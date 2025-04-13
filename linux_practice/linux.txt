@@ -422,5 +422,40 @@ job automation:
             crontab -e 
             * * * * * /jobs/script1.sh
     
+----------------------------------------------------------------------------------------------------------------------------------------------
+
+Disk Partition:
+    partition is a process of divide a harddisk drive into multiple logical storage unit.
+    called partition.
+Disk Name:
+    Linux maintain disk naming convention for SATA, PATA and virtual disk as follows:
+    1-SATA(Serial Advance Technology Attachment)
+    2-PATA(Parallel Advance technology Attachment)-outdated /dev/hda
+    3-virtual
+
+lsblk:
+    /dev/sda -SATA -disk 1
+        /dev/sda1
+        /dev/sda2
+    /dev/sdb -SATA -disk -2
+        /dev/sdb1
+        /dev/sdb2
+    /dev/vda -virtual
+        /dev/vda1
+        /dev/vda2
+
+Partition Type:
+    1-primary:
+        we can create max 4 primary partition .
+        if we require more than 4 partition, then we need to create 1 extende partition.
+    2-extended:
+        we can create only one extended partion in to a single hard disk.
+        it should belong from 1-4 ragne(mean one out of primary)
+        it work as a container for logical partition
+
+    3-logical
+        it take space from extended partition.
+        it always start from partition number 5.
+
 
 
