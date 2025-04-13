@@ -393,6 +393,21 @@ job automation:
             crontab -e
             remove or modify line as per requirement
 
+        crontab -l -u ajay
+        crontab -u ajay -l 
 
+        edit other user's job
+            crontab -u ajay -e 
+        remove other user's job:
+            crontab -u ajau -r
+
+    restrict ashish not to run cronjob
+        vim /etc/cron.deny
+        ashish
+
+    check crontab log:
+    cat /var/log/cron
+    tail -f /var/log/cron  f means follow 
+    
 
 
