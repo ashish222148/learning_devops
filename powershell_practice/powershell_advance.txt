@@ -85,3 +85,21 @@ to get count:
     $name[-1]
     (get-service).count 
     (get-service)[-1]
+-------------------------------------------------------------------------------------------------------------------------------------------------
+Split, replace , trim
+
+replace:
+    $word="Ashish the great"
+    $word -replace "the" ,"is"
+
+join:    
+    $number=1,2,3
+    $number -join ";"
+
+split:
+    $word -split " "
+
+Trim:
+    $name ="ashish "
+    $name.length
+    ($name.trim()).length
