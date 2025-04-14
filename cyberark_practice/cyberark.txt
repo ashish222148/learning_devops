@@ -1,1 +1,34 @@
+ch-11: PSM Must be domain joined.
+PSM:(Isolation,control,monitoring): Why PSM is required?
 
+    manual Account onboarding(without psm)
+        -java is required.-on lower version(classic UI)
+        -this will be browser base connection, but this is not secure.
+        -if user is making connection from his system to the target server, port needs to be open from host to remote, so if we have 500 user'secure
+         then port need to open on every machine.
+        -PTH signature left on the browser, which is prone to hacking(not secure)
+        -there is no monitoring
+ch-12:
+PSM:
+    Isolation: isolate workstation / desktop from the target machine, thus preventing cyberark attack.
+    Control: ensure accountablity and control over privilege session with live monitoring,policies,workflow.
+    Monitoring: Recording of each seesion with compliance in mind with zero footprint on the target system.
+
+Prerequisites:
+    Microsoft server
+    capacity-will be cover in another chapter
+    domain joined
+    remote desktop services-login as domain administrator
+        ->server manager->add roles and feature->remote desktop service Installation->standard deployment->session based desktop deployment->
+        -remote desktop connection broker,remote desktop web access, remote desktop seesion host
+    session collection must be defined- remoteapp feature
+        ->server manager->remote desktop services-create session collection->
+
+    for windows server remote desktop services,procure required client access license.(CAL)
+
+Installation:
+
+Post Installation Environment:
+    users:
+        PSMConnect:A windows user that is created in order to start PSM session on the PSM machine.
+        PSMAdminConnect:A windows user that is created in order to monitor live privilege session.
