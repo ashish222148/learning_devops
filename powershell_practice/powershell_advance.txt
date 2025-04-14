@@ -27,3 +27,61 @@ How to convert string in upper letter.
     $username | get-member
     $username.toupper()
     $username.tolower()
+
+------------------------------------------------------------------------------------------------------------------------
+Paranthesis or Round brackets:
+
+(): excute first
+    if any cmdlet need to excute first then we have to put in ()
+
+    get-service -computername (get-content c:\temp\comp.txt)
+
+    (get-service bits).name
+
+{}: excute last
+
+input from host:
+    Read-host "Please enter the number to double"
+
+    $number=read-host "please enter the number to double !!"
+    $number +$number
+IMP: to chekc the type 
+    $number|get-member
+
+[]
+Type Casting:
+    [int]$pin="ahmad"
+
+"2"+2=22 because fist number is string
+2+"2"=4  because first number is integer
+
+------------------------------------------------------------------------------------------------------------------------------
+Append Variable and Array:
+    @()
+    to nullify variable :
+        $name=$null
+    $name="ashish"
+    $name =$name +" "+"kumar"
+
+    or
+    $name+=" kumar"
+
+    $name = $null
+
+    $name=@()
+    $name +="ashish"
+    $name +="singh"
+    $name
+    ashish
+    singh
+
+    or we can type casting at the begining:
+    [array]$name="ashish"
+    $name +="kumar"
+
+to get count:
+    $name.count
+    $name[0]
+    $name[-1]
+    (get-service).count 
+    (get-service)[-1]
