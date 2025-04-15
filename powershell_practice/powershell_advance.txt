@@ -103,3 +103,36 @@ Trim:
     $name ="ashish "
     $name.length
     ($name.trim()).length
+
+#-----------------------------------------------------------------------Understanding Hash tables-------------------------------------------------
+
+HashTable:
+     Get-WmiObject -Class win32_operatingsystem | Select-Object -Property caption,pscomputername | Export-Csv -NoTypeInformation C:\temp\ashish.csv
+
+VVVIMP: when type info not required in csv file.
+
+How to get all classes:
+    get-WmiObject -list
+to get in GUI:
+    Get-WmiObject -list |Out-GridView
+        add criteria win32 , then filter service 
+
+if you want to run multiple command : use semicolumn
+    cls;get-service
+
+suppose we want to add column name as per our convenience , then we use has table.
+@{}-hash table 
+Syntax of HashTable:
+    @{
+        name='OS;expression={}
+    }
+
+here name is property name and ; used to run another command then value will be in expression Part .
+
+Get-WmiObject -Class win32_operatingsystem |Select-Object -Property caption,@{name='OS';expression={$_.caption}}
+
+Get-WmiObject -Class win32_operatingsystem |Select-Object -Property @{name='OS';expression={$_.caption}},@{name='server_name';expression={$_.pscomputername}}
+    notes: we can replace name with n and expression with e. for exp:
+Get-WmiObject -Class win32_operatingsystem |Select-Object -Property @{name='OS';expression={$_.caption}},@{n='server_name';e={$_.pscomputername}}
+
+
