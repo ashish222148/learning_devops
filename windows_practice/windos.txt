@@ -1,1 +1,73 @@
+RDS: Remote Desktop services
+    Accessing computer Remotely
+    Helpful for administration
+    Disabled by defalut
 
+    Over LAN need private ip.
+    by default 2 users can access the server remotely,license is available in two forms , per user and per device
+    per user: 10 (ex) , these 10 users can access the server from any device
+    per device: any user can access but from these 10 devices only 
+
+    Enable RDS: 
+    add users((By default administrator is allowed))
+    Access the server remotely
+
+RAS: Remote Access services
+
+    RAS allows remote users to connect through wide area network (WAN) link to RAS server; from there RAS allows those clients to access resources on network.
+    To allow a user to connect remotely to the RAS server , user should have the dial in permission.
+    RAS uses NAT(translating your private ip address to public) and VPN:
+
+LAB:
+    DC:
+        ip:                 10.0.0.1
+        subnet mask:        255.0.0.0
+        default Gateway:    10.0.0.2
+        pdns:               10.0.0.1
+        adns:               10.0.0.50
+
+    RAS:
+    NIC-1
+        ip:                 10.0.0.2
+        subnet mask:        255.0.0.0
+        default Gateway:    NA
+        pdns:               10.0.0.2
+        adns:               10.0.0.1
+    NIC-2
+        ip:                 11.0.0.1
+        subnet mask:        255.0.0.0
+        default Gateway:    NA
+        pdns:               NA
+        adns:               NA
+    Client:
+        ip:                 11.0.0.2
+        subnet mask:        255.0.0.0
+        default Gateway:    NA
+        pdns:               11.0.0.1
+        adns:               NA
+
+Keep all machine in same network.
+go to dc-user administrator, properties -dial in -allow access
+
+
+Default Gateway: router ip address
+
+🔸 Key Differences
+
+Feature	        Remote Desktop Services (RDS)	        Remote Access Services (RAS)
+Purpose	Access  full desktop/apps remotely	            Access a private network remotely
+Access Level	Desktop/application-level	            Network-level (IP access)
+Protocol	    RDP	                                    VPN, PPP, PPTP, L2TP, etc.
+Typical         Use	Centralized application hosting	    Secure remote network access
+Resource Usage	Runs apps on the server	                Uses client resources after connecting
+
+
+🔍 Summary Comparison
+
+Feature	            Enable Remote Desktop	                Install Remote Desktop Services (RDS)
+OS Required	        Windows Pro/Enterprise	                Windows Server
+Purpose	            One-on-one remote access	            Multi-user remote access environment
+Simultaneous Users	❌ No (one user only)	                ✅ Yes (many users)
+Licensing Needed	❌ No extra license (just OS)	       ✅ Yes (RDS CALs required)
+Ideal For	        Personal/admin remote access	        Centralized business access
+Easy to Set Up	    ✅ Very easy	                            ❌ More complex setup
