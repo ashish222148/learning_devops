@@ -32,3 +32,40 @@ Post Installation Environment:
     users:
         PSMConnect:A windows user that is created in order to start PSM session on the PSM machine.
         PSMAdminConnect:A windows user that is created in order to monitor live privilege session.
+        PSMShadowUsers: An internal group that contains local PSM users. The PSM creates a local
+                        PSM user called "PSM-<user-id>, the user-id will be some unique, random numbers" for each Vault user who connects to the PSM
+                        and automatically adds these local users as members to this internal group.
+    Safes:
+        PSM: This contains the password of the unique PSM user.
+        PSMLiveSessions:This will enable users to view the PSM live monitoring feature in an environment with multiple PVWAs.
+        PSMNotification: to send email notification.
+        PSMUnmanagedsessionaccounts: this will enable users to view the PSM secure connect page and connet to any machine through PSM using any connect,
+                                     including those that are managed in the vault.
+        PSM Universal Connectors : All connectors added to this safe will be deployed to all the PSM servers automatically (with optional exception*).
+
+    
+    Users created in vault:
+        PSMGW_<MachineName>:This is the Gateway user through which the PSM users will access the Vault. The credentials file for this user is PSMGW_<MachineName>.ini.
+                            This user is added automatically to the following group: PVWAGWAccounts,Being a member of this group with enable this user to access all 
+                            password Safes.
+        PSMApp_<MachineName>:This user is used by the PSM for internal processing. The credentials file for this user is PSMApp_<MachineName>.ini. 
+                             This user is added automatically to the PSMAppUsers group.
+    Groups:
+        PSMAppUsers:This group is used to retrieve configuration from the Vault, create Recording Safes and upload recordings, and perform other PSM activities, 
+                    as well as defining the authorizations that are required by the PSM internal users. The PSMApp_<Machinename> user is added automatically to 
+                    this group. It has the Audit Users and AddSafes authorizations in the Vault, and is automatically added to the Recordings Safe with all 
+                    authorizations.
+        PSMMaster:This group manages the Safes where recordings are stored. It is added to the Recordings Safes with all authorizations. PIM Administrators can be
+                  added to this group so that they can manage Recording Safes or, alternatively, users or groups can be added separately with relevant permissions.
+        PSMLiveSessionTerminators:Members of this group can terminate live privileged sessions, based on their individual Safe ownership.
+
+    Installation Location - C:\Program Files (x86)\CyberArk\PSM
+        Logs : C:\Program Files (x86)\CyberArk\PSM\Logs
+               PSMConsole.log			#Main Log File
+               PSMTrace.log
+        Live Recordings : C:\Program Files (x86)\CyberArk\PSM\Recordings
+    
+    Service: "Cyber-Ark Privileged Session Manager"
+
+
+
