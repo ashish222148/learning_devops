@@ -1,0 +1,1 @@
+Get-WmiObject -Class win32_operatingsystem |Select-Object -Property @{name='OS';expression={$_.caption}},@{name='server_name';expression={$_.pscomputername}}
