@@ -31,7 +31,8 @@ transport layer is herat of OSI.
 
     data cut in to small pices known as chunk.
     two protol is being used.
-    TCP/UDP
+    TCP:http,ssh,https
+    UDP:DHCP,DNS,RIP,SNMP
 
     transmission control protocol: it is connetion oriented protocol
     user datagram protocol: connection less protocol
@@ -54,3 +55,49 @@ Coonection oriented:
     welll known port:0-1023 for http,https,ssh,ftp 20,21
     registered port:1024-49151 for  sql,rdp
     dynamic port:49152-65535 dandomly used.
+
+----------------------------------------------------------------------------day-3-OSI Model Continue----------------------------------------------------
+
+#16-04-205----------------------------------------------------------------------------------------------------------------------------------------------
+Network Layer:
+    -provide logical addressing (IP addressing)
+    -routing: forwarding packet from one network to another.
+    -to determine the best path
+    devices works on network layer called Router (Layer 3 device).
+
+    IP: Internet protocol works on Network layer.
+
+Data Link layer: 
+    -priovide physical addressing(MAC-Address)
+    -error detection and correction(Header(control) and Trailer(Error detection))
+    -flow control
+    -provide node to node deliver
+
+Physical Layer: wire connector , converts in to bits 
+                wires 
+
+-----------------------------------------------------------OSI Model Finished-----------------------------------
+
+
+IP Address: It is 32 bit logical Address. IP Adress known as Layer 3 Address.
+            repsents in dotted decimal number
+            ip Address have two version:
+                ipv4
+                ipv6
+            IANA manage IP Address.
+    Class -A,B,C,D,E 
+    IP Address has four octate.
+    binary conversion:
+        128 64  32  16  8   4   2   1
+    Class-A    0-127
+    Class-B    128-191
+    Class-C    192-223
+    Class-D    224-239(Multi-casting)
+    Class-E    240-255(Research & Dev)
+
+private ip: used in LAN Network
+public ip:  internet access
+
+
+
+

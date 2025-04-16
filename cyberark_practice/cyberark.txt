@@ -68,4 +68,9 @@ Post Installation Environment:
     Service: "Cyber-Ark Privileged Session Manager"
 
 
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+PSMP: 
+    Privileged Session Manager SSH Proxy (PSMP):
+        The Privileged Session Manager SSH Proxy (PSMP) enables organizations to secure, control and monitor privileged access to network/*NIX devices (only SSH protocol).
+        The PSMP is installed on a dedicated machine that has access to the Vault and to the target systems.
