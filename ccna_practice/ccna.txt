@@ -78,6 +78,7 @@ Physical Layer: wire connector , converts in to bits
 
 -----------------------------------------------------------OSI Model Finished-----------------------------------
 
+---------------------------------------------------IP addressing----------------------------------------------------------
 
 IP Address: It is 32 bit logical Address. IP Adress known as Layer 3 Address.
             repsents in dotted decimal number
@@ -98,6 +99,25 @@ IP Address: It is 32 bit logical Address. IP Adress known as Layer 3 Address.
 private ip: used in LAN Network
 public ip:  internet access
 
+------------------------------------------------------------------------Day -4------------------------------------------------------------------------
 
+IP addressing:
+    CLASS a- NHHH
+    class b- NNHH
+    class c- NNNH
 
+Network id: if host portion are all 0
+Broadcost id: if host portion are all 255
+valid Address:
 
+192.168.100.25
+nid: 192.168.100.0
+bid:192.168.100.255
+
+you can't assign network id or brodcost id to any system.
+
+host calculation formula: 2^hostbit -2
+2^8-2=254
+
+class b: 2^16-2=65534
+class c: 2^24 -2=1
