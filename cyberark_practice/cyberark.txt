@@ -74,3 +74,32 @@ PSMP:
     Privileged Session Manager SSH Proxy (PSMP):
         The Privileged Session Manager SSH Proxy (PSMP) enables organizations to secure, control and monitor privileged access to network/*NIX devices (only SSH protocol).
         The PSMP is installed on a dedicated machine that has access to the Vault and to the target systems.
+
+
+-----------------------------------------------AIM(Application Identity Manager)--------------------------------------------------------------------------------------------
+Hard Coded credentials:
+    Clear text credentials in code:     its very command for developes to put credential in code as clear text,what is easy for developes , is easy for attacker too.
+    Configuration files and databases:  Hard-coded credentials are also commonly found in config files, application databases, windows registry etc.
+    Service Accounts:                   Services running in the background in a given day/week? Those service accounts can provide access to highly sensitive data,
+                                        yet they are often protected by hard-coded credentials.
+    Application servers:                Organizations deploy applications on application servers(WebLogic, JBoss, WebSphere, Tomcat).
+                                        Credentials are required by these applications, to access systems such as databases, and are often hard-coded into the application server configuration.
+                                        And lastly, many organizations have third party applications such as risk and compliance management, availability and recovery management, and IT automation and management
+                                        where there are hard-coded credentials. Such systems must use Privileged credentials to carry out their inherent purpose.
+                                        For example, a vulnerability management system must have the ability to scan all machines on the network and assess their vulnerabilities.
+                                        To do that, it needs a privileged credentials, which is often hard-coded into the application code.
+AIM Solutions:
+    cp
+    CCP 
+    ASCP(application server credential provider)
+
+CCP:    The Central Credential Provider consists of the Credential Provider for Windows that is installed on an IIS server and the Central Credential Provider web service, 
+        used by calling scripts/applications to retrieve credentials during run-time. 
+        Passwords that are stored in the CyberArk Digital Vault can be retrieved to the Central Credential Provider, where they can be accessed by authorized remote applications using web service calls. If 
+        these passwords are managed automatically by the CPM, the Vault makes sure that the passwords in the Central Credential Provider are constantly synchronized with the corresponding passwords in the Vault.
+        Applications that require credentials to access a remote device or to run another application remotely can request the relevant credentials from the Central Credential Provider using the Central 
+        Credential Provider web service. 
+
+
+
+

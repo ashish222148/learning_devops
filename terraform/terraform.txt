@@ -430,4 +430,10 @@ output.tf:(using interpolation)
 
 ------------------------------------------------------------------------datablock--------------------------------------------------------------------------
 datablock:
-    datasourcing: to fetch the details of resources from the correspondance 
+    datasourcing: to fetch the details of resources from the correspondance data source.
+
+                if we not use the datasource to our program will be not be reusable, by using the data sourcing, we can
+                use program any where else.
+
+        for example: using datablock get the ami id
+        
