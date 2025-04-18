@@ -135,4 +135,80 @@ Get-WmiObject -Class win32_operatingsystem |Select-Object -Property @{name='OS';
     notes: we can replace name with n and expression with e. for exp:
 Get-WmiObject -Class win32_operatingsystem |Select-Object -Property @{name='OS';expression={$_.caption}},@{n='server_name';e={$_.pscomputername}}
 
+---------------------------------------------------------------------***********------------------------------------------------------------------------------------
+HashTable using object::
 
+    suppose we want some data with property name as header then:
+        get-winobject win32_bios | select serialnumber
+
+        if need only one value, without property name
+        (get-WmiObject win32_bios).serialnumber
+
+    using the diffrent diffrent cmdlet , we will create a new object with -type psobject and -property will be all cmdlet:
+    steps:
+        create new-object , type is psobject and property will be variable
+
+        $os=(get-winobject win32_operatingsystem).caption
+        $compsys=get-WmiObject win32.computersystem
+        $serial=(get-WmiObject win32_bios).serialnumber
+        $cpucore=(get-winobject win32_processor).numberofcores
+
+        new-object -typename psobject -property @{
+            os=$os
+            MF=$compsys.manufacturer
+            sn=$serial
+            core=$cpucore
+            RAM=$compsys.totalphysicalmemory
+        } format-table OS,RAM,CORE,SN,MF
+
+    example-2:
+        $hostname=hostname
+        $getcominfo = get-computerinfo
+        new-object -typename psobject -property @{
+            hostname=$host_name
+            osname=$getcominfo.osname
+            osversion=$getcominfo.osversion
+        } | export-csv -NoTypeInformation c:temp\sample.csv
+
+
+---------------------------------------------------------------------Foreach--------------------------------------------------------------------------------------
+
+foreach syntax:
+    foreach(condition){action}
+
+        comad which accept only one value, we can use foreach.
+
+$servers=get-content c:\temp\server.txt
+foreach ($ser in $servers)
+    {get-windoesfeather rsat-ad-powershell -computername $ser}
+
+ex:
+    $users=get-content c:\temp\users.txt
+    foreach($usr in $users)
+    {
+        get-aduser $usr | select-object -property name,enabled
+    }
+
+Note: always use for each even if the cm,dlet accept multiple values because it run till the last object, else it will terminate if there will be any error.
+
+
+-----------------------------------------------------------------if-elseif---------------------------------------------------------------------------------
+$oxygen=95
+if ($oxygen -ge 95)
+{write-host "No action taken"}
+elseif ($oxygen -ge 88 -and $oxygen -le 94)
+{write-host "need to be hospitalize !!"}
+else
+{write-host "RIP"}
+
+ex-2:
+    $computername ="desktop-machine","notonline"
+    foreach($comp in $computername)
+    {
+        $ping=Test-connection -computername $comp -quiet
+        if ($ping -like "True")
+        {write-host "$comp is up and running !!"}
+        else
+        {write-host "comp is offline"}
+    }
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
