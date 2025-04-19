@@ -436,4 +436,160 @@ datablock:
                 use program any where else.
 
         for example: using datablock get the ami id
-        
+
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.0"
+    }
+  }
+}
+
+provider "aws" {
+  region = "ap-south-1"
+}
+
+data "aws_ami" "main" {
+
+  owners      = ["679593333241"]
+  most_recent = true
+
+  filter {
+    name   = "name"
+    values = ["ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"]
+  }
+}
+
+resource "aws_instance" "main" {
+  ami           = data.aws_ami.main.id
+  instance_type = "t2.micro"
+}
+
+output "ipsofec2" {
+  value = "public ip is :${aws_instance.main.public_ip} and private ip is: ${aws_instance.main.private_ip}"
+}
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+#state file management:
+    if you want to see all details of resource
+
+    state commands:
+        terraform state list
+        terraform state show aws.....
+
+Scenario -1:
+    If any reorce is managing through terraform, how could we manage that reource from aws.
+     suppose we delete the reource from main.tf , and it exist in state file then it will be destroyed, so we have to delete the same from both places
+     main.tf and state file.
+
+     terraform state list
+     terraform state show <state id of resource>
+     terraform state rm <state id of resource>
+
+//day -6 ------------------------------------------------------Terraform-------------------------------------------------------------------------
+
+Scenario -2:
+    suppose we have created a resource manually, now we want to manage the same through terraform.
+
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.0"
+    }
+  }
+}
+
+provider "aws" {
+  region = "ap-south-1"
+}
+
+data "aws_ami" "main" {
+
+  owners      = ["137112412989"]
+  most_recent = true
+
+  filter {
+    name   = "name"
+    values = ["al2023-ami-2023.7.20250414.0-kernel-6.1-x86_64"]
+  }
+}
+
+resource "aws_instance" "main" {
+  ami           = data.aws_ami.main.id
+  instance_type = "t2.micro"
+  tags = {"name"="TFVM"}
+}
+
+output "ipsofec2" {
+  value = "public ip is :${aws_instance.main.public_ip} and private ip is: ${aws_instance.main.private_ip}"
+}
+
+//terraform state list
+//terraform state rm "aws_instance.main"  received from terraform state list
+
+
+// we have to insert two entry -1 in terraform block second in state file:
+
+
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.0"
+    }
+  }
+}
+
+provider "aws" {
+  region = "ap-south-1"
+}
+
+data "aws_ami" "main" {
+
+  owners      = ["137112412989"]
+  most_recent = true
+
+  filter {
+    name   = "name"
+    values = ["al2023-ami-2023.7.20250414.0-kernel-6.1-x86_64"]
+  }
+}
+
+resource "aws_instance" "main" {
+  ami           = data.aws_ami.main.id
+  instance_type = "t2.micro"
+  tags = {"name"="TFVM"}
+}
+resource "aws_instance" "main2" {
+  # (resource arguments)
+}
+
+
+output "ipsofec2" {
+  value = "public ip is :${aws_instance.main.public_ip} and private ip is: ${aws_instance.main.private_ip}"
+}
+
+
+Solution for scenario 1:
+    terraform state list
+    terraform state rm "aws reource id"
+
+    one the resource detailed has been removed from state file , even if the same is remaining in configuration file it will create another resource if we run the code.
+    recommanded: delete the entry from configuration file as well
+
+Soltion for scenario 2:
+    in terraform configuration file, 
+    mention the other resource block without parameter.
+    copy the instance id from aws.
+    terraform state list
+    terraform import aws_instance.main i-instance id
+    terraform state show "resource id"
+    copy the instance type (t2.micro) and enter the same in the reource block.
+    provide the amit id as well euther from data block or directly.
+
+    terraform plan
+    terraform apply
+
