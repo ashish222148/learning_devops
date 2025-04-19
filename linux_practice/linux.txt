@@ -455,7 +455,144 @@ Partition Type:
 
     3-logical
         it take space from extended partition.
-        it always start from partition number 5.
+        it always start from partition number 
+
+lsblk
+or
+fdisk -l
+
+poweroff
+add second hard disk in vm 
+vm setting-storage-sata controller-add hard disk-create 10gb ok , start vm
+
+second hard disk added as sdb 
+take snap shot 
+
+steps for manage partition:
+    1-create partition
+        fdisk /dev/sdb
+        m for help
+        n new partition
+        d delete partition
+        p print partition
+        t change partition type
+        q quit(close without saving)
+        w write and quite (save and close)
+        l show partition type list
+    2- for show partition
+        lsblk
+    3- for create file system(format)
+        mkfs.xfs /dev/sdb1
+    
+    what is file system?
+    file system is a process of create a structure on partition where OS can store data.
+    eg:
+    linux-ext,ext2,ext3,ext4,xfs (RHEL 7/8/9 -default file system is XFS)
+    windows- fat16,fat32,ntfs,refs
+
+    4-mount partition(temporary)
+        mkdir /study 
+        mount /dev/sdb1 /study
+    5- mount partition (permanantly)
+        vim /etc/fstab
+        /dev/sdb1   /study  xfs defaults    0   0
+    6-mount all partition
+    mount all partition (written in fstab file)
+    mount -a 
+    7-check partition mounting
+        lsblk
+    8-unlount partition and remove record from /etc/fstab
+        umount /study
+        vim /etc/fstab
+
+        remove partition line (dd)
+    mount -a 
+    
+    9- delete partion
+     fdisk /dev/sdb
+     delete partition d 
+     :want
+    10- we can mount partition with help of uuid (universal unique id) also
+        show uuid /dev/sdb1
+        vim /etc/fstab
+        UUId="btffgyghih-mnjjj" /chennai xfs defaults 0 0
+        :wq
+
+    
 
 
+Resize Partition:
+    note:
+        before resize partition always take backup first.
+        tar -cvzf /mnt/mumbai.tar.gz /mumbai
+
+    1-Resize ext4 file system partition
+        unmount partition:
+            unmount /mumbai
+        resize partition
+            fdisk /dev/sdb
+            delete partition and create now one with required size
+            do you want remove signature - NO 
+
+        check error  of file system and resize file system
+            e2fsck -f /dev/sdb1
+            resize2fs /dev/sdb1
+        mount partition
+            mount -a 
+            lsblk
+            ls /mumbai
+    2- resize xfs file system partition
+        resize partition size
+        fdisk /dev/sdb
+
+        delete partition and create new one with extended size
+        do you want remove signature - NO 
+
+        resize file system
+        xfs_growfs /pune
+
+        lsblkls /pune
+
+        Note: ext4 file system support increase or decrease (extend or shrink ) partition size
+            xfs file system only supported for extend increase partition size.
+
+swap:
+    swap memory is one type of RAM(virtual)
+    swap memory take space from hard disk space.
+    it support physical ram to handle load when pram is full.
+    expert recomended create your system swap approximately dual size of physical ram.
+
+Steps for create swap:
+
+1-check swap space
+free -m 
+2-create swap memory:
+fdisk /dev/sdb 
+create partition with required size and set partition id (82) for swap
+:wq
+3-to make swap:
+    mkswap /dev/sdb3
+
+4- to swap on
+    swapon /dev/sdb3
+5-permanant mount swap
+vim /etc/fstab
+/dev/sdb3 swap swap defaults 0 0
+mount -a 
+6- for swap off
+swapoff /dev/sdb3
+for off all swap
+swapoff -a 
+for on all swap
+swapon -a 
+
+7-for remove swap
+ first swap off
+ then remove record from /etc/fstab file and finally remove partition
+
+
+
+
+ LVM:
+    
 
