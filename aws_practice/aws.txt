@@ -1,0 +1,13 @@
+AWS Cloud Formation:
+    Script and Tool : every polular thing based on these two thing.
+        terraform,ansible platform agnostic but cloud formation is platform dependent(aws).
+
+        Cloud formation is the automation tool for infrastructure creation from Script.
+            1-EC2 creation (values) script: also called stack(what i need)
+            2-Handover to cloudformation
+            3-permission
+create json file for creating ec2 instance
+create iam role for cloud formation
+add ec2 full permission to that role
+
+we can also delete the stack.
