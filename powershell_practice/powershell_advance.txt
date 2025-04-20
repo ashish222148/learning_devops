@@ -341,3 +341,151 @@ Difference between running the command through powershell ISE and normal powersh
 
 to accept value from pipeline:
 
+function get-ping{
+    [cmdletbinding()] #enable common parametr
+    param(
+                [parameter(mandatory=$true,valuefrompipeline=$true)] #if input is manadatory, and if parameter value required from pipeline
+                [string[]]$computername #to accept multiple value
+            )
+        #$computername ="desktop-5KG4RAG","notonline"
+        begin{write-host "The script is started"}
+        process{
+        foreach($comp in $computername)
+        {
+            $ping=Test-connection -computername $comp -quiet
+            if ($ping -like "True")
+            {write-host "$comp is up and running !!"}
+            else
+            {write-host "comp is offline"}
+        }
+        }
+        end(write-host "process end !!")
+}
+
+PS C:\Users\Admin> Get-Content C:\temp\names.txt |get-ping
+The script is started
+desktop-5KG4RAG is up and running !!
+comp is offline
+process end !!
+
+ 
+Note: if you want to get the inut from pipeline
+:
+    1-valuefrompipeline=$true
+    2-Begin{}: it will run only once
+    3-process{}: whole script should be in process block. it will accept all the computer
+    3-end{}: same as begin , it will run only one
+
+----------------------------------------------------to learn fuction----------------------------------------------------------------
+VIMP:
+ctrl+j
+cmdlet (advance function)-complete
+
+---------------------------------------------creating module from function---------------------------------------------------------
+module:
+    module contains command and command contains scripts
+    save the script in c\windows\system32\windowspoweshell\v1\modules  --but not recommanded
+Note::   if saving the modules in your profile, then you have to make a folder with script name and save the script as .psm1
+
+function get-osdetails
+{
+    [cmdletbinding()]
+    param(
+        [parameter(mandatory=$true,valuefrompipeline=$true)]
+        [string[]]$computername
+    )
+    foreach ($comp in $computername)
+    {
+        get-wmiobject -class win32_operatingsystem -computername $comp | select caption,pscomputername
+    }
+}
+
+----------------------------------------------
+get-module
+
+get-module -listavailable
+
+-------------------------------------------------------------calling function from another script--------------------------------------
+
+    $osversion=(get-osdetails -computername $comp).caption
+
+
+-------------------------------------------------------Working with PowerShell Modules | How to Install, Import & Load Modules in PowerShell-----------------------
+there is an environment variable in powershell 
+get-psdrive
+
+powershell will check the module in the below mentioned path only:
+
+PS C:\Users\Admin> get-psdrive
+
+Name           Used (GB)     Free (GB) Provider      Root                                                                                                                                                             CurrentLocation
+----           ---------     --------- --------      ----                                                                                                                                                             ---------------
+Alias                                  Alias                                                                                                                                                                                         
+C                  95.75         51.39 FileSystem    C:\                                                                                                                                                                  Users\Admin
+Cert                                   Certificate   \                                                                                                                                                                               
+D                 255.23         87.05 FileSystem    D:\                                                                                                                                                                             
+E                 172.89        290.75 FileSystem    E:\                                                                                                                                                                             
+Env                                    Environment                                                                                                                                                                                   
+F                                      FileSystem    F:\                                                                                                                                                                             
+Function                               Function                                                                                                                                                                                      
+HKCU                                   Registry      HKEY_CURRENT_USER                                                                                                                                                               
+HKLM                                   Registry      HKEY_LOCAL_MACHINE                                                                                                                                                              
+Variable                               Variable                                                                                                                                                                                      
+WSMan                                  WSMan 
+
+PS E:\> Set-Location env:
+
+PS Env:\> dir
+
+Name                           Value                                                                                                                                                                                                 
+----                           -----                                                                                                                                                                                                 
+                                                                                                                                                                               
+PSModulePath                   C:\Users\Admin\Documents\WindowsPowerShell\Modules;C:\Program Files\WindowsPowerShell\Modules;
+                                C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules;C:\Program Files (x86)\Microsoft SQL Server\160\To...
+
+PS Env:\> $env:psmodulepath
+C:\Users\Admin\Documents\WindowsPowerShell\Modules;C:\Program Files\WindowsPowerShell\Modules;C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules;
+C:\Program Files (x86)\Microsoft SQL Server\160\Tools\PowerShell\Modules\
+
+
+Note: Now we have diffrent solutions we modules are noth in this existing location.
+
+1-We can import the module from their literal path
+    import-module -name E:Sample\sample1.psd1
+
+    remove-module sample
+    get-module 
+
+2-manipulate in psmodulepath variable
+$env:psmodulepath+=";e:\"
+
+3-move the directory where you save the module to the location
+move-item -path .\sample\ -destination C:\WINDOWS\system32\WindowsPowerShell\v1.0\Modules
+
+--------------------------------------------------------------------------------------------------------------------------------------------------
+get-command -noun module
+
+powershellgallery.com
+
+find-module -name *dns*
+
+
+PS C:\WINDOWS\system32> Find-Module -name *postgre*
+
+Version    Name                                Repository           Description
+-------    ----                                ----------           -----------
+1.2.0      Az.PostgreSql                       PSGallery            Microsoft Azure PowerShell: PostgreSql cmdlets
+23.0.88... PostgresqlCmdlets                   PSGallery            CData Cmdlets for PostgreSQL
+1.0.2      PostgreSqlDsc                       PSGallery            DSC module to install and configure PostgreSQL on Windows
+1.0.0      PSPostgres                          PSGallery            Simple binary module for PowerShell that wraps what I need from Npgsql. For more advanced commands, check out the dbops module.
+0.1.1      Az.NeonPostgres                     PSGallery            Microsoft Azure PowerShell: NeonPostgres cmdlets
+1.0.0      postgrest                           PSGallery            A module that provides a command line interface to the PostgREST API.
+1.0.2      PostgresCmdlets                     PSGallery            Cmdlets for PostgreSQL
+0.0.4      pspulumiyaml.azurenative.dbforpo... PSGallery            Module containing functions required to create YAML/JSON definitions for Azure Native pulumi provider
+
+
+PS C:\WINDOWS\system32> Install-Module -Name PostgresqlCmdlets
+
+
+
+       
