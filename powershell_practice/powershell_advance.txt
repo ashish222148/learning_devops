@@ -214,3 +214,130 @@ ex-2:
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 Error Handling::
+
+
+
+
+
+----------------------------------------------------------------------Function---------------------------------------------------------------------------------
+PS C:\Users\Admin> hostname
+DESKTOP-5KG4RAG
+
+PS C:\Users\Admin>    function get-ping{
+    $computername ="desktop-5KG4RAG","notonline"
+    foreach($comp in $computername)
+    {
+        $ping=Test-connection -computername $comp -quiet
+        if ($ping -like "True")
+        {write-host "$comp is up and running !!"}
+        else
+        {write-host "comp is offline"}
+    }
+    }
+
+PS C:\Users\Admin> get-ping
+desktop-5KG4RAG is up and running !!
+comp is offline
+
+PS C:\Users\Admin> 
+
+Adding parameter to own created function:
+    function get-ping{
+        param(
+            [string[]]$computername
+        )
+    $computername ="desktop-5KG4RAG","notonline"
+    foreach($comp in $computername)
+    {
+        $ping=Test-connection -computername $comp -quiet
+        if ($ping -like "True")
+        {write-host "$comp is up and running !!"}
+        else
+        {write-host "comp is offline"}
+    }
+    }
+
+if we want to add the parameter , we have to add param block, as we have added parameter computername , so which erunning script get-ping -computername will be avilable.
+
+PS C:\Users\Admin>     function get-ping{
+        param(
+            [string[]]$computername
+        )
+    #$computername ="desktop-5KG4RAG","notonline"
+    foreach($comp in $computername)
+    {
+        $ping=Test-connection -computername $comp -quiet
+        if ($ping -like "True")
+        {write-host "$comp is up and running !!"}
+        else
+        {write-host "comp is offline"}
+    }
+    }
+
+PS C:\Users\Admin> get-ping -computername "desktop-5KG4RAG","notonline"
+desktop-5KG4RAG is up and running !!
+comp is offline
+
+
+
+
+VIMP: if you want that no one can directly run get-ping without entering the parameter
+        then you have to make it permanant.-->> [parameter(mandatory=$true)]
+
+
+    function get-ping{
+        param(
+                    [parameter(mandatory=$true)]
+                    [string[]]$computername
+                )
+            #$computername ="desktop-5KG4RAG","notonline"
+            foreach($comp in $computername)
+            {
+                $ping=Test-connection -computername $comp -quiet
+                if ($ping -like "True")
+                {write-host "$comp is up and running !!"}
+                else
+                {write-host "comp is offline"}
+            }
+    }
+
+
+Understanding cmdletbinding:
+    while you write cmdletbinding in your code by default all the parameter option will be available like error action , verbose etc
+        [cmdletbinding()]
+        
+
+PS C:\Users\Admin>     function get-ping{
+        [cmdletbinding()]
+        param(
+                    [parameter(mandatory=$true)]
+                    [string[]]$computername
+                )
+            #$computername ="desktop-5KG4RAG","notonline"
+            foreach($comp in $computername)
+            {
+                $ping=Test-connection -computername $comp -quiet
+                if ($ping -like "True")
+                {write-host "$comp is up and running !!"}
+                else
+                {write-host "comp is offline"}
+            }
+    }
+
+PS C:\Users\Admin> get-ping -computername desktop-5KG4RAG -Verbose
+desktop-5KG4RAG is up and running !!
+
+
+Difference between running the command through powershell ISE and normal powershell
+    normal powershell does not keep the fuction live while you are running the second command
+    for example, if we save the above script as ping.ps1 and run the ping.ps1, again when we run get-ping it will through an error
+    because that function is not in the memory.(means first script is completed , and second script will be independent.)
+    but in ise it will bind the function.
+
+    to overcome this we can user . .\ping.ps1 -->> so the script is not completed yet (loaded only), you can run the second command
+
+
+-------------------------------------------------------------------Understanding Begin,Process,End-------------------------------------------------------------------------------
+
+to accept value from pipeline:
+
