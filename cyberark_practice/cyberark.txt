@@ -1,3 +1,5 @@
+--------------------------------------------------------------PSM----------------------------------------------------------------------------------------
+
 ch-11: PSM Must be domain joined.
 PSM:(Isolation,control,monitoring): Why PSM is required?
 
@@ -68,12 +70,291 @@ Post Installation Environment:
     Service: "Cyber-Ark Privileged Session Manager"
 
 
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-PSMP: 
-    Privileged Session Manager SSH Proxy (PSMP):
-        The Privileged Session Manager SSH Proxy (PSMP) enables organizations to secure, control and monitor privileged access to network/*NIX devices (only SSH protocol).
-        The PSMP is installed on a dedicated machine that has access to the Vault and to the target systems.
+
+#PSM:PAM Administration:
+1. Privileged Session Manager (PSM)
+    • PSM Ad-Hoc Connections
+    • PSM via HTML5 Gateway
+    • PSM for Windows
+
+        PSM Flow:
+            1. Logon through PVWA
+            2. Connect to PSM using RDP/TLS
+            3. Fetch credential from Vault
+            4. Connect using native protocols
+            5. Logs forwarded to SIEM and PTA
+            6. Store session recording
+
+        Enable PSM: Master Policy:
+            Policies->Master Policy -> Session Management
+        
+        PSM by Platform:
+            Platform Management->Target Account Platform ->Privilege Session Management->ID=PSMServer
+            -By default, Platforms are associated with the first installed PSM server
+
+        PSM Connection Components/Connectors:
+            Connection Components(aka Connectors) define the configuration settings for using a given third-party client to connect to a target platform.
+                A few common ones are:
+                • SQLPlus
+                • RDP
+                • Putty
+                • WinSCP
+            options-connectioncomponents
+                Platform Settings:
+                    To enable the use of a particular third-party client to connect to a given account, the appropriate Connection Component needs to be assigned to the Platform
+                    that manages that account
+        Importing and Managing Connectors:
+            The new interface accelerates and simplifies Vault administration by allowing admins to import PSM connectors and link them to Platforms, all from one location
+
+    PSM Ad-hoc Connection:
+        With an Ad-Hoc Connection,users can connect securely to any machine supported by the PSM if they know the password.
+        • Main use cases:
+            ⎼ Connecting with accounts that are not stored in the CyberArk Vault
+            ⎼ Connecting with personal accounts
+        Provides all the benefits of PSM: isolation, monitoring,and recording
+
+        Enable Ad-hoc Connections:
+            • The PSM Secure Connect Platform must be activated
+            • Privileged session monitoring and isolation must be enabled for the PSM Secure Connect platform. This can be done either globally or via an exception to the Master policy.
+
+        Launch Ad-hoc Connection:
+        Users will need to specify all the account details when they connect:
+            • The Client they want to use on the PSM (winscp,ssh)
+            • Target system Address
+            • Username
+            • Password, etc.
+
+    • PSM via HTML5 Gateway:
+        HTML5 Gateway: Overview
+            • Many organizations block RDP client connections from end-users' machines for security reasons or regulatory requirements.
+            • RDP is a Microsoft protocol, so in order to use it in Linux, Unix, or MAC environments,users must install a 3rd-party client in order to connect to the PSM.
+            • The HTML5 Gateway tunnels the session between the end user and the PSM proxy machine using a secure WebSocket protocol (port 443). This solution eliminates the need
+                to open an RDP connection from the end user's machine. Instead, the end user only requires a web browser to establish a connection to a remote machine through PSM.
+            • Secure access through HTML5 requires integrating an HTML5 gateway on a Linux server (can be co-hosted with PSM for SSH). The Gateway is based on Apache Guacamole.
+        
+        HTML5 Gateway: Flow
+            1. Logon through PVWA and click onConnect
+            2. Connect to HTML5 GW usingWebSocket
+            3. Connect to PSM using RDP
+            4. Fetch credential from Vault
+            5. Connect using native protocols
+            6. Logs forwarded to SIEM and PTA
+            7. Store session recording
+
+        Enable HTML5 Gateway:
+            The HTML5 GW is enabled at the system level for each PSM server
+            option-privilege session manager-configure PSM server
+        Use HDML5-based or RDP-file Connection Method:
+            • Users can be given the option to connect either an HTML5-based or RDP-file connection method when connecting to the remote server
+            • This setting is applied at the Connection Component level
+
+    How It works:
+        PSM HTML5 Gateway is based on Integrates Guacamole software . Guacamole has ability to convert the https session to rdp session , when user click on the connect button 
+        a new tab is open , the Guacamole service then connect with the rdp to the psm server which is responsible for retriving the credential from the vault and establishing
+        the connection to the target.
+        end result is connection to the target in the browser.
+
+    Prerequisites:
+        pvwa 10.1 and above
+        psm version 9.2 and above
+        HTML5 gateway : Linux server can be installed on psm ssh proxy server.
+    Configuration : Set Up Gateway
+        set up the gateway on the linux server by completing the following steps:
+            take care of required libraries(including java).
+            Install HTML5 WebApp (like Tomcat)
+            Install the Guacamole deamon called guacd
+            Harden the gateway
+    Configuration in pvwa:
+        option-configured psm gateway server, in each psm administration-psm-configured psm server -psm gateway
+
+    HTML5 is working from version 11.2 onwords.
+
+ IMP:   To became visible in pvwa:
+        psm-rdp-use parameter-display name and visible should be yes.
+
+
+    • PSM for Windows :Flows
+            1. Connect to PSM using RDP/TLS
+            2. Fetch credential from Vault
+            3. Connect using native protocols
+            4. Logs forwarded to SIEM and PTA
+            5. Store session recording
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+--------------------------------------------------------PSM SSH Proxy-------------------------------------------------------------------------------------------------------
+2. PSM for SSH:
+PSMP:
+    The Privileged Session Manager SSH Proxy (PSMP) enables organizations to secure, control and monitor privileged access to network/*NIX devices (only SSH protocol).
+	The PSMP is installed on a dedicated machine that has access to the Vault and to the target systems.
+    Connections are not launched via the PVWA,but through a special connection string.
+
+PSM for SSH: Overview:
+    • The average enterprise manages hundreds of Unix servers and network devices
+    • Systems are usually critical, but access to them is uncontrolled
+    • Network and Unix teams are reluctant to change their existing workflows and tool sets
+    • PSM for SSH (previously PSM SSH Proxy orPSMP) is designed to provide a native Unix/Linux user experience when connecting to any SSH target system
+
+PSM for SSH: Flow
+    1. User opens SSH session to the PSM server
+    2. PSM retrieves privileged account password from the vault
+    3. Open SSH session to the target using the privileged account
+    4. Logs forwarded to SIEM and PTA
+    5. Store SSH session audit
+
+
+	A. Supported O.S. :
+		1) 	Red Hat Enterprise Linux 6.x versions (6.4 and above) and 7.x versions.
+		2)	CentOS Linux 6.x versions (6.4 and above) and 7.x versions.
+		3) SUSE Linux Enterprise Server 11 SP4 or 12
+		4)	PSM for SSH can be installed on Amazon Web Services (AWS), Microsoft Azure, and Google Cloud Platforms
+    B. PSMP Package (will be provided by CyberArk professional Services or Sales Team or https://support.cyberark.com/SFE/Logon.aspx?ReturnUrl=%2fSFE%2f)
+    C. AD Bridge - Configure LDAP integration so that users and groups will be provisioned in the Vault automatically.
+        C.1. 2nd Factor with Radius - Vault must be integrated with Radius Server #Not mandatory
+    D. Automated hardening - The PSMP server is automatically hardened during installation on the following platforms:
+		1) RedHat Linux v6.0 and above
+		2) CentOs v6.0 and above
+			This hardening enforces security best practices recommended for these platforms.
+
+A) Installation			#as root user
+		cat /etc/redhat-release
+			Red Hat Enterprise Linux Server release 7.3 (Maipo)
+
+		cd /var/PSMP/
+
+		1. chmod -R 777 /var/PSMP/
+
+		2. Prepare vault.ini
+			VAULT = "TutionbooksVault"
+			ADDRESS=192.168.64.176
+			PORT=1858
+
+		3. Create CredFile
+			./CreateCredFile "user.cred"
+				Administrator		#Vault Administrator
+				Abcd123				#Vault Administrator Password
+
+		4. Prepare PSMP Parameter file
+
+			 cp psmpparms.sample /var/tmp/psmpparms
+
+			 vi /var/tmp/psmpparms
+				InstallationFolder=/var/PSMP/PSMP
+				AcceptCyberArkEULA=Yes  (EULA-EndUSerLicense Acceptance)
+
+			4.1) chmod -R 777 /var/tmp/psmpparms
+
+		5. SELinux must be enabled				#if its permission or disabled, change it to enforcing and restart the server.
+				 vi /etc/sysconfig/selinux
+					SELINUX=enforcing
+		6. 	Install PSMP RPM
+
+			rpm -ivh CARKpsmp-9.95.0-47.x86_64.rpm
+
+				Preparing...                          ################################# [100%]
+				Installation process is starting...
+				Updating / installing...
+				   1:CARKpsmp-9.95.0-47               ################################# [100%]
+				Starting PSM SSH Proxy...
+				PSM SSH Proxy was started successfully.
+				Starting PSMP ADBridge...
+				PSMP ADBridge was started successfully.
+				Loading PSMP SELinux policy...
+				Note: Forwarding request to 'systemctl enable auditd.service'.
+				Redirecting to /bin/systemctl reload  auditd.service
+				Machine hardening was completed successfully.
+				Installation process was completed successfully.
+
+B) Post-Installation Environment
+
+    B.1) Impact on Vault
+        3 Safes
+            1) PSMPADBridgeConf : This Safe contains the main PSMP-ADBridge configuration files used by the PSMP. It is configured to clear history every five days.
+            2) PSMPADBUserProfile : This Safe contains the configuration files that define customized profiles for provisioned users.
+            3) PSMPADBridgeCustom
+        and 3 Users:
+            1) PSMPApp_<machinename>	-	unique user is created to enable the PSMP to authenticate to the Vault and retrieve passwords.
+            2) PSMPGW_<machinename>	-	Gateway Account will be used to connect all users to Vault using PSMP
+            3) PSMP_ADB_<machinename>		=> Group (PSMP_ADB_AppUsers)	- A unique user is created to enable the PSMP to integrate with AD Bridge capabilities
+        and 1 new user group
+            PSMP_ADB_AppUsers
+
+    B.2) Impact on Local PSMP server
+
+            A. Hardening & PSMConnect User
+
+            A. Services
+                psmp
+                psmpadb
+                service psmpsrv {start|stop|restart|status} [{psmp|psmpadb}]
+
+            B. File Structures - Logs, Config Files, Recordings
+                
+                Configuration Files
+
+                    1. Executables
+                        Query installed PSMP
+                            rpm -q CARKpsmp		#PSMP Version
+
+                            rpm -e CARKpsmp		#Uninstall PSMP
+
+                            PSMP Executables - SDK, libraries
+                                /opt/CARKpsmp
+                                /opt/CARKpsmpadb
+
+                    2. cd /etc/opt/CARKpsmp/conf
+                        vi basic_psmpserver.conf
+
+                    3. Log files
+                            PSMP
+                                cd /var/opt/CARKpsmp/logs		#PSMPConsole.log		#PSMPTrace.log
+                                cd /var/opt/CARKpsmp/recordings		#Live Session Recordings
+
+                            ADBridge
+
+                                To set trace level
+                                vi  /var/opt/CARKpsmpadb/main_psmpadbridge.conf.linux.10.06
+
+                                cd /var/opt/CARKpsmpadb/logs	#ADBConsole.log	#ADBTrace.log		with conf file - main_psmpadbridge.conf.linux.10.06
+
+                    3. Log Level			#if issue comes, then only Work with Cyber-Ark Support
+                            PVWA => Administration => Options =>  Privileged Session Management => General Settings => Server Settings => TraceLevels => 1,2,3,4,5
+
+                            PVWA => Administration => Options =>  Privileged Session Management => General Settings =>Connection Client Settings => TraceLevels => 1,2
+
+                            vi /etc/ssh/sshd_config
+                            PSMP_OpenSSHTraceLevel 1,2
+                            PSMP_OpenSSHLogFolder /var/opt/CARKpsmp/logs/components
+		B.3) Changes in the PVWA (Platform and Options)
+
+			A. Assign a AD user(sheel) to Linux Safe(TestLinuxSafe) with Linux Target server account configured.
+                 user sgold be create on AD in cyberark users group 
+
+			B. Modify the Linux Target Server Platform ( Unix via SSH)
+
+				PVWA => Administration
+				UI & Workflow => Privileged Session Management =>
+					DisableDualControlForPSMConnections = Yes
+
+				UI & Workflow => Privileged Session Management => SSH Proxy
+					EnableSSHTunneling= Yes
+
+		Verify:		UI & Workflow => Connection Components => 			PSMP-SSH = Yes
+
+			C. PVWA => Administration => Options => Privileged Session Management => General Settings => Server Settings => SSH Proxy Settings
+				AuthenticationMethod = LDAP
+
+	C) Testing (Execution of Use Cases)
+
+			e.g. - sheel@root@192.168.64.184@192.168.64.188
+				Abcd1234
+
+			AD User@Target Account@Target Server@PSMP Server2
+
+
+
 
 
 -----------------------------------------------AIM(Application Identity Manager)--------------------------------------------------------------------------------------------
@@ -99,7 +380,5 @@ CCP:    The Central Credential Provider consists of the Credential Provider for 
         these passwords are managed automatically by the CPM, the Vault makes sure that the passwords in the Central Credential Provider are constantly synchronized with the corresponding passwords in the Vault.
         Applications that require credentials to access a remote device or to run another application remotely can request the relevant credentials from the Central Credential Provider using the Central 
         Credential Provider web service. 
-
-
 
 
