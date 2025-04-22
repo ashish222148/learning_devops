@@ -11,3 +11,135 @@ create iam role for cloud formation
 add ec2 full permission to that role
 
 we can also delete the stack.
+-----------------------------------------------------------------------------------------------------------------------------------------------
+Aws Tutorial-14
+Bootstrap script in EC2:
+    go to advance:-user data
+        #!/bin/bash
+        yum install httpd -y
+    
+    another way: terraform to provision infra, with the help of jenkins run playbbook on ec2 instance -first need to create the build
+
+-----------------------------------------------------------------------------------------------------------------------------------------------
+Aws Tutorial-15
+Security Groups:
+    -A security group acts as a virtual firewall for your instance to control inbound and outbound traffic.
+    -when you launch an instance in a vpc ,you can assign up to five securuty group to the instance.
+    -security groups act at the instance level, not the subnet level.
+    -each instance in a subnet in your vpc can be assigned to a diffrent set of security groups.
+    -you can only specify allow rules but not deny rules.
+    -you can specify seperate rules for inbound and outbound traffic.
+    -security group rules enable you to filter traffice based based on protocols and port numbers.
+    -security groups are stateful-if you send a request from your instance, the response traffice is allowed to flow 
+    -in regardless of inbound security group rules  and vice versa.
+-----------------------------------------------------------------------------------------------------------------------------------------------
+Aws Tutorial-39
+
+------------------------------------------------------------ELB----------------------------------------------------------------------------------------
+Aws Elastic Load balancer (ELB):
+    a-Application Load balancer(application)
+    b-Network Load balancer(Network)
+    c-gateway load balancer(firewall redirect)
+
+    ALB:
+        ALB->TG->
+        we can create security group and assign to ALB as well
+        nacl-alb-ec2 (security layer)
+    launch EC2
+    install yum install httpd -you
+    systemctl enable httpd
+    systemctl start httpd
+
+    load balancer-rulebook-tg1,tg2 
+ELB:- ELB is a managed service of AWS. You don't need to worry about its scalability and high availability.
+        a-high availability
+        b-load balancing
+    -Elastic load balancer distributes incoming application traffic across multiple ec2 instances, in multiple availability zones.
+    -The load balancer serve as a single point of contact for clients , which increases the availability of your application.
+    -you can add or remove instance from load balancer as your need change, without disruption of overall flow of requests to your application.
+
+ELB terminology:
+    Listener:
+        you configure your load balancer to accept incoming traffic by specifing one or more listner.
+        a listner is a process that checks for connection requests.
+        it is configured with a protocol and port number for connections from the load balancer to the targets.
+    Target Group:
+        Elastic Load Balancing supports four types of load balancers: ALB, NLB, GLB and CLB.
+        There is a key difference between the ways you configure these load balancers. With ALB, NLB and GLB, you register targets in target groups, 
+        and route traffic to the target groups and With classic load balancers, you register instance with the load balancer.
+    AZs and LB Nodes:
+        When you enable an Availability Zone for your load balancer, Elastic Load Balancing creates a load balancer node in the Availability zone.
+        If you register targets is an Availability zone but do not enable the Availability zone, these registered targets do not receive traffic.
+        Note that your load balancer is most effective if you ensure that each enabled Availability zone has at least one registered targets.
+
+Types of Load Balancer:
+    Network Load Balancer:
+        Network Load Balancer in AWS takes routing decisions in the Transport layer (TCP/SSL) of the OSI model.
+        It can handle millions of requests and a sudden spike of traffic because it works at the connection level.
+        Best for same kind of content available on app/web servers.
+    Application Load Balancer:
+        An Application Load Balancer in AWS makes routing decisions at the application layer (HTTP/HTTPs) of the OSI model, thus the name Application Load Balancer.
+        ALB supports path-based and host-based routing.
+        It chooses the best target possible for the type of load and sends to the target with the highest efficiency.
+    Gateway Load Balancer:
+        Gateway Load Balancer makes it easy to deploy, scale, and run third-party virtual networking appliances. 
+        Providing load balancing and auto scaling for fleets of third-party appliances, Gateway Load Balancer is transparent to the source and destination of traffic. 
+        This capability makes it well suited for working with third-party appliances for security, network analytics, and other use cases.
+    Classic Load Balancer:
+        Classic Load Balancer provides basic load balancing across multiple Amazon EC2 instances and operates at both the request level and the connection level. 
+        Classic Load Balancer is intended for applications that were built within the EC2-Classic network.
+        Supports host based routing
+1. Health checks:
+        An Elastic Load Balancer only routes traffic to healthy targets such as EC2 instances, containers, IP addresses, micro services, Lambda functions, and appliances.
+        With Elastic Load Balancing, you get improved insight into the health of your applications in two ways: (1) health check improvements that allow you to configure
+        detailed error codes. The health checks allow you to monitor the health of each of your services behind the the load balancer; and (2) new metrics that give insight 
+        into traffic for each of the services running on an EC2 instance.
+2. Sticky sessions:
+        Sticky sessions are a mechanism to route requests from the same client to the same target. Elastic Load Balancers support sticky sessions. 
+        Stickiness is defined at a target group level.
+
+
+--------------------------------------------------------------------------------Route-53-------------------------------------------------------------------------------------------
+DNS: 
+    convert url to ip addresses
+How Does DNS Route traffic to your web application:
+    1-A user opens a web browser, enters www.example.com in the address bar, and presses Enter.
+    2-The request for www.example.com is routed to a DNS resolver, which is typically managed by the user's Internet service provider (ISP), 
+        such as a cable Internet provider, a DSL broadband provider, or a corporate network.
+    3-The DNS resolver for the ISP forwards the request for www.example.com to a DNS root name server.(.-->root domain)
+    4-The DNS resolver for the ISP forwards the request for www.example.com again, this time to one of the TLD name servers for .com domains. The name server 
+        for .com domains responds to the request with the names of the four Amazon Route 53 name servers that are associated with the example.com domain.
+    .com , .in, .edu etc are the TLD, top level domains.
+    5-The DNS resolver for the ISP chooses an Amazon Route 53 name server and forwards the request for www.example.com to that name server.
+    6-The Amazon Route 53 name server looks in the example.com hosted zone for the www.example.com record, gets the associated value, 
+        such as the IP address for a web server, 192.0.2.44, and returns the IP address to the DNS resolver.
+    7-The DNS resolver for the ISP finally has the IP address that the user needs. The resolver returns that value to the web browser. 
+        The DNS resolver also caches (stores) the IP address for example.com for an amount of time that you specify so that it can respond more quickly 
+        the next time someone browses to example.com. For more information, see time to live (TTL).
+    8-The web browser sends a request for www.example.com to the IP address that it got from the DNS resolver. This is where your content is, for example,
+     a web server running on an Amazon EC2 instance or an Amazon S3 bucket that's configured as a website endpoint.
+    9-The web server or other resource at 192.0.2.44 returns the web page for www.example.com to the web browser, and the web browser displays the page.
+
+Note: Image Attached.
+
+Route53:
+    go to hosted zone, add ailiya222148.in 
+        two records created bydefaults:
+            NS:(Name server):tells what are the authorative server, (authorative keeps the information about where the request will be , means from name to ip resolver)
+            SOA:(Start of authority):all the details of your domain resides in this record.
+
+            create record:
+                A- route traffice to an IP address and some aws resource
+                CNAME-route traffic to amother domain name(load balancer)
+            nslookup ashish222148.in (to check whether the value entered in a name is reflecting or not)
+            nslookup ashish.ailiya222148.in(to check whether the value entered in a cname is reflecting or not)
+            nslookup -type =cname ashish222148.in
+        
+        Note: Cname can only be used as subdomain not as domain
+            even if you want to create A record as a domain , then use alias. this is also recommanded by aws.
+
+
+
+
+
+
