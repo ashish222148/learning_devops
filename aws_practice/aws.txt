@@ -138,6 +138,77 @@ Route53:
         Note: Cname can only be used as subdomain not as domain
             even if you want to create A record as a domain , then use alias. this is also recommanded by aws.
 
+    Amazon Route53 is a highly available and scalable Domain Name System (DNS) web service.
+    It is designed for developers and corporates to route the end users to Internet applications by translating human readable names like www.mydomain.com, 
+    into the numeric IP addresses like 192.0.2.1 that computers use to connect to each other.
+    AWS guaranties 100% availability for Route 53.
+    It’s designed to work closely with other services like EC2, S3, Cloudfront, etc.
+    You can automate DNS management along with instance provisioning.
+Route53 Features:
+    Domain registration – Amazon Route 53 lets you register domain names such as example.com.
+    Domain Name System (DNS) service – Amazon Route 53 translates friendly domains names like www.example.com into IP addresses like 192.0.2.1. 
+    Amazon Route 53 responds to DNS queries using a global network of authoritative DNS servers, which reduces latency.
+    Domain Registration - A domain is the name, such as example.com, that your users use to access your application.
+    Availability monitoring - Health checks monitor your applications and web resources, and direct DNS queries to healthy resources.
+Route53 Hosted Zone:
+    A hosted zone is a container for records, and records contain information about how you want to route traffic for a specific domain, 
+    such as example.com, and its subdomains (acme.example.com, zenith.example.com). A hosted zone and the corresponding domain have the same name. There are two types of hosted zones:
+    There are two types of hosted zones:
+    1. Public hosted zones contain records that specify how you want to route traffic on the internet.
+    2. Private hosted zones contain records that specify how you want to route traffic in an Amazon VPC.
+Route53 Routing Policy:
+    1. Simple Routing Policy"
+        Most used when you create a new Record set.
+        When there is a single resource doing the function for the domain for e.g., web server that serves content for the website www.krnetworkcloud.org.
+        AWS Route 53 responds to the DNS queries based on the values in the resource record set for e.g., IP address in an A record.
+    2. Failover routing
+        Failover routing lets you route traffic to a resource when the resource is healthy or to a different resource when the first resource is unhealthy.
+        The primary and secondary records can route traffic to anything from an Amazon S3 bucket that is configured as a website to a complex tree of records.
+        The Route 53 you have two records, one for primary and other for secondary.
+    3. Latency Based Routing Policy
+        Latency based routing allows you to route your traffic based on the lowest network latency for end user (Which region will give them the fastest response time).
+        Latency-based routing policy can be used when there are multiple resources performing the same function and Route 53 needs to be configured to respond to the DNS 
+        queries with the resources that provide the fastest response with lowest latency.
+        Latency resource record set can be created for the EC2 resource in each region that hosts the application. When Route 53 receives a query for the corresponding domain, 
+        it selects the latency resource record set for the EC2 region that gives the user the lowest latency.
+    4. Weighted Routing Policy
+        Weighted routing policy enables Route 53 to route traffic to different resources in specified proportions (weights) for e.g., 75% one server and 25% to the other during a pilot release.
+        Weights can be assigned any number from 0 to 255.
+        Weighted routing policy can be applied when there are multiple resources that perform the same function for e.g., webservers serving the same site.
+        Weighted resource record sets let you associate multiple resources with a single DNS name.
+    5. Geolocation Routing Policy
+        Geolocation routing policy enables Route 53 to respond to DNS queries based on the geographic location of the users i.e., location from which the DNS queries originate.
+        Restrict distribution of content to only the locations in which you have distribution rights.
+        Geolocation routing policy allows geographic locations to be specified by continent, country, or by state (only in US).
+        Two geolocation resource record sets that specify the same geographic location cannot be created.
+    6. Multi-value Answer Routing Policy
+        Multi-value answer Routing Policy is like Simple Routing Policy, but it can return multiple IP addresses associated with an FQDN.
+        There is more than one resource record for the same FQDN, pointing to different IP addresses, load balancer etc.
+        DNS queries return the result in random order, which means that when you query next time, the IP address corresponds to the FQDN is in different order or sequence.
+
+DNS Registration in Route53
+    1. Registering domain using amazon route53
+        Use Amazon route53 to search for a new domain you are interested in registering.
+        Amazon route53 supports a large number of TLDs, including both generic TLDs, and Geographic domains.
+        When you register a domain, Amazon route53 will automatically create the hosted zone for your domain.
+
+    2. Transferring domains to amazon route53
+        You can transfer domain registration from another registrar, for supported TLDs to amazon route53 or from one AWS account to another.
+        Transferring your domains into route53 allows you to manage all of your domains in the same place as your name servers and hosted zones.
+
+
+
+
+
+
+
+
+
+
+
+
+Auto Scaling Group:
+    asg name,ami template
 
 
 
