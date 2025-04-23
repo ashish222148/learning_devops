@@ -1,1 +1,66 @@
+Date:22-04-25
+1-----------------------------------------------1-Azure Architecture and Virtual Machine:-------------------------------------------------------------------------------
+    Hypervisor:A hypervisor is software that allows multiple operating systems to run concurrently on a single physical computer, creating virtual machines (VMs).
+
+    Create Windows Based Azure VM:
+        All Services->Compute->Virtual Machine
+            Create Virtual machine:
+                create resource group: we can check the bills of diffrent resource group.
+            Run with Azure spot discount: unused capacity will be provided by azure
+        Virtual Network (same as VPC in AWS)
+
+        Resource group-ailiya
+        virtual machine name-ailiya-public-vm
+        virtual network-ailiya-vnet
+
+        OS Disk: Azure storage
+        we we stop any VM in Azure , except OS disk which is built from Azure Storage everything will be deleted because same has been assigned by the hypervisor 
+        on top of physical hardware.
+
+        platform managed key used in OS protection.
+    Linux server:
+    authetication method:
+        ssh public key
+        password
+        ssh public key:
+            generate new key pair,(created by Azure)
+            use existing key stored in azure , (use same key pair)
+            use existing public key(create on pur laptop, public key and private key)
+            by help of putty .pem key will be converted in to .ppk-go to coversion-import .pem key
+
+
+    High availabilty through Availability Zone: if you want to protect your resource in case of any failure of data center
+        region->availability zone(min 3 )
+    Azure availability zones enabled services are designed to provide the right level of resiliency and flexibility . they can be configured in two ways:
+        zone redundant: with automatice replicaion across zone.(suppose we create a storage account so there will a option like zone redundant storage-zrs)
+            all the data which we save will be available to all availability zone.
+        zonal:with instance pined to specific zone(while creating vm, there will be option)
+    Availability Set: fault doman(rac-3 max) update domain(max 20)
+
+    Regional Pair:
+        It is not necessary that in case of disaster recovery server should be in regional pair.
+        these are predefined , we can't change it.
+    
+    WebSite Hosting on Azure Virtual Machine:
+NOte: IE Enhanced security configuration :off -> else you get popup evry time when you open internet explorer.
+
+    C:\inetpub\wwwroot\website  to load the website.
+
+
+    Virtual Machine Extension:
+        Azure Virtual machine extensions are small applications that provide post deployment configuration and automation task on azure.
+            for example if a virtual machine requires software installation , anti virus protection or ability to run a script inside it, you can use a VM extension.
+
+            create a VM:
+#    User Datain Aws    :in advance section, select an extension to install -search custom script extension -configure custom script extension
+                create storage account and create container and save the script file in that conatiner.
+                Install-WindowsFeature -name web-server -IncludeManagementTools
+    How to delete Azure Resources:
+
+-------------------------------------------------------------End -----------------------------------------------------------------------------------------------
+
+-------------------------------------------------------------------2-Azure networking---------------------------------------------------------------------------------
+
+
+
 
