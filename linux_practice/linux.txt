@@ -592,7 +592,34 @@ swapon -a
 
 
 
+----------------------------------------------------------------------------------------LVM -----------------------------------------------------------------------------------------
 
  LVM:
+ Logical Volume Manager:
+    LVM is widely used technique and extremely flexiable disk management scheme for logical rather than physical storage.
+    with the help of LVM , system administrator can easily resize and extend the logical drive when it required.
+
+    LVM created in three steps:
+        1-Physical Volume(PV)
+        2-Volume Group(VG)
+        3-Logical Volume(LV)
+
+    Steps for manage LVM:
+        create partition for LVM(With LVM ID =8e)
+            a-create partition
+                fdisk /dev/sdb
+                    create partition with 1GB and set partition type (id=8e) LVM.
+            b-check partition
+                lsblk
+
+    Steps for manage PV: 
+            PV creates from physical partition.
+            a-for create PV
+                pvcreate /dev/sdb1
+
+            b-for display PV
+                pvdisplay /dev/sdb1
+
+
     
 

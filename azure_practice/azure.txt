@@ -60,7 +60,46 @@ NOte: IE Enhanced security configuration :off -> else you get popup evry time wh
 -------------------------------------------------------------End -----------------------------------------------------------------------------------------------
 
 -------------------------------------------------------------------2-Azure networking---------------------------------------------------------------------------------
+under same Vnet all the subnet vm will be able to communicate.
+    but there is firewall as well on OS level, which almost block the connectivity.
+        1- solution: os level, allow incoming pending
+        2-solution:switch off firewall
 
+    firewall.cpl 
+        turn off windows defender firewall
+    private ip address assignment:
+        static assignment
+        dynamic assignment
 
+    public ip address:(dynamic vs static assignment)
+        public ip address can be create indendently as a resource.(like elastic ip address)
+        public ip sku:
+            1-basic-dynamic and static rest of all other option which exist in standard sku does not exist.
+            2-standard-only static assignment is possible-availability zone-Tier-routing prefernce
 
+    how to create a public ip:
+        create public ip:
+            IPv4 can be associate with any NI or load balancer while
+            IPv6 can be only associated with load balanacer
+
+            standard sku:
+                availability zone:
+                    no zone: microsoft create in any zone.
+                    zone n: select zone if want to create any perticular zone.
+                    zone redundant: public ip address will advertities in all three availability zone.
+                Tier:
+                    Global
+                    Regional
+                roting prefernce:
+                    Microsoft network
+                    internet
+                idle timeout-inbound originated flow: 4-30 minutes
+                dns name label
+
+    Security Aspects of Public IP SKUs:
+        Public IP Address Basic SKU: default open,less secure
+        Public IP Address standard SKU: secure open,by default  
+        to connect the standard sku-NSG
+
+---------------------------------------------------------------End-chapter-2------------------------------------------------------------------------------
 

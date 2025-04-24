@@ -208,7 +208,10 @@ DNS Registration in Route53
 
 
 Auto Scaling Group:
-    asg name,ami template
+    asg name,ami template(create ami from ec2 and then create template from ami)
+
+    Load Balancer-Target group-asg-ec2
+    replace Load balancer details with route 53 (CNAME)
 
 
 
