@@ -103,3 +103,66 @@ under same Vnet all the subnet vm will be able to communicate.
 
 ---------------------------------------------------------------End-chapter-2------------------------------------------------------------------------------
 
+---------------------------------------------------------------Intersite connectivity---------------------------------------------------------------------
+
+Add peering:(connection between two Vnet)
+    traffic to remote virtual network
+    traffic foprwarded from remote virtual network
+    virtual network gateway or route server
+    microsoft azure backbone network is being used in this case for traffic
+
+Azure Vnet to Vnet Connetion :(connection between two Vnet):
+    create gatewaysubnet with small range(name is by default and can not be changed)
+    attach VPNGateway to this gatewaysubnet 
+    same thing need to be implemented in second Vnet
+    then establist the connection between VPNGateway1 to VPNGateway2 and visce versa
+    here internet is used for traffic
+Azure point to site (P2S) VPN overview: 
+    User can connect to Vm through private network
+
+Pont to site vpn deployment using certificate-
+Q-How to connect VPN gateway with your Vnet:
+    create gatewaysubnet with small pool of ip.
+        create vpnsubnet by providing ip within gatewaysubnet.
+        point to site connection
+            it will ask for address pool -
+                one ip from the same address pool will be provided to user laptop
+                authetication type:
+                a-azure certificate
+                b-radius authetication
+                c-azure active directory
+
+                a-azure certificate:
+                    root certificate-on VPNGateway
+                    client certificate: on your pc 
+
+
+Route Tables:
+    System routes
+    User Defined routes                    
+creating user defind routes:
+    create route Tables
+    go to route Tables
+    setting->route->add->route1-addressfix(destination)->virtual appliance->middle VM
+    click on rt-subnet-associate-source subnet
+    enable ip forwarding:go to middle subnet-> networking->network interface->ip configuration
+    enable routing-on powershell run the below command: to the middle server
+        set-itemproperty -path HKLM:\SYSTEM\CurrentControlSet\Tcpip\parameters -name ipenablerouter -value 1
+        restart dmz
+    to check route Tables
+    on cmd 
+    tracert destination ip
+
+-------------------------------------------------------------------Azure Governanace---------------------------------------------------------------------------
+Management Group:
+    it manage the subscription, all the policy applied to the management group will be inherited automatically to the subscription.
+    when we create any account in azure, a management group is automatically created, that is called Root Management Group.no one has intially access to root 
+    management group.
+    By default root management group's display name is Tenant Root Group.
+    a user must assigned to owner or contributor role on role management group can only change the name of Tenant Root Group.
+
+Azure Policy:
+    
+
+
+        
