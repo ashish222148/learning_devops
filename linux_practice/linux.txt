@@ -601,7 +601,8 @@ swapon -a
 
     LVM created in three steps:
         1-Physical Volume(PV)
-        2-Volume Group(VG)
+        2-Volume Group(VG): It is a collection of PV, it creates from one or more physical volume.
+
         3-Logical Volume(LV)
 
     Steps for manage LVM:
@@ -609,16 +610,75 @@ swapon -a
             a-create partition
                 fdisk /dev/sdb
                     create partition with 1GB and set partition type (id=8e) LVM.
+                        t 
+                        8e
+                        w 
             b-check partition
                 lsblk
 
-    Steps for manage PV: 
+1-  Steps for manage (Physical Volume)PV: 
             PV creates from physical partition.
             a-for create PV
                 pvcreate /dev/sdb1
 
             b-for display PV
                 pvdisplay /dev/sdb1
+
+            c-for remove physical volume:
+                pvremove /dev/sdb1
+2-  Steps for create Volume Group(VG):
+            a-vgcreate india /dev/sdb1
+
+        for display vg
+            b- vgdisplay india
+            PE: Physical extend
+            default PE size=4MB(we can increase but in power of 2 but at the time of creation only)
+            100 MB PV convert in tp VG 25(25-1)
+            1024/4=256
+            VG=255
+        for remove vg
+            vgremove india
+
+        vgcreate -s 8 india /dev/sdb1
+
+        to extend size:
+            vgextend india /dev/sdb2
+        to reduce:
+            vgreduce india /dev/sdb2
+3- steps to create LV(Logical Volume)
+        logical extend: 200MB(50 LE)(50PE*4)
+        it create from volume group, we can use LV like partition
+        like format it mount it and use it.
+
+        for create LV
+            lvcreate -L 200 -n /dev/india/punelv
+            -L =size in MB 
+        for display LV
+            lvdisplay /dev/india/punelv
+        for remove lv 
+            lvremove    /dev/india/punelv
+        for extend
+        lvextend -L +100 /dev/india/punelv
+        for reduce lv
+        lvreduce -L -100 /dev/india/punelv
+
+        lvextend -l +25 /dev/india/punelv
+
+create file system and mounting
+mkfs.xfs /dev/india/punelv
+
+create directory and temporary mount
+mkdir /pune
+mount /dev/india/punelv /pune
+
+permanant mounting:
+    /dev/india/punelv /pune xfs defaults 0 0
+    :wq!
+mount -a 
+lsblk
+
+
+
 
 
     
