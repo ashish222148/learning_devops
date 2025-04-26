@@ -121,3 +121,38 @@ host calculation formula: 2^hostbit -2
 
 class b: 2^16-2=65534
 class c: 2^24 -2=1
+
+----------------------------------------------------------------------Day-5-----------------------------------------------------------------------------
+subnet mask:
+    it is 32 bit dotted decimal number , it represent in given ip address how many bits are reserved for network and host portion.
+
+    default subnet mask: 
+    class a:    255.0.0.0
+    class b:    255.255.0.0
+    class c:    255.255.255.0
+CIDR:Classless inter domain routine
+
+ping 10.0.0.0 -n 2
+ping 10.0.0.0 -t (no time limit)
+
+Actually ip will communicate with each other is totally depends on subnet mask value. subnet mask is going to decide whether these ips are going
+to communicate or not.
+
+10.1.0.1
+255.0.0.0
+
+10.2.0.20
+255.0.0.0
+
+given both ips will be able to communicate with each other
+
+while 
+10.1.0.1
+255.255.0.0
+
+10.2.0.20
+255.255.0.0
+
+will not communicate with each other. because both ip has diffrent network id.
+10.1.0.0
+10.2.0.0
