@@ -678,6 +678,39 @@ mount -a
 lsblk
 
 
+-------------------------------------------------------------------------------26-April-2025-----------------------------------------------------------------------------------
+Linux Boot Process:
+    the boot process loads the os into main memory or the RAM installed in your computer.
+
+    POST:
+    MBR :
+    GRUB2:
+    Kernel:
+    systemd:
+
+RUN level:
+    0-6
+    is a state of machine that define how a machine should be login,what services and scripts
+    should run a machine starts.
+
+    RunLevel 0  poweroff.target     -shutdown computer
+    RunLevel 1  rescue.target       -use for troubleshoot purpose (single user mode)
+    RunLevel 2  multi-user.target   -provide TUI, network is not present
+    RunLevel 3  multi-user.target   -provide TUI(Text User Interface) ,GUI not present
+    RunLevel 4  not in user         -reserve for future purpose
+    RunLevel 5  graphical.target    -provide GUI 
+    RunLevel 6  reboot.target       -reboot computer
+
+for check default RunLevel
+    systemctl get-default
+for reboot computer with help of RunLevel
+    init 6
+to set default run level
+systemctl set-default multi-user.target/runlevel3.target
+systemctl set-default graphical.target/runlevel5.target
+
+
+
 
 
 
