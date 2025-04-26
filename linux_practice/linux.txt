@@ -708,6 +708,90 @@ for reboot computer with help of RunLevel
 to set default run level
 systemctl set-default multi-user.target/runlevel3.target
 systemctl set-default graphical.target/runlevel5.target
+-------------------------------------------------------------------------
+Steps for reset root password:
+    step 1:
+        reboot computer
+    step 2:
+        press esc 4-5 times when shows kernel line
+    step -3:
+        to go kernel rescue line and press e for edit
+    step -4:
+        to to 4th line, big one , go to end of that line(linux ($root)/mv)
+    step 5:
+        type rd.break(regular demon break)
+    step 6:
+        ctrl+x
+    step 7:
+        mount -o remount,rw /sysroot
+        chroot /sysroot
+    step 8:
+        set new password for root
+            passwd root
+    step 9:
+        reset selinux security policies
+            touch /.autorelable
+            exit 
+            exit 
+    step 10:
+        login with new password
+-----------------------------------------------------------------------------
+protect grub with password: 
+    no one will be abkle to access the sigle user mode.
+
+    grub is the default bootloader for all linux and Unix like Operating systems.
+    it was first envented by sir erich stefan boleyn on year 1995.
+    grub is used to load the kernel and then kernel loads the os , in short grub is the module 
+    which is used to start the operating system.
+    anyone can login into single user mode and may change system setting as needed.
+    this is the big security flow.
+    so to prevent such unauthorized person to access system we may required to have 
+    protected with GRUB password.
+
+Step-1 Genarate encrypted password:
+        grub2-mkpasswd-pbkdf2
+
+        enter password which you want to set to grup and copy encrypted password.
+
+Step-2 set the password in GRUB main configuration file:
+    vim /etc/grub2.cfg 
+    go to under section:
+    #Begin /etc/grub.d/10_linux ##
+    set superusers=root
+    export superusers
+    password_pbkdf2 root <encrypted password>
+    :wq!
+
+step 3:
+    Reboot computer and try to reset root password
+    #reboot
+    press ESC and press e to edit kernel.
+
+------------------------------------------------------------------------------------------------
+sudo command:
+    super user do(sudo):
+        sudo allows a permitted user to execute a commadn as another user.according to specification
+        in the /etc/sudoers file.
+
+        vim /etc/sudoers
+        add the users in this file.
+        ashish ALL=(ALL) ALL
+    or  
+    add user to wheel group or add group same as wheel droup
+
+        gpasswd -a ajay wheel
+    
+    provide sudo privilege without password or warning
+    
+        vim /etc/sudoers
+        ajay ALL=(ALL) NOPASSWD: ALL
+        wq!
+    
+    limited permission:
+        which useradd
+        %kiran  ALL=/user/sbin/useradd(reult of which userid)
+    Note: Kiran get sudo privilege to run only useradd.
+    
 
 
 
