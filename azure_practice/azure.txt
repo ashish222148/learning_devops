@@ -162,6 +162,14 @@ Management Group:
     a user must assigned to owner or contributor role on role management group can only change the name of Tenant Root Group.
 
 Azure Policy:
+
+------------------------------------------------------------------Azure Entra ID----------------------------------------------------------------------------------
+Azure Entra ID:
+    User ID and password will be created in azure Entra ID , intead of getting created on application local database.
+    In this case Azure Entra ID will be the identity provider.
+
+    Directory,Tenant and Subscription:
+        when 
     
 
 

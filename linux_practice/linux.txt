@@ -794,6 +794,119 @@ sudo command:
     
 
 
+---------------------------------------------------------------------------27-April-2025------------------------------------------------------------------
+Manage Networking :
+
+    for check ip address:
+        ifconfig
+        ip addr 
+
+    for set ip address:
+        nmcli: network manager command line interface
+        nmtui:network manager Text user interface
+
+    show device info:
+        nmcli dev status
+
+    show connection list:
+        nmcli connection show
+    
+    create connection:
+        nmcli connection add con-name delhi ifname enp0s3 type ethernet ipv4.add 192.168.
+        1.2/24 gw4 192.168.1.1 ipv4.dns 192.168.1.1 connection.autoconnect yes ipv4.method manual
+
+        nmcli connection show
+    for deactivate running connection:
+        nmcli connection down enp0s3
+    for activate connection:
+        nmcli connection up delhi
+
+        nmcli connection show 
+        nmcli device status
+
+
+    for modify connection:
+        nmcli connection modify delhi ipv4.add 192.168.1.20/24
+        nmcli connection modify delhi gw4 192.168.1.254
+        nmcli conatiner modify delhi ipv4.dns 8.8.8.8
+
+
+        nmcli connection show delhi
+
+    to add one more ipv4 dns
+        nmcli connection modify delhi +ipv4.dns 192.168.1.1
+    
+    Note: everytime connection dowm and up
+
+    create connection for automatice ip address
+
+        nmcli connection add con-name goa ifname enp0s3 type ethernet
+        connection.autoconnect yes ipv4.method auto 
+
+    delete connection:
+        nmcli connection delete delhi
+
+    create connection store on following location
+        cd /etc/NetworkManager/system-connections
+        ls
+
+--------------------------------------------------------------------------------
+for set hostname:
+    hostnamectl set-hostname server1.example.com 
+
+for manage ip address(but nmcli recomended):
+    nmtui:
+
+-------------------------------------------------------------------------------------
+ssh-(secure shell)
+ssh command is use for access remote computer by using command line interface.
+ssh is secure protocol because it create encrypted line source to destination
+computer by using private / public key. it use port number 22.
+
+steps for manage ssh connections:
+allow root user ssh connection on both server :
+    vim /etc/ssh/sshd_config
+    PermitRootLogin yes
+    PasswordAuthentication yes
+
+    systemctl stop sshd 
+    systemctl start sshd
+    systemctl status sshd
+
+
+    systemctl restart sshd
+
+
+deny root user to remote login:
+
+    PermitRootLogin no
+
+deny any user to remote login:
+    DenyUsers harry
+
+ssh access of remote computer without password: key base authetication
+
+generate ssh key:
+    ssh-keygen
+
+transfer created ssh key to server 2
+    ssh-copy-id root@192.168.1.3
+
+for verify:
+    ssh root@192.168.1.3
+
+Restrict ssh key base authetication:
+    remove public key
+    rm -rvf /root/.ssh/auth*
+
+Note:    (store in home directory of user-key)
+
+for disable sshd
+    systemctl disable sshd
+for enable sshd
+    systemctl enable sshd
+    
+
 
 
 
