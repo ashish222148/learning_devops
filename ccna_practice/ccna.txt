@@ -156,3 +156,105 @@ while
 will not communicate with each other. because both ip has diffrent network id.
 10.1.0.0
 10.2.0.0
+
+
+------------------------------------------------------------------------------------30-April-2025--------------------------------------------------------------------------------
+Loop Back Address:
+    127.0.0.0-127.255.255.255
+
+    TCP/IP stack work on nic 
+
+class B: 169.254.0.0-169.254.255.255
+    APIPA : if neither manual nor DHCP adress is assigned to system , so APIPA idp adress will be provided.
+
+for class A- first bit is 0, 
+class B- first two bits are fixed: 10
+class c- first 3 bits are fixed:110
+class d: first 4 bits are fixed:1110
+class e: first 4 bits are fixed:1111
+
+subnet:
+    performance and wastage of ips
+
+subnetting:
+    FLSM:Fixed Length Subnet Mask
+    VLSM:Variable Length Subnet Mask
+
+class c subnetting:(FLSM):
+    192.168.10.0/24: 4 subnet 50 -50 
+
+Step:1
+    write subnet Mask:
+        255.255.255.0
+step:2
+    convert in to bimary:
+        11111111.11111111.11111111.00000000
+step:3
+in host octate, how it will reach to 50
+    No chnages in network part,
+    2^h -2 = 2^6-2=62
+    so 6 bit will be reserved for host, rest two will be in n/w bit
+    so new subnet mask=255.255.255.192
+                        11111111.11111111.11111111.11000000
+
+step4:
+    block size:
+        256-new subnet=256-192=64
+
+
+q:2:
+    192.168.20.0/24: this is network id, we need 80 ips:
+    255.255.255.0
+    11111111.11111111.11111111.00000000
+
+    2^7-2=126, because it is nearby to 80
+
+    then 7 bit will be reserved.
+
+    11111111.11111111.11111111.10000000
+    255.255.255.128
+
+    cidr=25
+    
+    block size: 256-128=128
+    192.1168.20.0/25
+    192.168.20.128/25
+===============================================================
+ 192.168.30.0/24:
+ 2 ips:
+ 2^3-2=6
+ 11111111.11111111.11111111.11111000
+ 192.168.30.0/29
+ block size: 256-248=8
+ 192.168.30.0/29
+ 192.168.30.8/29
+
+ no of network=2^5=32
+
+
+ no of network=2^n, here N =no of host bit borrowd.
+=================================================================
+192.168.30.0/24:
+Q: we need a network which will have contain only 2 hosts ?
+2^H-2=2^2-2=2 but we can't select it because if there will be 2 ips, one will be reserved for network and second will be reserved for host.
+
+2^3-2=6
+
+11111111.11111111.11111111.11111000
+3 bit will be reserved and two bit will be converted in to host.
+255.255.255.248
+192.168.30.0/29
+
+no of network=2^N
+here N is , no of network bit borrowed from host: 2^5= 32
+block size: 256-248=8
+
+192.168.30.0/29
+192.168.30.8/29
+192.168.30.16/29
+
+
+192.168.30.248/29
+
+
+
