@@ -169,7 +169,15 @@ Azure Entra ID:
     In this case Azure Entra ID will be the identity provider.
 
     Directory,Tenant and Subscription:
-        when 
+        when we create an account in azure(ashish222148@gmail.com)-->a directory is automatically created.this directory is called default directory.
+        an active directory instance is created which is called tenant.
+        default directory and tenant is both thing.
+
+Custom domain binding with Azure AD:
+    suppose we want user name as ashish@ailiya222148.in
+
+        Entra ID->create user->custom doanin name->add bigrock domain-do not verify
+            go to search-dns zones -add name server details in bigrock name server ->
     
 
 

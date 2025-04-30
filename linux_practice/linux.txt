@@ -514,11 +514,21 @@ steps for manage partition:
      :want
     10- we can mount partition with help of uuid (universal unique id) also
         show uuid /dev/sdb1
+
+        to fetch the block id:
+            blkid /dev/sdb1
+
         vim /etc/fstab
         UUId="btffgyghih-mnjjj" /chennai xfs defaults 0 0
         :wq
 
-    
+(Conclusion: 
+    1-fist need to add disk
+    2-do the partition
+    3-format the partition
+    4-mount the partition
+    5-permanantly mount the partition)
+
 
 
 Resize Partition:
@@ -528,7 +538,7 @@ Resize Partition:
 
     1-Resize ext4 file system partition
         unmount partition:
-            unmount /mumbai
+            umount /mumbai
         resize partition
             fdisk /dev/sdb
             delete partition and create now one with required size
@@ -551,7 +561,7 @@ Resize Partition:
         resize file system
         xfs_growfs /pune
 
-        lsblkls /pune
+        lsblk ls /pune
 
         Note: ext4 file system support increase or decrease (extend or shrink ) partition size
             xfs file system only supported for extend increase partition size.
@@ -905,7 +915,7 @@ for disable sshd
     systemctl disable sshd
 for enable sshd
     systemctl enable sshd
-    
+
 
 
 
