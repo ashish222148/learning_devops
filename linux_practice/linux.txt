@@ -615,8 +615,10 @@ swapon -a
 
         3-Logical Volume(LV)
 
-    Steps for manage LVM:
-        create partition for LVM(With LVM ID =8e)
+    (physocal volume creates from partition-(with the same name))
+
+Steps for manage LVM:
+    create partition for LVM(With LVM ID =8e)
             a-create partition
                 fdisk /dev/sdb
                     create partition with 1GB and set partition type (id=8e) LVM.
@@ -650,7 +652,7 @@ swapon -a
             vgremove india
 
         vgcreate -s 8 india /dev/sdb1
-
+so if you want to extend the size of VG, you have to first add partition, create PV, then and that PV to VG
         to extend size:
             vgextend india /dev/sdb2
         to reduce:
@@ -687,7 +689,19 @@ permanant mounting:
 mount -a 
 lsblk
 
-
+Conclusion:
+    1-create partition for LVM
+    2-create pv from partition
+    3-create vg from pv
+        extend vg:
+            add partition
+            create pv
+            extend in vg
+    4-create lv from vg
+    5-mkfs.xfs /dev/india/lv 
+    6-mount permamant
+        vim /ete/fstab
+        mount -a
 -------------------------------------------------------------------------------26-April-2025-----------------------------------------------------------------------------------
 Linux Boot Process:
     the boot process loads the os into main memory or the RAM installed in your computer.
