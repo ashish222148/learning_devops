@@ -930,6 +930,133 @@ for disable sshd
 for enable sshd
     systemctl enable sshd
 
+#date-03-05-2025--------------------------------------------------------------------------------------------------------------------------------
+Remote File Transfer:
+    allow us to transfer filr or directory from local to remote computer and vice versa.
+    for remote file use following command popularly.
+    1-scp 
+    2-rsync
+
+    both commands are secure, both use ssh protocol to file and directory(port 22)
+
+    rsync: support syncronization, used for incremental backup purpose.
+
+    1-scp(secure copy)
+        scp -r /test.txt root@192.168.0.2:/home/
+
+        remote to local:
+            scp -r root@192.168.1.3:/home/router.txt /mnt/
+    2-rsync(remote syncronization)
+        async -r /test.txt root@192.168.0.2:/home/
+        remote to local:
+            async -r root@192.168.1.3:/home/router.txt /mnt/
+
+Firewall:
+    filter incomming and outgoing traffic of computer.
+    based on predefined rule firewall decide allow or deny connection.
+    firewall popularly called first line of defence or first security gate 
+
+    Firewall Zone:
+        it is like a profile which have rule based on trust level of network.
+            eg: home,public,work
+        systemctl status firewalld
+        systemctl disable firewalld
+        systemctl stop firewalld
+        systemctl restart firewalld
+        systemctl enable firewalld
+
+        to check default zone:
+            firewall-cmd --get-default-zone
+        to check zone list:
+            firewall-cmd --list-all-zones
+        to set default zone
+            firewall-cmd --set-default-zone=work
+        to show active zone details
+            firewall-cmd --list-all
+        to add service into firewall
+            firewall-cmd  --permamant --add-service=ssh
+        to remove service from firewall:
+            firewall-cmd --permanant --remove-service=ssh
+        to reload firewall service:
+            firewall-cmd --reload
+        to add port into firewall
+            firewall-cmd --permanant --add-port=22/tcp
+        to remove port from firewall:
+            firewall-cmd --permamant --remove-port=22/tcp
+        to add service into inactive zone:
+            firewall-cmd --permamant --add-service=ssh --zone=public
+
+package Management:
+    all software on linux is divided into package that can be installed ,uninstalled or update.
+    in linux distribution, a package refers to a compressed file archive containing all of the files
+    that come with a particular application.
+
+Method for install package:
+1-standalone installation-
+    this menthod is use for a single or few no on=f computer
+    ex:cd , dvd,pendrive
+
+2-Network Installation:
+    This method is used for large number of computer
+    centralized server
+
+standalone installation:
+    rpm:redhat package manager--outdated
+
+    drawback:
+        we can not install dependent s/w in sigle shot.
+        it does not wait for user confirmation.
+
+    manage package using rpm command:
+        1- check package is installed or not
+        rpm -q vsftpd
+        2-install package
+        rpm -ivh vsftpd2......rpm 
+        3-remove package 
+        rpm -e vsftpd
+        4-update package:
+        rpm -U vsftpd
+Network Installation:
+    (yellowdog updator modifier):
+    yum is open source package management tool for install rpm based package in Linux system
+    yum overcome all drawback of rpm command.
+    it allows uses and system administrator to eaisly install, update and remove or search software 
+    package on a system.
+
+    to install package with yum command , we need to create .repo file
+    cd /etc/yum.repos.d/
+    rm -rvf *
+    vim server1.repo
+    [1]
+    name=app
+    baseurl=file://run/media/root/RHEL.../AppStream
+    enabled=1
+    gpgcheck=0
+    [2]
+    name=base
+    baseurl=file:///run/media/root/RHEL...../BaseOS
+    enabled=1
+    gpgcheck=0
+    wq
+    yum install vsftpd
+
+    yum info httpd
+
+    yum remove vsftpd
+    yum update vsftpd
+    yum install git
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
