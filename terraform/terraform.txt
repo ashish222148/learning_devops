@@ -597,3 +597,18 @@ Soltion for scenario 2:
 -----------------------------------------------------------------------Meta Argument-----------------------------------------------------------------------------------
 
 
+-----------------------------------------------------------------------Terraform Training----Day-11--------------------------------------------------------------------
+
+1-Where we can store the state file and where we can not store the state file:
+
+Ans: We can store state file in S3, azure blob
+     we can not store the state file in Source code management (SCM) like git.
+
+2-Where we can store module?
+
+Ans:we can store the module in git because in module we can only use pull option.
+    but in case of statefile we have to write.
+
+
+What is module:
+    module is like a block, 
