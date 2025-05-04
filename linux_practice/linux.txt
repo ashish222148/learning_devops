@@ -1157,7 +1157,7 @@ Step 1:
     touch /database/test{1..5}.txt
     chmod 777 /database
 4-update nfs configuration file:
-    vim /etc/exportfs
+    vim /etc/exports
     database    192.168.1.0/24(rw)
 5-restart nfs service
     systemctl restart nfs-server
