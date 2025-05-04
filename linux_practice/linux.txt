@@ -1050,6 +1050,192 @@ Network Installation:
     yum remove vsftpd
     yum update vsftpd
     yum install git
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#-Date 4-April-2025 ------------------------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+for clean cache:
+    yum clean all
+to check all available package:
+    yum list
+to show repo list
+    yum repolist
+
+-----------------------------
+yum server:
+    is a centralised server which provide packages to all client computers.
+
+    steps for configure yum server:
+        1-set proper name and ip
+        2-create yum repo(iso not available then add from setting)
+            lsblk
+            cd /etc/yum.repo.data
+            rm -rf *
+            vim server1.repo
+        3-install package httpd-apache webhosting
+            start httpd(systemctl start httpd)
+            enable httpd(systemctl enable httpd)
+        4-copy paste package in to apache home directory
+            cd /run/media/root/RHEL..../
+            cp -rvf AppStream /var/www/html/
+            cp -rvf BaseOS /var/www/html/
+            firewall -http 
+        5-update repo file:
+            vim /etc/yum.repos.d/server1.repo
+
+                [1]
+                name=app
+                baseurl=http://192.168.1.2/AppStream
+                enabled=1
+                gpgcheck=0
+                [2]
+                name=base
+                baseurl=http://192.168.1.2/AppStream
+                enabled=1
+                gpgcheck=0
+        6-clean cache and check repo list:
+            yum clean all
+            yum repolist
+        7-add http service info firewall:
+            firewall-cmd --permanant --add-service=http
+            firewall-cmd --reload
+        
+    Steps for client computers(server2)
+        1-set proper ip and hostname
+        2-open terminal:
+            cd /etc/yum.repos.d/
+            rm -rvf *
+            vim /etc/yum.repos.d/server1.repo
+            [01]
+            name=app
+            baseurl=http://192.168.1.2/AppStream
+            enabled=1
+            gpgcheck=0
+            [02]
+            name=basebaseurl=http://192.168.1.2/BaseOS
+            enabled=1
+            gpgcheck=0
+            :wq
+        3-install package:
+            yum install httpd
+
+
+
+yum is a default management tool i rhel6/7.
+but
+dnf(dentified) is default management tool in rhel8/9.
+yum was develpoed in 2003 in c,c++. approximately 56k lines of code.
+dnf was developed in 2013 , and written in c,c++ and python (approximately 29k lines of code)
+
+yum consume more memory as compared with dnf yum is slow as compare with dnf
+todany dnf is better choice bcause its faster and consume less memory , written in updated programming
+better community support.
+
+
+yum install vsftpd
+dnf install vsftpd
+replace ym with dnf. only keyword will be replaced.
+
+=================================================
+NFS: Network File System:
+    NFS server is used for share file directoty volume with client computers.
+    it is very easy configure
+    it use port number 2049
+
+package             -nfs 
+service             -nfs-server
+firewall            -nfs
+configuration file -/etc/exports
+port                -2049
+
+Step 1:
+    yum install nfs
+2: start and enable nsf service
+    systemctl start nfs-server
+    systemctl enable nfs-server
+3-create content for share
+    mkdir /database
+    touch /database/test{1..5}.txt
+    chmod 777 /database
+4-update nfs configuration file:
+    vim /etc/exportfs
+    database    192.168.1.0/24(rw)
+5-restart nfs service
+    systemctl restart nfs-server
+6- add nfs service info firewall
+    firewall-cmd --permamant --add-service=nfs
+    firewall-cmd --reload
+7-verify share 
+    exportfs -rv
+
+Steps for client:
+    1-install package
+        yum install nfs-utils -y
+
+    2-create directory to mount
+        mkdir /info
+        mount -t nfs 192.168.1.2:/database /info
+        ls info
+
+    3-for permamant mounting
+        vim /etc/fstab
+        192.168.1.2:/database   /info nfs defaults 0 0
+
+        mount -a 
+
+=========================================================================
+DHCP Server: Dynamic host configuration protocol
+    used for provide automatic ip address to client computers
+    provide always unique ip address to each computer but dynamically
+    use port number 67 and 68 
+    communication between dhcp server and client computer for provide automatic aip address is called DORA process.
+    DORA:
+        Discovery
+        Offer
+        Request
+        Assign/Ack
+Important concept:
+    package -dhcp-server
+    service -dhcpd
+    firewall -dhcp
+    config file /etc/dhcp/dhcp.conf
+    port -67&68
+Steps:
+    1-install package
+        yum install dhcp-server -y
+    2-configuration file:
+        cat /etc/dhcp/dhcpd.conf
+    3-update dhcp configuration file
+        cp -rvf /usr/share/doc/dchp-server/dhcpd.conf.example /etc/dhcp/dhcpd.conf
+
+    vim /etc/dhcp/dhcp.conf
+     line no 47
+     provide subnet ,netmask, range,router,broadcost,lease-time 3600
+
+    4-start enable dhcp
+    systemctl start dhcpd
+    systemctl enable dhcpd
+
+    5-add dhcp service into firewall
+    firewall-cmd --permamant --add-service=dhcp
+    firewall-cmd --reload
+
+go to client:
+    nmcli connection show
+    nmcli connection up enp0s3
+    ipconfig
+
+    to check whtether dora process happed on server box.
+
+    systemctl status dhcpd
+
+provide fixed ip by DHCP: DHCP reservation process:
+    vim /etc/dhcp/dhcpd.conf
+        hardware ethernet and fixed address
+    provdide mac add add ip
+    nmcli connection up enp0s3
+
+
+
 
 
 
