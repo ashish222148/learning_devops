@@ -1016,6 +1016,11 @@ standalone installation:
         rpm -e vsftpd
         4-update package:
         rpm -U vsftpd
+
+    to run this, first we have to go to the location where we have mounted our cd/devd/optical drive, then run from there.
+
+        note: if you are using oracle virtual bos, powersoff the machine, go to storage ->controllerA SAT ->optical drive->attach 
+                and then go to general , only select boot order ->hard disk
 Network Installation:
     (yellowdog updator modifier):
     yum is open source package management tool for install rpm based package in Linux system
@@ -1029,7 +1034,7 @@ Network Installation:
     vim server1.repo
     [1]
     name=app
-    baseurl=file://run/media/root/RHEL.../AppStream
+    baseurl=file:///run/media/root/RHEL.../AppStream
     enabled=1
     gpgcheck=0
     [2]
