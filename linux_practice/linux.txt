@@ -873,7 +873,11 @@ Manage Networking :
     create connection store on following location
         cd /etc/NetworkManager/system-connections
         ls
+    to check all the nic port/netwrok:
+        nmcli device status
 
+    to check all the connection details:
+        nmcli connection show
 --------------------------------------------------------------------------------
 for set hostname:
     hostnamectl set-hostname server1.example.com 
@@ -1019,7 +1023,7 @@ standalone installation:
 
     to run this, first we have to go to the location where we have mounted our cd/devd/optical drive, then run from there.
 
-        note: if you are using oracle virtual bos, powersoff the machine, go to storage ->controllerA SAT ->optical drive->attach 
+        note: if you are using oracle virtual bos, powersoff the machine, go to storage ->controllerA SATA ->optical drive->attach 
                 and then go to general , only select boot order ->hard disk
 Network Installation:
     (yellowdog updator modifier):
@@ -1068,9 +1072,9 @@ yum server:
         1-set proper name and ip
         2-create yum repo(iso not available then add from setting)
             lsblk
-            cd /etc/yum.repo.data
+            cd /etc/yum.repo.d
             rm -rf *
-            vim server1.repo
+ 
         3-install package httpd-apache webhosting
             start httpd(systemctl start httpd)
             enable httpd(systemctl enable httpd)
@@ -1115,7 +1119,7 @@ yum server:
             enabled=1
             gpgcheck=0
             :wq
-        3-install package:
+        3-install package:-not required
             yum install httpd
 
 
@@ -1215,7 +1219,9 @@ Steps:
     systemctl start dhcpd
     systemctl enable dhcpd
 
-    5-add dhcp service into firewall
+
+   5-add dhcp service into firewall
+
     firewall-cmd --permamant --add-service=dhcp
     firewall-cmd --reload
 
@@ -1234,13 +1240,47 @@ provide fixed ip by DHCP: DHCP reservation process:
     provdide mac add add ip
     nmcli connection up enp0s3
 
+#date 10-5-2025--------------------------------------------------------------------------------------------------------------------------
+Apache Web server:
+    it is used for host website, it use port 80(http) and port 443(https)
 
 
 
+#day -6--------------------------------------------------------------------------------------------------------------
+vim:
+    to set number:
+        vim test.txt
+        se nu
+    to unset number:
+        se nonu
+    operation in command mode:
+        yy          copy single line
+        yw          copy word
+        nyy         copy number of line
+        dd          delete single line
+        dw          delete word
+        ndd         delete number of lines
+        p           paste
+        u           undo 
+        ctrl+r      redo
+        gg          go to top f the line
+        G           go to botton of line
+        ngg or nG   go to specific number of line
+        y$          Copy everything from the cursor to the end of the line
+        y^          Copy everything from the start of the line to the cursor.
+        yiw         Copy the current word
 
 
-
-
+----------------------------------------------------------------------
+ansible:
+    ansible controle node:
+        (acn.example.com)-10.0.02/24
+            ansible manage node:
+                node1.example.com,10.0.0.3/24
+                node2.example.com,10.0.0.4/24
+                mode3.example.com,10.0.0.5/24
+    by using ssh prtocol, control node connect to multiple control node.
+     
 
 
 
