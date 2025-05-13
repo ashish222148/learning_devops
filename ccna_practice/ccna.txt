@@ -326,7 +326,86 @@ ip cidr=
 
 #date-02-05-2025---------------------------------------------------------------------------------------------------------------------------
 Packet Flow:
-    
+    while we ping a pc from source, ICMP protocol come in to picture, it will generate a packet , called echo request packet.
+    echo request packet has two filed, type field and code field, ICMP protocol works on layer 3(Network Layer)
+    echo request:
+        type=08
+        code=00
+
+        ICMP protocol will handover data to ip protocol(encapsulation protocol) like layer 4, encapsulation is tcp/udp, layer 2-ethernet
+            ip protocol will add three information:
+                1-source ip 192.168.1.2
+                2-destination ip 192.168.1.3
+                3-protocol number(whose data ip protocol is handling, here icmp protocol and value will be 1)
+                    this is because if suppose once receiver receive the data on layer 3, in ip protocol so to whocm it have to handover, that is protocol number 1, (icmp protocol)
+
+            ip header at L3 + icmp Data=packet
+            PDU: protocol data unit
+            so PDU of L3 is Packet.
+
+            now packet will be handed over to L2, and L2 has many protocol like ethernet, point to point ,frame relay, atm but mostly used ethernet.
+            so on L2:
+                ethernet header + packet
+                    ethernet header contain:
+                        1-source mac--known
+                        2-destination mac--unknown(pc1 looks in to his arp table which is blank in starting)
+IMP:                    3-type 0x0800(means it is carrying to ip data)
+                        4..etc
+
+                Every PC maintain a table to fill the data of destination MAC address, which is known as ARP tabble
+                ARP stands for Address resolution protocol:
+                    to resolve MAC address based on IP.
+                ARP protocol will generate Arp Request:
+                    arp request has four filed:
+                        1-source ip-192.168.1.2
+                        2-source mac-0A
+                        3-destination ip-192.168.1.3
+                        4-destination mac-0000.0000.0000-> it means unknown
+                once arp request will be generated, it will handed over to ethernet
+                    arp request+ethernet header:
+                        1-source ip-192.168.1.2
+                        2-source mac-0A
+                        3-destination ip-192.168.1.3
+                        4-destination mac-0000.0000.0000-> it means unknown
+                        plus
+                        1-source mac-0A
+                        2-destination mac-ffff.ffff.ffff
+                            12 times f means broadcoast address of layer2 .
+                now PC1 will send arp request packet to switch, then what will switch do, it will check the destination mac if same will be broadcost, then swich will send the data to all pc
+                connected in the same Network.
+
+                so what will all pc do, it will check the destination mac address on arp packet, if it will be broadcost, every pc will remove the header and check the arp request, if destination ip will 
+                be same , it will fill the mac addres  and send  it back, else pc will drop the arp request packet.
+                    please note that destination pc will also maintain the arp table based on the arp request packet details.
+                
+                arp reply:
+                    1-source ip
+                    2-destination ip
+                    3-source mac
+                    4-destination mac
+                      but now source become the destination and vice versa
+                    plus
+                    ethernnet header:
+                        source mac
+                        destination mac
+                    
+                    arp request will be broadcost and arp reply is unicost
+
+                    now:
+                        L3+data=packet
+                        L2+L3+Data=data frame
+
+                    echo request will be deliver to destination server.
+
+    in echo reply packet,
+        type=00
+        code=00
+
+
+
+                
+
+
 
 
 
