@@ -401,6 +401,23 @@ IMP:                    3-type 0x0800(means it is carrying to ip data)
         type=00
         code=00
 
+routing:
+    process of selecting the best path before data travell from one network to another network.
+    it is the fundamental process of network device like router.
+    work on L3.
+    routing determine where to send data 
+
+router: a network device that connect multiple network and routes packet between them
+
+static routing:it is manual routing, manually adding in routing table,use for small network
+dynamic routing:
+    RIP-routing information protocol: distance vector
+    EIGRP: Enhance Interior 
+    OSFP:Link state Routing protocol
+    BGP: Border gateway protocol: path vector routing protocol
+    
+
+
 
 
                 
