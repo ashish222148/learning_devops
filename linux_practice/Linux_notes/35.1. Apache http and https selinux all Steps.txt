@@ -1,0 +1,318 @@
+Web Server
+A web server is  use http/https  (Hypertext Transfer Protocol/Secure Hypertext Transfer Protocol) respond to client requests made over the World Wide Web. 
+The main job of a web server is to display website content through the webpages to user
+It use port number 80 (http) & 443 (https).
+-------------------------------------------------------------------------------------------
+Apache httpd web server
+The Apache HTTP Server is a free and open-source cross-platform web server software. 
+It is developed and maintained by  the Apache Software Foundation.
+-------------------------------------------------------------------------------------------
+Important concepts -
+-------------------------------------------------------------------------------------------
+Package 		- httpd
+service 		- httpd
+firewall 		- http/https
+configure file	- /etc/httpd/conf.d/*.conf
+home dir 		- /var/www/html/
+port number	- 80 & 443
+---------------------------------------------------------------------------------------
+Steps For configure Apache Webserver (httpd) - [192.168.1.3 comp1]
+----------------------------------------------------------
+Step1. Install httpd package
+#dnf	install	httpd   -y
+----------------------------------------------------------
+Step2. Start & enable httpd
+#systemctl	start	httpd
+#systemctl	enable 	httpd
+-----------------------------------------------------------
+Step3. Add http into firewall
+#firewall-cmd	--permanent	--add-service=http
+#firewall-cmd	--reload
+-------------------------------------------------------------
+Step4. Create sample webpage
+#cd   /var/www/html/
+#vim   index.html
+<html>
+	<head><title>Pune</title></head>
+	<body bgcolor=skyblue>
+	<h1>Welcome to Pune Website</h1>
+	</body>
+</html>
+:wq
+----------------------------------------------------------------
+Step5. Verify 
+Open firefox and type address
+http://192.168.1.3
+======================================================================
+Virtual Web Hosting -
+Virtual web hosting allow host multiple websites on single server.
+
+Configure Apache Virtual web hosting:
+-----------------------------------------------------------------------------------------------------------------
+step6: create directory for second website and create test webpage
+
+#mkdir /mumbai
+#vim /mumbai/index.html
+<html>
+<head><title>Mumbai</title></head>
+<body bgcolor=yellow>
+<h1>Welcome to Mumbai website hosted by using apache web server</h1>
+</body>
+</html>
+:wq
+
+step7: create configuration file for mumbai & pune
+
+#vim /etc/httpd/conf.d/mumbai.conf
+<VirtualHost *:80>
+ServerName mumbai.example.com
+ServerAdmin root@mumbai.example.com
+DocumentRoot /mumbai/
+</VirtualHost>
+<Directory /mumbai/>
+<RequireAll>
+Require all granted
+</RequireAll>
+</Directory>
+:wq
+
+Now create pune config file
+
+#vim /etc/httpd/conf.d/pune.conf
+<VirtualHost *:80>
+ServerName pune.example.com
+ServerAdmin root@pune.example.com
+DocumentRoot /var/www/html/
+</VirtualHost>
+<Directory /pune/>
+<RequireAll>
+Require all granted
+</RequireAll>
+</Directory>
+:wq
+
+Step8: check syntax and restart httpd service
+#httpd   -t
+#systemctl restart httpd
+
+update host file
+#vim /etc/hosts
+192.168.1.3 pune.example.com
+192.168.1.3 mumbai.example.com
+:wq
+
+step9: For verify:
+Open Firefox and visite following address
+
+http://pune.example.com
+new tab
+http://mumbai.example.com
+
+(note: apache home page cause of selinux permission restrict mumbai directory access)
+
+step10: set selinux permission on permissive mode
+#getenforce
+#setenforce 0
+
+Now open firefox and refresh mumbai page
+================================================================================================
+SELinux ( Security Enhance Linux )
+SElinux provide extra layer of security to RHEL server.
+SElinux have security rules,policies,context or label to protect server from  unauthorized users, server misconfiguration and compromise services.
+SElinux provide security labels to every file,dir,port,service etc.
+--------------------------------------------------------------------------------------------------------------
+It work into 3 mode
+--------------------------------------------------------------------------------------------------------------
+1. enforcing
+if any one break rule then selinux strictly deny and store log.
+
+2. permissive 
+if any one break rule then selinux allow and store log
+
+3. disabled
+completly off selinux security.
+---------------------------------------------------------------------------------------------------------------
+For check selinux mode
+#getenforce
+--------------------------------------------------------------------------------
+For set selinux mode on enforcing
+
+#setenforce	1
+or
+#setenforce	enforing
+--------------------------------------------------------------------------------
+For set selinux mode on permissive
+
+#setenforce	0
+or
+#setenforce	permissive
+---------------------------------------------------------------------------------
+Note: 
+setenforce command set selinux mode temporary means after reboot it will be change.
+
+For set selinux mode permanently
+#vim     /etc/selinux/config
+
+SELINUX=permissive                                          [ linux number 23]
+:wq
+========================================================================
+
+-----------------------------------------------
+Selinux in  Advance - 
+
+check selinux label
+#ls 	-ldZ	/var/www/html/
+#ls 	-ldZ	/mumbai
+
+when we create any file and directory in / (top level directory) then bydefault selinux give "default_t" label.
+
+when we create file/dir in any other existing directory then parent directory label inherited on child.
+
+eg.
+#mkdir   /india
+#mkdir  /mnt/bharat
+
+#ls    -ldZ    /india/     /mnt/bharat
+--------------------------------------------------------------------------------------------
+Modify selinux label ( tempory )
+#chcon  	-R	-t	httpd_sys_content_t	/mumbai
+---------------------------------------------------------------------------------------------
+Label will restore and default ( old ) label
+#restorecon		-Rv	/mumbai
+or
+#touch	/.autorelabel
+----------------------------------------------------------------------------------------------
+Set SELinux label permanently
+#semanage       fcontext   	-a	-t	httpd_sys_content_t	"/mumbai(/.*)?"
+#restorecon	-Rv	/mumbai
+----------------------------------------------------------------------------------------------
+show cutomize set label list
+#semanage      fcontext	-C	-l
+----------------------------------------------------------------------------------------------
+For remove permanently set label
+#semanage      fcontext     -d      "/mumbai(/.*)?"
+#restorecon	-Rv	/mumbai
+----------------------------------------------------------------------------------------------
+when we copy and paste file on new location that time pasted file get label from new parent directory.
+when we cut and paste file on new location that time pasted file carry-forward label of old parent.
+
+for check parent and child labels are matched?
+#matchpathcon   -V  /mumbai/*
+
+------------------------------------------------------------------------------------------------
+check selinux booleans rule list ( services can access other servicess or not )
+
+#getsebool  -a
+
+#getsebool   nagios_use_nfs   
+------------------------------------------------------
+for on rule
+#setsebool  nagios_use_nfs  on  
+or
+#setsebool  nagios_use_nfs  1
+------------------------------------------------------
+for off rule
+#setsebool  nagios_use_nfs  off
+or
+#setsebool  nagios_use_nfs  0
+------------------------------------------------------
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------
+Host website with https ( Secure hyper text transfer protocol ) -
+=======================================================
+https provide secure connection between web server to browser by using ssl/tls protocol.
+It use port number 443
+
+Steps For configure https web server  - 
+-----------------------------------------------------------------
+1. Install package
+#dnf  	install	httpd    mod_ssl    openssl
+-----------------------------------------------------------------
+2. start enable service
+#systemctl	start	httpd
+#systemctl	enable 	httpd
+-----------------------------------------------------------------
+3. Add https into firewall
+#firewall-cmd	--permanent	--add-service=https
+#firewall-cmd	--reload
+-----------------------------------------------------------------
+4. Create sample webpage
+#vim    /var/www/html/index.html
+<html>
+<head><title>Pune</title></head>
+<body bgcolor=skyblue>
+<h1>Welcome to secure pune website hosted by using apache web server</h1>
+</body>
+</html>
+:wq
+-----------------------------------------------------------------
+5. Create  ssl certificate & key ( self-sign ) CA
+#openssl      req     -x509      -nodes      -days      365     -newkey     rsa:2048     -keyout  /home/server.key       -out      /home/server.crt
+-----------------------------------------------------------------
+Step6: Modify ssl config file
+#vim /etc/httpd/conf.d/ssl.conf
+
+SSLCertificateFile /etc/pki/tls/certs/server.crt			[ line number 85 ]
+SSLCertificateKeyFile /etc/pki/tls/private/server.key		[ line number 93 ]
+:wq
+-----------------------------------------------------------------
+Step7: Copy generated crt and key on required location
+
+#cp -rvf /home/server.crt /etc/pki/tls/certs/
+#cp -rvf /home/server.key /etc/pki/tls/private/
+-----------------------------------------------------------------
+Step8: Update configuration file of pune 
+
+#vim /etc/httpd/conf.d/pune.conf
+
+<VirtualHost *:443>
+SSLEngine on
+SSLCertificateFile /etc/pki/tls/certs/server.crt
+SSLCertificateKeyFile /etc/pki/tls/private/server.key
+ServerName pune.example.com
+ServerAdmin root@pune.example.com
+DocumentRoot /var/www/html/
+</VirtualHost>
+<Directory /var/www/html/>
+<RequireAll>
+Require all granted
+</RequireAll>
+</Directory>
+:wq
+-----------------------------------------------------------------
+Step9: update host file
+#vim   /etc/hosts
+192.168.1.3  pune.example.com
+:wq
+----------------------------------------------------------------------
+Step10: for verify, open firefox
+https://pune.example.com
+----------------------------------------------------------------------
+Step11: Redirect http traffic on https 
+
+edit configuration file ( add following line end of the file )
+#vim /etc/httpd/conf.d/pune.conf
+<VirtualHost  *:80>
+ServerName   pune.example.com
+Redirect   /   https://pune.example.com
+</VirtualHost>
+:wq
+
+#systemctl    restart    httpd
+----------------------------------------------------------------------
+Step12: for verify, open firefox
+http://pune.example.com
+
+protocol automatically redirected on https
+
+
+
+
+
+
+

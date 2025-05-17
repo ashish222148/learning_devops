@@ -1,0 +1,873 @@
+pwd		show present working directory path
+cd		change directory
+cd ..		go one step backup
+ls		show available file and directory list
+clear		clear the screen
+history 	show previous used command history
+date		show current system time and date
+whoami		show current login user name
+uname		show name of kernel/os
+uname  -r	show kernel version
+==========================================================================
+I. Create directory (folder)
+
+mkdir 
+mkdir command is use for create directory.
+
+eg.
+1. create single directory
+
+#mkdir  /india
+#ls	/
+-------------------------------------
+2. create multiple directory
+#mkdir  /africa   /usa   /Bangladesh
+#ls 	/
+-------------------------------------------
+3. Create number of directory
+#mkdir   /country{1..9}
+#mkdir   /country{a..k}
+#ls	/
+--------------------------------------------
+4. Create directory inside directory
+#mkdir	-p  /america/washington/whitehouse
+-p	parental/permissive
+#tree	/america
+==============================================================================
+II. Create File
+
+touch
+touch command is use for create a empty file.
+touch command not supportable for read file, write file, edit file etc.
+
+eg.
+1. create single file
+#touch   /note.txt
+--------------------------------------------
+2. create multiple files
+#touch  /note1.txt  /note2.txt   /note3.txt
+--------------------------------------------
+3. create number of files
+#touch   /note{4..9}.txt
+#touch   /note{a..h}.txt
+==============================================================================
+III. Create file
+
+cat
+cat command use for create file, write file, read file also append file.
+cat command not supportable for existing edit file.
+
+syntax
+#cat	<option>	< name of file >
+
+Options:
+>	create/write file
+>>	append file
+<	read file ( default option )
+
+------------------------------------------------
+eg.
+
+1. create and write file
+#cat	>	/linux.txt
+Linux is secure 
+Linux is fast
+Linux is open source
+
+press "ctrl+d" key for save & exit
+--------------------------------------------------
+2. read file
+#cat   <	/linux.txt
+
+or
+
+#cat	/linux.txt
+---------------------------------------------------
+3. for append file
+#cat	>>	/linux.txt
+Linux is free
+Linux is easy to use
+
+press "ctrl+d" key for save & exit
+#cat	/linux.txt
+==============================================================================
+IV. remove file and directory
+
+rm
+rm command use for remove file and directory
+
+Syntax:
+#rm	<option>	<name of file/dir>
+
+Options:
+-r	recursive
+-v	verbose
+-f	forcefully
+-------------------------------------------------------------
+1. remove file
+#rm	-rvf	/note.txt
+-------------------------------------------------------------
+2. remove directory
+#rm	-rvf	/country
+-------------------------------------------------------------
+3. remove multiple files
+#rm  	-rvf	/note1.txt  /note2.txt	/note3.txt
+-------------------------------------------------------------
+4. remove number of files
+#rm	-rvf	/note{4..7}.txt
+-------------------------------------------------------------
+5. remove all file which start with note* character
+#rm	-rvf	/note*
+-------------------------------------------------------------
+6. remove all file which have .txt extension
+#rm	-rvf	/*.txt
+=============================================================================================
+V. for copy paste
+
+cp
+cp command use for copy and paste.
+
+syntax:
+#cp	<option>	<source file>	  <dest file>
+
+Options:
+-r	recursive
+-v	verbose
+-f	forcefully
+-------------------------------------------------------------
+1. copy /note.txt file and paste into /root
+#cp	-rvf	/note.txt	/root/
+-------------------------------------------------------------
+2. copy number of note file and paste into /root
+#cp	-rvf	/note{1..5}.txt		/root/
+-------------------------------------------------------------
+3. copy all note file and paste into /root/
+#cp	-rvf	/note*	/root/
+-------------------------------------------------------------
+4. copy all .txt file and paste into /root/
+#cp	-rvf	/*.txt	/root/
+-------------------------------------------------------------
+5. copy all contents of /root and paste into /mnt
+#cp	-rvf	/root/*		/mnt/
+-------------------------------------------------------------
+6. copy all file/dir which start with D alphabet and paste into /mnt
+#cp	-rvf	/root/D*	/mnt/
+-------------------------------------------------------------
+7. copy two files and paste into /root/
+#cp  	-rvf	/{note1.txt,info.txt} 	/root/
+==============================================================================================
+VI. for rename and cut/paste
+
+mv
+mv command use for rename and cut/paste file or directory.
+-----------------------------------------------------------------------
+1. rename Linux.txt file and set new name windows.txt
+#mv	/linux.txt       /windows.txt
+-----------------------------------------------------------------------
+2. rename country directory and set new name city
+#mv	/country	/city
+-----------------------------------------------------------------------
+3. cut windows.txt file and paste into /root/
+#mv	/windows.txt	/root/
+-----------------------------------------------------------------------
+4. cut city directory and paste into /root/
+#mv	/city	/root/
+=================================================================================
+VII. manage file using vim command
+
+vim ( Visual IMprove )
+vim command use for create file, read file, append file, edit file etc.
+vim is a improve version of vi command, vi was very popular command used in unix operating system. Linux community add some new features in vi command and relaunch it with new name vim.
+
+It work in 3 important mode
+	1. command mode
+	2. insert mode
+	3. extended mode
+
+Syntax
+#vim		< name of file >
+
+
+eg.
+#vim 	/note.txt
+
+=========================================================================================
+User Account Operations -
+
+What is user:
+user is name of computer account which capable to login into computer and use available hardware and software resources.
+
+Type of user account
+1. System User
+system user account create and delete automatically when we install operating system and application software's.
+
+eg.
+root, apache
+----------------------------------------------------------------------
+2. Normal User
+normal user account create and delete by privilege users.
+
+eg. 
+student, ajay, hary
+-----------------------------------------------------------------------
+Every User always have Unique User ID ( UID )
+
+0 - 999  	reserved for system users
+1000 - 60000	use for normal users
+------------------------------------------------------------------------
+User Account Database 
+
+User Account Properties		-	/etc/passwd
+User Password Properties	-	/etc/shadow
+=====================================================================================================
+Steps For Manage User Accounts
+
+1. Create user account
+#useradd	ajay
+------------------------------------------------------------------------
+2. create/change password
+#passwd		ajay
+------------------------------------------------------------------------
+3. check user account properties
+#grep	ajay	/etc/passwd
+------------------------------------------------------------------------
+4. check user password properties
+#grep	ajay	/etc/shadow
+------------------------------------------------------------------------
+5. switch user account
+#su	ajay
+------------------------------------------------------------------------
+6. for logout
+#exit
+or
+press "ctrl + d" key
+------------------------------------------------------------------------
+7. delete user account ( without home directory )
+#userdel   ajay
+
+or
+
+delete user account
+#userdel  -r   ajay
+------------------------------------------------------------------------
+Modify User Properties
+
+8. modify login name
+#usermod	-l	Siraj	ajay
+-------------------------------------------------------------
+9. modify user id
+#usermod	-u	5005	ajay
+-------------------------------------------------------------
+10. modify comment
+#usermod	-c	"accountant" 	ajay
+-------------------------------------------------------------
+11. modify user home directory
+#mkdir  /goa
+#usermod	-d	/goa	ajay
+-------------------------------------------------------------
+12. modify user shell ( provide non-interactive shell )
+#usermod	-s	/sbin/nologin	ajay
+
+#usermod	-s	/bin/bash	ajay
+-------------------------------------------------------------
+13. Lock user password
+#usermod	-L	ajay
+-------------------------------------------------------------
+14. Unlock user password
+#usermod	-U	ajay
+-------------------------------------------------------------
+15. Modify password expiry
+#usermod	-e	"2025-04-20"	ajay
+======================================================================================================
+Group Account Operations -
+
+What is Group:
+Group is a collection of user accounts, group is very useful for system administrator to manage permission number of users.
+-------------------------------------------------------------------------
+Type of group
+
+1. Primary Group
+Primary group account create and delete automatically with user account operations.
+
+2. Secondary Group
+Secondary group account create and delete by privilege users.
+-------------------------------------------------------------------------
+Group Account Database
+
+1. Group Account Properties		-	/etc/group
+2. Group Admin Properties		-	/etc/gshadow
+-------------------------------------------------------------------------
+Steps Manage Group Account
+
+1. create group account
+#groupadd	accountant
+-------------------------------------------------------------------------
+2. check group properties
+#grep	accountant	/etc/group
+-------------------------------------------------------------------------
+3. modify group id
+#groupmod	-g	2020	accountant
+-------------------------------------------------------------------------
+4. add single member in group
+#gpasswd	-a	user1	accountant
+-------------------------------------------------------------------------
+5. remove single member from group
+#gpasswd	-d	user1	accountant
+-------------------------------------------------------------------------
+6. add/remove multiple member in group ( existing group member overwrite )
+#gpasswd	-M	user1,user2,user3	accountant
+-------------------------------------------------------------------------
+7. make group admin
+#gpasswd	-A	user1	accountant
+-------------------------------------------------------------------------
+8. check group admin properties
+#grep	accountant	/etc/gshadow
+-------------------------------------------------------------------------
+9. delete group account
+#groupdel   accountant
+==================================================================================================
+Permission
+Access of file and directory is control by file permission.
+permission decide who can access file and directory/
+It divided into 3 types-
+
+1. Basic Permission
+2. ACL Permission
+3. Special Permission
+----------------------------------------------------------------------------------------
+1. Basic Permission
+Basic permission is flexible to manage.
+we can assign permission to user, group and others.
+
+-----------------------------------------------------------------------------
+for check permission of file
+#touch   /note.txt
+#ls  -l   /note.txt
+-----------------------------------------------------------------------------
+for check permission of directory
+#mkdir   /chennai
+#ls   -ld   /chennai
+-----------------------------------------------------------------------------
+for change owner/user
+#chown   mahendra   /chennai
+
+for change group owner
+#chgrp   cskgrp   /chennai
+
+for change owner/group owner
+#chown   mahendra:cskgrp    /chennai
+#ls   -ld   /chennai
+-----------------------------------------------------------------------------
+change / modify permissions
+
+1. remove permission of others
+#chmod   o-rx   /chennai
+----------------------------------------------------------------
+2. remove permission of group
+#chmod   g-rx   /chennai
+----------------------------------------------------------------
+3. remove permission of user/owner
+#chmod   u-rwx   /chennai
+----------------------------------------------------------------
+4. add permission to user
+#chmod   u+rwx   /chennai
+----------------------------------------------------------------
+5. remove all permission of user,group and other
+#chmod  u-rwx,g-rwx,o-rwx  /chennai
+or
+#chmod   ugo-rwx   /chennai
+----------------------------------------------------------------
+6. add all permission to user,group and other
+#chmod  u+rwx,g+rwx,o+rwx   /chennai
+or
+#chmod  ugo+rwx  /chennai
+----------------------------------------------------------------
+7. overwrite existing and set new permission
+#chmod  ugo=r-x   /chennai
+----------------------------------------------------------------
+set permission using number ( numeric permission )
+r= 4
+w= 2
+x= 1
+-= 0
+
+#chmod   750    /chennai
+=====================================================================================================
+2. ACL ( Access Control List ) permission
+
+ACL permission use for provide permission to specific user or group.
+
+Check ACL Permission
+#getfacl   /mumbai
+-------------------------------------------------------------
+set ACL permission to user
+#setfacl  -m   u:nita:rwx   /mumbai
+-------------------------------------------------------------
+modify ACL permission to user
+#setfacl  -m   u:nita:r-x   /mumbai
+-------------------------------------------------------------
+remove ACL permission of user
+#setfacl  -x  u:nita:      /mumbai
+-------------------------------------------------------------
+remove all acl permission at a time
+#setfacl  -b  /Mumbai
+-------------------------------------------------------------
+set ACL permission to group
+#setfacl  -m  g:miowner:rwx   /mumbai
+-------------------------------------------------------------
+remove ACL permission of group
+#setfacl  -x  g:miowner:     /mumbai
+============================================================================
+3. Special Permission
+Special permission design for executable file and directories.
+It divided into 3 types
+
+1. SUID ( Set User ID )
+2. SGID ( Set Group I )
+3. Sticky Bit
+-----------------------------------------------------------------------------
+1. SUID ( Set User ID )
+When we set suid permission on any executable file then any one can run/execute that file as a owner.
+
+For set suid
+#chmod   u+s   /usr/bin/nmtui
+
+for remove suid
+#chmod  u-s   /usr/bin/nmtui
+
+------------------------------------------------------------------------------
+2. SGID ( Set Group ID )
+when we set sgid permission on any directory then that directory group ownership inherited on new child file/dir.
+
+for set sgid
+#chmod   g+s    /tcs
+
+for remove sgid
+#chmod   g-s    /tcs
+--------------------------------------------------------------------------------
+3. Sticky Bit
+when we set sticky bit permission on any directory then contents inside that directory can only delete by owner.
+It popularly use for publicly shared directory.
+
+for set sticky bit
+#chmod   o+t    /database
+
+for remove sticky bit
+#chmod   o-t   /database
+-----------------------------------------------------------------------------------
+Special permission with number ( numaric )
+u+s = 4
+g+s = 2
+o+t = 1
+
+set/remove suid
+#chmod   4755   /usr/bin/nmtui
+#chmod  -4000  /usr/bin/nmtui
+
+set/remove sgid
+#chmod  2777  /tcs
+#chmod  -2000  /tcs
+
+set/remove sticky
+#chmod  1777  /database
+#chmod  -1000  /database
+===================================================================================
+Regular Expression
+Regular expression is process of search file/dir based on matching pattern such as name, owner, group ownership, permission, size etc.
+Following command popularly use in regular expression -
+
+1. grep
+2. find
+3. head
+4. tail
+5. wc
+-----------------------------------------------------------------------
+1. grep ( Global Regular Expression print )
+grep command use for search internal contents of file base on matching pattern.
+if pattern is match then grep show whole line.
+
+create file for understand grep
+
+#vim   /home/linux.txt
+Linux is secure os
+linux was develop by linus toravlad
+Linux is fast 
+windows and linux os both are popular
+:wq
+
+
+1. search secure keyword
+#grep  secure   /home/Linux.txt
+----------------------------------------------------------------------
+2. search secure keyword in multiple file
+#grep  secure  /home/Linux.txt  /etc/passwd  /etc/group
+----------------------------------------------------------------------
+3. show matched file name (list)
+#grep  -l secure  /home/Linux.txt  /etc/passwd  /etc/group
+----------------------------------------------------------------------
+4. show un-matched file name (list)
+#grep  -L secure  /home/Linux.txt  /etc/passwd  /etc/group
+----------------------------------------------------------------------
+5. show match line number
+#grep  -n   secure  /home/Linux.txt
+----------------------------------------------------------------------
+6. show match counting
+#grep  -c  os  /home/Linux.txt
+----------------------------------------------------------------------
+7. search incase-sensitive 
+#grep  -i  Linux  /home/Linux.txt
+---------------------------------------------------------------------
+8. show inverse result
+#grep   -v  secure  /home/Linux.txt
+---------------------------------------------------------------------
+9. search line which start with Linux keyword
+#grep  ^Linux  /home/Linux.txt
+---------------------------------------------------------------------
+10. search  line which end with os keyword
+#grep   os$  /home/Linux.txt
+---------------------------------------------------------------------
+11. search recursively
+#grep -r  linux   /home/
+---------------------------------------------------------------------
+12. redirect search result into file
+#grep  secure  /home/Linux.txt   >   /info.txt
+---------------------------------------------------------------------
+13. append search result into file
+#grep  os  /home/Linux.txt   >>   /info.txt
+============================================================================================
+2. find
+find command use for search file/dir on basis of name, owner, groupowner, permissions, size etc.
+
+1. search with name
+#find  /home  -name   linux.txt
+---------------------------------------------------------------------
+2. search with owner (user)
+#find  /   -user   virat
+---------------------------------------------------------------------
+3. search with group ownership
+#find  /   -group   tatagrp
+---------------------------------------------------------------------
+4. search with permission
+#find  /usr   -perm   4755
+or
+#find  /usr   -perm   2755
+or
+#find  /    -perm   777
+---------------------------------------------------------------------
+5. search with size ( less than 10 MB )
+#find  /   -size   -10M
+---------------------------------------------------------------------
+6. search with size ( greater than 100 MB )
+#find  /  -size  +100M
+---------------------------------------------------------------------
+7. search with size ( greater than 50MB but less than 100MB )
+#find   /  -size  +50M  -size  -100M
+---------------------------------------------------------------------
+8. search karan user  ownership file and delete it
+#find   /  -user  karan  -exec   rm   -rvf  {}   \;
+---------------------------------------------------------------------
+9. search karan user  ownership file and paste info /backup
+#find   /  -user  karan  -exec   cp   -rvf  {} /backup/  \;
+===========================================================================
+3. head
+head command use for show top 10 line of the file
+#head   /etc/passwd
+
+show top 5 lines
+#head  -n  5   /etc/passwd
+===========================================================================
+4. tail
+tail command use for show bottom 10 line of the file
+#tail   /etc/passwd
+
+show bottom 4 line
+#tail  -n   4  /etc/passwd
+===========================================================================
+5. wc ( word count )
+wc command use for count character, words and lines in file
+
+#wc    /home/Linux.txt
+
+for show line count
+#wc  -l  /home/Linux.txt
+
+for show word count
+#wc  -w  /home/Linux.txt
+
+for show character count
+#wc  -c  /home/Linux.txt
+==============================================================================
+Archive file
+archive is a process of combine multiple file and directory into a single bunch ( tap ).
+It useful for backup purpose.
+It can also supportable for compress size.
+In Linux tar command popularly use for create archive and compress size.
+
+Tar ( Tap Archive )
+tar command popularly use most of the Linux/unix administrator to archive and compression purpose.
+tar command use compression format ( algorithm ) to compression size -
+gzip  ( .gz )
+bzip2 ( .bz2 )
+xzip  ( .xz )
+--------------------------------------------------------------------
+1. check size
+#du  -sh  /usr/sbin
+--------------------------------------------------------------------
+2. Create archive
+#tar   -cvf   /mnt/backup.tar  /usr/sbin
+--------------------------------------------------------------------
+3. create archive with gzip compression ( -z )
+#tar   -cvzf   /mnt/backup.tar.gz  /usr/sbin
+--------------------------------------------------------------------
+4. create archive with bzip2 compression ( -j )
+#tar  -cvjf   /mnt/backup.tar.bz2   /usr/sbin
+--------------------------------------------------------------------
+5. create archive with xzip compression ( -J )
+#tar  -cvJf   /mnt/backup.tar.xz   /usr/sbin
+--------------------------------------------------------------------
+6. show size
+#du  -sh  /mnt/*
+--------------------------------------------------------------------
+7. for check contents of archive file
+#tar  -tvf  /mnt/backup.tar
+-------------------------------------------------------------------
+8. extract archive ( default location )
+#tar  -xvf   /mnt/backup.tar
+-------------------------------------------------------------------
+create directory for extract purpose
+#mkdir  /gzip   /bzip   /xzip
+
+9. extract archive compressed with gzip ( custom location )
+#tar  -xvzf  /mnt/backup.tar.gz  -C  /gzip'
+-------------------------------------------------------------------
+10 extract archive compressed with bzip2 ( custom location )
+#tar  -xvjf  /mnt/backup.tar.bz2  -C  /bzip/
+-------------------------------------------------------------------
+11. extract archive compressed with xzip ( custom location )
+#tar  -xvJf  /mnt/backup.tar.xz   -C  /xzip/
+-------------------------------------------------------------------
+Options
+-c	create
+-v	verbose
+-f 	forcefully
+-t	test
+-C	custom location
+-z	gzip compression
+-j	bzip2 compression
+-J	xzip compression
+==================================================================================================================
+Job Automation -
+Job automation is process of complete a job automatically basis on time.
+It use full for routine work such as backup.
+It is also helpful to do task when system administrator is not present.
+For job use following command -
+
+1. at
+2. crontab
+-----------------------------------------------------------------------------------
+set system proper time and date
+
+1. check time and date
+#date
+
+2. disable and stop automatic time syn ( chronyd service )
+#systemctl  disable  chronyd
+#systemctl  stop  chronyd
+
+3. set time & date manually
+#timedatectl  set-time   "2025-04-12  23:25:50"
+#date
+-----------------------------------------------------------------------------------
+1. at
+at command use execute/run job only one time.
+
+1. set job with at command
+#at   21.15
+at>useradd  ajay
+at> 
+
+press "ctrl+d" key for save & exit
+--------------------------------------------------------
+2. show pending jobs
+#atq
+--------------------------------------------------------
+3. show job in details
+#cd   /var/spool/at/
+#ls
+#tail   a000010abdl11
+--------------------------------------------------------
+4. remove job from queue
+#atrm   4
+--------------------------------------------------------
+5. for restrict or deny user to use at
+#vim   /etc/at.deny
+ajay
+:wq
+--------------------------------------------------------
+6. run job 3 day later
+#at   16.00  + 3 days
+--------------------------------------------------------
+7. run job 31 December
+#at   16.00  dec 31
+--------------------------------------------------------
+8. run job tomorrow
+#at   22.00  tomorrow
+============================================================================================================
+crontab
+crontab is use execute/run job multiple times.
+
+#crontab   -e
+*	*	*	*	*	<job>
+
+----------------------------------------------------------------
+
+for help on terminal
+#man  < command >
+or
+#info  < command >
+
+eg.
+#man   at
+
+or
+
+#info   at
+
+-----------------------------------------------------------------------
+1. for set job with crontab
+#crontab   -e
+*/1	*	*	*	*	date >> /city.txt
+:wq
+-----------------------------------------------------------------------
+2. for show job list
+#crontab   -l
+-----------------------------------------------------------------------
+3. for remove job ( all jobs at time )
+#crontab   -r
+-----------------------------------------------------------------------
+4. for remove or modify job
+#crontab  -e
+
+remove line of job or modify as per requirement.
+:wq
+------------------------------------------------------------------------
+5.  check other user jobs
+#crontab  -u   ajay  -l
+------------------------------------------------------------------------
+6. edit other user jobs
+#crontab  -u   ajay   -e
+------------------------------------------------------------------------
+7. remove other user jobs
+#crontab   -u  ajay   -r
+------------------------------------------------------------------------
+8. deny/restrict user to use crontab
+#vim   /etc/cron.deny
+ajay
+:wq
+------------------------------------------------------------------------
+9. for crontab log
+#cat   /var/log/cron
+or
+#tail  -f   /var/log/cron
+-------------------------------------------------------------------------
+10. set crontab job using script file
+
+I. create job script file
+#mkdir   /jobs
+#vim    /jobs/script1.sh
+
+#!/bin/bash
+echo  "================================================================" >> /computer.txt
+echo " This computer name is=" >> /computer.txt
+hostname  >> /computer.txt
+echo  "-----------------------------------------------------------------" >> /computer.txt
+echo  " kernel version is=" >> /computer.txt
+uname  -r  >> /computer.txt
+echo "------------------------------------------------------------------" >> /computer.txt
+echo " last 5 user properties = " >> /computer.txt
+tail  -n  5  /etc/passwd
+echo "==============================================================================" >> /computer.txt
+:wq
+
+II. provide execute permission to script file
+#chmod   755  /jobs/script1.sh
+
+III. set cron job
+#crontab   -e
+*	*	*	*	*	/jobs/script1.sh
+===================================================================================================================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+increase font size of terminal
+Ctrl + shift + ++++
+(left ctrl) + (shift) + ( ++++ )
+
+decrease font size of terminal
+Ctrl + ---
+
+(left ctrl) + -----
+
+
+
+
+
+
+
+
+
+
+

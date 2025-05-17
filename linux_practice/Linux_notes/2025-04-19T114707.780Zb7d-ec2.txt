@@ -1,0 +1,10 @@
+resorces:{
+  "Type" : "AWS::EC2::Instance",
+  "Properties" : {
+      "AvailabilityZone" : "ap-south-1",
+      "ImageId" : "ami-0f1dcc636b69a6438",
+      "InstanceType" : "t2.micro",
+      "KeyName" : "yash.pem",
+      "SubnetId" : "subnet-0e18e693cd7a33ec5",
+    }
+}

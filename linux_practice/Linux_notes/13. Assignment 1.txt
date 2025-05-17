@@ -1,0 +1,27 @@
+Assignment 1:
+========================================================================================================================
+1.	USER OF SPECIFIC UID:
+Create a user jean .User id of this user should be 2556 .
+-------------------------------------------------------------------------------------------
+
+2.	USERMGMT: 
+Create a group sysmgrs .Create users susan ,natasha& harry . Users susan & harry should be a part of the sysmgrs group. natasha should not be a part of that group and she is given an non interactive shell. password of all users are "Asimov".
+
+-------------------------------------------------------------------------------------------
+
+3.	GREP:
+Search for the text 'strato' in the file /usr/share/dict/words & copy this to a file /root/lines.txt .The new file should not have any blank spaces or lines . The order of the names in the new file should be same as the order in which it appears in the original file
+-------------------------------------------------------------------------------------------
+
+4.	ACL:
+Copy /etc/fstab to /var/tmp/fstab . The user & group owner of that file should be root . All users should be able to read the file . No one should be able to execute. susan should not be able to read nor write . natasha should be able to read & write.
+-------------------------------------------------------------------------------------------
+
+5.	DIRECT COLLABORATION:
+Secure /netdir such that only group sysmgrs can access it . Group owner should be sysmgrs & all child directories & files by default should have group sysmgrs.
+-------------------------------------------------------------------------------------------
+
+6.	FIND:
+Locate all files owned by user susan & copy them to /home/susan data
+
+========================================================================================================================

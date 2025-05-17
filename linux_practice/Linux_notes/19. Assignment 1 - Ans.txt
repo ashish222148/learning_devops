@@ -1,0 +1,151 @@
+Assignment 1:
+========================================================================================================================
+1.	HOSTNAME : 
+Set the Hostname to your system
+System 1: station10.domain.example.com
+Ans:
+#nmtui
+or
+#hostnamectl  set-hostname station10.domain.example.com
+-------------------------------------------------------------------------------------------
+2.	USER OF SPECIFIC UID:
+Create a user jean .User id of this user should be 2556
+Ans:
+#useradd jean
+#usermod -u  2556  jean
+-------------------------------------------------------------------------------------------
+3.	USERMGMT: 
+Create a group sysmgrs .Create users susan ,natasha & harry . Users susan & harry should be a part of the sysmgrs group. natasha should not be a part of that group and she is given an non interactive shell. password of all users are "Asimov".
+Ans:
+#groupadd sysmgrs
+#useradd susan
+#useradd harry
+#useradd -s  /sbin/nologin   natasha
+#gpasswd  -M susan,harry  sysmgrs
+
+#passwd  susan
+#passwd  natasha
+#passwd  harry
+-------------------------------------------------------------------------------------------
+4.	TAR:
+Create an archive file by using extension /backup.tar.bz2 of /usr/sbin
+Ans:
+#tar -cvjf  /backup.tar.bz2  /usr/sbin
+-------------------------------------------------------------------------------------------
+5.	GREP:
+Search for the text 'strato' in the file /usr/share/dict/words & copy this to a file /root/lines.txt .The new file should not have any blank spaces or lines . The order of the names in the new file should be same as the order in which it appears in the original file.
+Ans:
+#grep   strato  /usr/share/dict/words  >  /root/lines.txt
+-------------------------------------------------------------------------------------------
+6.	ACL:
+Copy /etc/fstab to /var/tmp/fstab . The user & group owner of that file should be root . All users should be able to read the file . No one should be able to execute. susan should not be able to read nor write. natasha should be able to read & write.
+Ans:
+#cp  -rvf  /etc/fstab  /var/tmp/fstab
+#getfacl  /var/tmp/fstab
+#setfacl  -m  u:susan:---  /var/tmp/fstab
+#setfacl  -m  u:natasha:rw- /var/tmp/fstab
+-------------------------------------------------------------------------------------------
+7.	DIRECT COLLABORATION:
+Secure /netdir such that only group sysmgrs can access it . Group owner should be sysmgrs & all child directories & files by default should have group sysmgrs.
+Ans:
+#mkdir   /netdir
+#chgrp  sysmgrs   /netdir
+#chmod  2070   /netdir
+-------------------------------------------------------------------------------------------
+8.	FIND:
+Locate all files owned by user susan & copy them to /home/susan/data
+Ans:
+#find  /  -user  susan -exec  cp  -rvf  {}  /home/susan/data/  \;
+-------------------------------------------------------------------------------------------
+9.	CRON:
+Add a cron job for the user harry /bin/echo hiya . This job should run every day at 14:50
+Note:- create a user harry if not present 
+Ans:
+#crontab  -e
+50	14	*	*	*	/bin/echo  hiya
+:wq
+-------------------------------------------------------------------------------------------
+10. Extend your system swap space with 750 MB.
+Ans:
+#free  -m
+#fdisk  /dev/sdb
+create partition with 750MB and set partition id 82
+:w
+
+#lsblk
+#mkswap   /dev/sdb1
+#swapon   /dev/sdb1
+#vim   /etc/fstab
+/dev/sdb1	swap	swap	defaults	0  0
+:wq
+#mount  -a
+-------------------------------------------------------------------------------------------
+11. Create logical Volume windowslv with 800MB from volume group Microsoft. create xfs file system on windowslv and mount it permanently /win directory.
+Ans:
+#lsblk
+#fdisk  /dev/sdb
+create partition with 808MB and set partition id 8e
+:w
+
+#lsblk
+#pvcreate   /dev/sdb2
+#vgcreate  Microsoft  /dev/sdb2
+#lvcreate  -L  800  -n  /dev/Microsoft/windowslv
+#mkfs.xfs   /dev/Microsoft/windowslv
+#mkdir  /win
+#vim  /etc/fstab
+/dev/Microsoft/windowslv  /win   xfs   defaults	  0 0
+:wq
+#mount  -a
+#lsblk
+------------------------------------------------------------------------------------------
+12. Create logical volume mylv1 and mylv2 respectively 600MB & 900MB from volume group myvg. create ext4 file system on both LV. Mount both LV in /lv1 and lv2 directory permanently.
+Ans:
+#lsblk
+#fdisk  /dev/sdb
+create partition with 1508MB and set partition id 8e
+:w
+
+#lsblk
+#pvcreate   /dev/sdb3
+#vgcreate  myvg  /dev/sdb3
+#lvcreate  -L  600  -n  /dev/myvg/mylv1
+#lvcreate  -L  900  -n  /dev/myvg/mylv2
+
+#mkfs.ext4   /dev/myvg/mylv1
+#mkfs.ext4   /dev/myvg/mylv2
+#mkdir  /lv1  /lv2
+
+#vim  /etc/fstab
+/dev/myvg/mylv1  /lv1   ext4   defaults	  0 0
+/dev/myvg/mylv2  /lv2   ext4   defaults	  0 0
+:wq
+
+#mount  -a
+#lsblk
+-------------------------------------------------------------------------------------------
+13. Create Logical volume toyotalv and hondalv respectively 50 PE and 1200 MB from volume group automobile. create ext4 file system on toyota and mount it permanently in /toyota directory. create xfs file sytem on honda and mount permanently /honda directory. [ Note 1PE size should be 8MB ]
+Ans:
+#lsblk
+#fdisk  /dev/sdb
+create partition with 1616 MB and set partition id 8e
+:w
+
+#lsblk
+#pvcreate   /dev/sdb4
+#vgcreate  -s  8  automobile  /dev/sdb4
+#lvcreate  -l  50  -n  /dev/automobile/toyotalv
+#lvcreate  -L  1200  -n  /dev/automobile/hondalv
+
+#mkfs.ext4   /dev/automobile/toyotalv
+#mkfs.xfs   /dev/myvg/mylv2
+#mkdir  /toyota  /honda
+
+#vim  /etc/fstab
+/dev/automobile/toyotalv  /toyoya   ext4   defaults	  0 0
+/dev/automobile/hondalv  /honda   xfs   defaults	  0 0
+:wq
+
+#mount  -a
+#lsblk
+========================================================================================================================

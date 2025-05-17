@@ -1,0 +1,722 @@
+Linux Boot Process:
+=============================================================================================
+what is boot process?
+Booting a computer refers to the process of powering on the computer and starting the operating system.
+The boot process loads the operating system into main memory or the random access memory (RAM) installed on your computer.
+
+-------------------------------------------
+Run Level
+Runlevel is a state of a machine that defines how a machine should be login, what services and scripts should run when a machine starts.
+--------------------------------------------------------------
+Total Runlevel =  7
+Run level are defined from 0 – 6.
+
+Runlevel 0	poweroff.target		- shutdown computer	
+Runlevel 1	rescue.target		- use for troubleshoot purpose ( single user mode )
+Runlevel 2	multi-user.target 	- provide TUI, network is not present
+Runlevel 3	multi-user.target	- provide TUI ( Text User Interface ), GUI Not Present.
+Runlevel 4	not in use		- reserved for future purpose
+Runlevel 5	graphical.target	- provide GUI ( Graphical User Interface )
+Runlevel 6	reboot.target		- reboot computer
+------------------------------------------------------------------------------
+for reboot computer ( with help of runlevel )
+#init  6
+------------------------------------------------------------------------------
+for poweroff/shutdown computer  ( with help of runlevel )
+#init  0
+------------------------------------------------------------------------------
+for check default runlevel
+#systemctl get-default
+------------------------------------------------------------------------------
+for set default runlevel ( runlevel3 - multi-user.target )
+#systemctl  set-default   runlevel3.target
+or
+#systemctl  set-default	  multi-user.target
+------------------------------------------------------------------------------
+for set default runlevel ( runlevel5 - graphical.target )
+#systemctl  set-default  runlevel5.target
+or
+#systemctl  set-default  graphical.target
+============================================================================================================
+Steps for Reset root password
+
+Step1: reboot computer
+--------------------------------------------------------------------
+Step2: press "Esc" key 4-5 times when show kernel line
+--------------------------------------------------------------------
+Step3: select 2nd line ( rescue ) and press "e" key to edit
+--------------------------------------------------------------------
+Step4: go to end of the line ( Linux ($root)/mvlinuz----) and type "rd.break" now press "ctrl+x" key
+--------------------------------------------------------------------
+Step5: run following command ( for change system settings/passwd )
+mount   -o   remount,rw    /sysroot
+chroot   /sysroot
+--------------------------------------------------------------------
+Step6: set new password for root
+passwd   root
+1
+1
+--------------------------------------------------------------------
+Step7: reset/relabel selinux security policies
+touch   /.autorelabel
+exit
+exit
+--------------------------------------------------------------------
+Step8: after reboot login with new passwd
+==============================================================================================================
+Restrict single user mode using grub password
+
+=======================================================================================================
+sudo ( super user do )
+sudo("superuser do", or "switch user do") command allows a normal user to run command as a super user.
+sudo allows a permitted user to execute a command as another user, according to specifications in the /etc/sudoers file.
+
+
+provide sudo privilege to ajay user
+#vim   /etc/sudoers
+ajay    ALL=(ALL)	ALL			[ line 100 ]
+:wq!
+
+for verify
+#su   ajay
+#sudo   useradd   user1
+--------------------------------------------------------------------------------------
+or
+--------------------------------------------------------------------------------------
+#gpasswd   -a   ajay    wheel 
+
+for verify
+#su   ajay
+#sudo   useradd   user1
+--------------------------------------------------------------------------------------
+provide sudo privilege to avenger group
+
+#vim   /etc/sudoers
+%avenger    ALL=(ALL)	ALL			[ line 110 ]
+:wq!
+
+Note. 
+if any one become member of avenger group then that user get sudo privileges
+--------------------------------------------------------------------------------------
+provide sudo privilege without warning and passwd
+
+#vim  /etc/sudoers
+ajay   	 ALL=(ALL)	NOPASSWD:  ALL	
+%avenger    ALL=(ALL)	NOPASSWD:  ALL
+
+:wq!
+---------------------------------------------------------------------------------------
+provide sudo privilege to specific command
+%kiran    ALL=/usr/sbin/useradd
+
+:wq
+
+Note:
+kiran get sudo privilege to run only useradd command.
+=========================================================================================================
+Manage Networking in RHEL9
+
+
+For check ip address
+#ifconfig
+or
+#ip  addr
+-------------------------------------------------------
+for set ip address use following command
+I. nmcli 
+II. nmtui
+=========================================================================================================
+I. nmcli - network manager command line interface
+
+1. show device info
+#nmcli  dev   status
+-----------------------------------------------------------------------------------------------
+2. create connection/profile
+#nmcli   conn   add   con-name   delhi  ifname   enp0s3   type  ethernet   ipv4.add   192.168.1.2/24   gw4   192.168.1.1   ipv4.dns   192.168.1.1   connection.autoconnect   yes   ipv4.method   manual
+-----------------------------------------------------------------------------------------------
+3. show connection list
+#nmcli   conn   show
+-----------------------------------------------------------------------------------------------
+4. for deactivate running connection
+#nmcli  conn  down   enp0s3
+-----------------------------------------------------------------------------------------------
+5. for activate connection
+#nmcli   conn  up   delhi
+#ifconfig
+-----------------------------------------------------------------------------------------------
+6. for modify  connection
+#nmcli  conn  modify  delhi  ipv4.add   192.168.1.20/24
+#nmcli  conn  modify  delhi  gw4   192.168.1.254
+#nmcli  conn  modify  delhi  ipv4.dns   8.8.8.8
+#nmcli  conn  modify  delhi  +ipv4.dns  192.168.1.1
+
+#nmcli   conn  down   delhi
+#nmcli   conn  up   delhi
+-----------------------------------------------------------------------------------------------
+7. show connection in details
+#nmcli  conn   show   delhi
+-----------------------------------------------------------------------------------------------
+8. create  connection for automatic ip address
+#nmcli  conn  add   con-name  goa  ifname   enp0s3   type   ethernet   connection.autoconnect   yes  ipv4.metho	  auto
+-----------------------------------------------------------------------------------------------
+9. create connection store on following location
+#cd  /etc/NetworkManager/system-connections/
+#ls  
+-----------------------------------------------------------------------------------------------
+10. delete connection
+#nmcli   conn   delete   delhi 
+
+11.for set hostname
+#hostnamectl   set-hostname   server1.example.com
+#hostname
+
+========================================================================================================================
+II. nmtui - network manager text user interface
+
+1. for manage ip address
+#nmtui
+========================================================================================================================
+Access Remote Computer using command line interface
+
+ssh ( Secure shell )
+ssh command is use for access remote computer by using command line interface.
+ssh is secure protocol because it create encrypted line source to destination computer by using private/public key.
+It use port number 22.
+In history telnet popularly used for remote access but now telnet outdated, instead of telnet today use ssh
+
+-----------------------------------------------------------------------------------------------
+Steps for manage ssh connections
+
+1. allow root user ssh connection on both server
+#vim   /etc/ssh/sshd_config
+
+PermitRootLogin    yes				[ line 40 ]
+PasswordAuthentication  yes			[ line 65 ]
+
+:wq
+
+for restart ssh service
+#systemctl  restart  sshd
+-----------------------------------------------------------------------------------------------
+2. open terminal on server1 and access server2 root user
+#ssh    root@192.168.1.2
+------------------------------------------------------------------------------------------------
+3. for disconnect
+#exit
+or
+press "ctrl+d" key
+------------------------------------------------------------------------------------------------
+3. open terminal on server1 and access server2 harry user
+#ssh   harry@192.168.1.2
+------------------------------------------------------------------------------------------------
+4. restrict root or harry user ssh access of server2 ( open terminal on server2 )
+#vim   /etc/ssh/sshd_config
+
+PermitRootLogin    no				[ line 40 ]
+DenyUsers  harry				[ line 41 ]
+:wq
+
+#systemctl  restart  sshd
+-----------------------------------------------------------
+for verify
+open terminal on server1
+
+#ssh    root@192.168.1.2
+#ssh    harry@192.168.1.2
+------------------------------------------------------------------------------------------------
+5. ssh access remote of remote computer without password ( key base authentication ) - open terminal on server1
+
+I. generate ssh key
+#ssh-keygen
+
+II. transfer created ssh key to server2 for root and harry
+#ssh-copy-id   root@192.168.1.3
+#ssh-copy-id   harry@192.168.1.3
+
+III. for verify
+#ssh   root@192.168.1.3
+#ssh   harry@192.168.1.3
+------------------------------------------------------------------------------------------------
+6. restrict ssh keybase authentication on server2 ( open terminal on server )
+
+for root
+#rm  -rvf   /root/.ssh/auth*
+
+for harry
+#rm  -rvf  /home/harry/.ssh/auth*
+
+For verify ( open terminal on server1 )
+#ssh   root@192.168.1.3
+#ssh   harry@192.168.1.3
+================================================================================================================
+Manage services
+
+for start service
+#systemctl  start  sshd
+----------------------------------------------------------------------
+for stop service
+#systemctl  stop  sshd
+----------------------------------------------------------------------
+for restart service
+#systemctl  restart   sshd
+----------------------------------------------------------------------
+for check status of service
+#systemctl  status  sshd
+----------------------------------------------------------------------
+for disable service ( every boot )
+#systemctl  disable   sshd
+----------------------------------------------------------------------
+for enable service   ( every boot )
+#systemctl  enable   sshd
+==================================================================================================================
+Remote File Transfer
+Remote file transfer allow us to transfer file/dir local computer to remote computer and remote computer to local computer.
+For remote file transfer use following command popularly -
+1. scp ( Secure Copy )
+2. rsync ( remote synchronization )
+
+both command are secure, both use ssh protocol to transfer file/dir ( port number 22 )
+rsync support synchronization, so use for incremental backup purpose.
+----------------------------------------------------------------------------------------
+I. scp ( Secure Copy )
+
+1. create contents on server1 ( transfer purpose )
+#mkdir  /cisco
+#touch  /cisco/router{1..9}.txt
+-------------------------------------------------------------------------------
+2. Transfer file local to remote ( server1 to server2 )
+#scp  -r /cisco/router1.txt    root@192.168.1.3:/home/
+-------------------------------------------------------------------------------
+3. Transfer directory local to remote  ( server1 to server2 )
+#scp  -r /cisco   root@192.168.1.3:/home/
+-------------------------------------------------------------------------------
+4. Transfer file remote to local ( server2 to server1 )
+#scp  -r  root@192.168.1.3:/home/router1.txt  /mnt/
+-------------------------------------------------------------------------------
+5. Transfer dir remote to local ( server2 to server1 )
+#scp  -r  root@192.168.1.3:/home/cisco  /mnt/
+-------------------------------------------------------------------------------------------------------------------
+II. rsync ( remote synchronization )
+
+1. create contents on server ( transfer purpose )
+#mkdir  /aws
+#touch  /aws/server{1..9}.txt
+--------------------------------------------------------------------------------
+2. Transfer file local to remote ( server1 to server2 )
+#rsync  -rv  /aws/server1.txt   root@192.168.1.3:/home/
+--------------------------------------------------------------------------------
+3. Transfer directory local to remote ( server1 to server2 )
+#rsync  -rv  /aws   root@192.168.1.3:/home/
+--------------------------------------------------------------------------------
+4. Transfer file remote to local ( server2 to server1 )
+#rsync  -rv  root@192.168.1.3:/home/server1.txt   /mnt/
+--------------------------------------------------------------------------------
+5. Transfer dir remote to local ( server2 to server1 )
+#rsync  -rv  root@192.168.1.3:/aws   /mnt/
+=======================================================================================================================================
+Firewall 
+firewall filter incoming and outgoing traffic of computer.
+based on predefined rule firewall decide allow or deny connection.
+firewall popularly called first line of defense or first security gate.
+
+Firewall Zone.
+zone is like a profile which have rule based on trust level of network.
+eg.
+home, public, work 
+-----------------------------------------------------------------------------------
+
+for start,stop,restart firewall service 
+
+#systemctl start firewalld
+#systemctl stop firewalld
+#systemctl restart firewalld
+#systemctl enable firewalld
+#systemctl disable firewalld
+#systemctl status firewalld
+-----------------------------------------------------------------------------------
+1. to check default zone
+#firewall-cmd  --get-default-zone
+----------------------------------------------------------------
+2. check zone list
+#firewall-cmd  --list-all-zones
+----------------------------------------------------------------
+3. to set default zone
+#firewall-cmd  --set-default-zone=work
+----------------------------------------------------------------
+4. to show active zone details
+#firewall-cmd  --list-all
+----------------------------------------------------------------
+5. to add service into firewall
+#firewall-cmd  --permanent  --add-service=ssh
+----------------------------------------------------------------
+6. to remove service from firewall
+#firewall-cmd  --permanent  --remove-service=ssh
+----------------------------------------------------------------
+7. to reload firewall service
+#firewall-cmd  --reload
+----------------------------------------------------------------
+8.to add port into firewall
+#firewall-cmd  --permanent  --add-port=22/tcp
+----------------------------------------------------------------
+9. to remove port from firewall
+#firewall-cmd  --permanent  --remove-port==22/tcp
+----------------------------------------------------------------
+10. to add service into inactive zone
+#firewall-cmd  --permanent  --add-service=ssh     --zone=public
+============================================================================================================================
+Package Management in RHEL 9
+
+what is package?
+All software on a Linux system is divided into packages that can be installed, uninstalled or update.
+In Linux distributions, a “package” refers to a compressed file archive containing all of the files that come with a particular application.
+
+Package Architecture -
+
+
+-----------------------------------------------------------
+Method for install package:
+
+1. Standalone installation-
+This method use for single or few no of computers.
+Eg.
+Cd, dvd, pd etc.
+
+2. Network Installation-
+This method is used for large number of computers.
+Eg. 
+Centralized Server
+--------------------------------------------------------------
+1. Standalone installation-
+
+rpm : (Red Hat Package Manager)
+RPM command is used to install package in Linux like (RHEL, CentOS and Fedora).
+rpm command use for standalone installation.
+
+Drawback of rpm command:
+1.We Cant install dependent software in single shot
+2.It Does not wait for user confirmation.
+--------------------------------------------------------------
+manage package using rpm command
+
+1. check package is installed or not
+#rpm   -q  vsftpd
+-------------------------------------------------
+2. install package
+#rpm  -ivh  vsftpd-2.......rpm
+-------------------------------------------------
+3. update package
+#rpm  -U  vsftpd.......rpm
+-------------------------------------------------
+4. remove package
+#rpm  -e  vsftpd
+--------------------------------------------------------------------------------------------------
+2. Network Installation
+
+yum ( yellowdog updator modified )
+
+YUM is an open source package management tool for install rpm based packages in Linux system
+Yum overcome all drawback of rpm command.
+It allows users and system administrator to easily install, update, remove or search software packages on a systems.
+
+-------------------------------------------------------------------------
+to install package with yum command we need create .repo file
+
+#cd   /etc/yum.repos.d/
+#rm  -rvf  *
+#vim   server1.repo
+
+:wq
+----------------------------------------------------------------
+check package info
+#yum  info  vsftpd
+--------------------------------------------
+for install package
+#yum  install  vsftpd
+--------------------------------------------
+for remove package
+#yum   remove  vsftpd
+--------------------------------------------
+for update package
+#yum  update   vsftpd
+--------------------------------------------
+for clean cache
+#yum clean all
+---------------------------------------------
+for show repo list
+#yum  repolist
+---------------------------------------------
+for show all packages
+#yum  list
+============================================================================================================================
+yum server -
+yum server is a centralized server which provide packages to all client computers.
+
+step for configure yum server
+
+Step1. set proper ip and name to computer.
+#nmcli  con  add  con-name  server1  ifname  enp0s3  type  ethernet  ipv4.add  192.168.1.2/24   gw4  192.168.1.1   ipv4.dns  192.168.1.1  connection.autoconnect yes  ipv4.method  manual
+#nmcli  con  up  server1
+
+#hostnamectl  set-hostname   server1.example.com
+---------------------------------------------------------------------------------------
+Step2.  create yum repository  ( iso not available then add it from settings )
+
+#lsblk
+#cd   /etc/yum.repos.d/
+#rm  -rvf   *
+#vim   server1.repo
+[01]
+name=app
+baseurl=file:///run/media/root........AppStream
+enabled=1
+gpgcheck=0
+[02]
+name=base
+baseurl=file:///run/media/root.........BaseOS
+enabled=1
+gpgcheck=0
+:wq
+------------------------------------------------------------------------------------------
+Step3. install package httpd 
+#yum  install  httpd  -y
+------------------------------------------------------------------------------------------
+Step4: start an enable httpd service
+#systemctl  start  httpd
+#systemctl  enable  httpd
+------------------------------------------------------------------------------------------
+Step5. copy and paste packages into apache home directory
+
+#cd   /run/media/root...........x86_64/
+#cp  -rvf   AppStream   /var/www/html/
+#cp  -rvf   BaseOS   /var/www/html/
+------------------------------------------------------------------------------------------
+Step6. update repo file
+#vim   /etc/yum.repos.d/server1.repo
+
+[01]
+name=app
+baseurl=http://192.168.1.2/AppStream
+enabled=1
+gpgcheck=0
+[02]
+name=base
+baseurl=http://192.168.1.2/BaseOS
+enabled=1
+gpgcheck=0
+:wq
+------------------------------------------------------------------------------------------
+Step7. clean cache and check repolist
+#yum  clean  all
+#yum  repolist
+------------------------------------------------------------------------------------------
+Step8. add http service into firewall
+#firewall-cmd  --permanent  --add-service=http
+#firewall-cmd  --reload
+======================================================================================================
+Step for client computers ( server2 )
+
+Step1. Set proper ip and hostname
+#nmcli  con  add  con-name  server2  ifname  enp0s3  type  ethernet  ipv4.add  192.168.1.3/24   gw4  192.168.1.1   ipv4.dns  192.168.1.1  connection.autoconnect yes  ipv4.method  manual
+#nmcli  con  up  server2
+
+#hostnamectl  set-hostname   server2.example.com
+------------------------------------------------------------------------------------------
+Step2. Open terminal ( server2 )
+#cd  /etc/yum.repos.d/
+#rm  -rvf  *
+#vim   /etc/yum.repos.d/server1.repo
+
+[01]
+name=app
+baseurl=http://192.168.1.2/AppStream
+enabled=1
+gpgcheck=0
+[02]
+name=base
+baseurl=http://192.168.1.2/BaseOS
+enabled=1
+gpgcheck=0
+:wq
+------------------------------------------------------------------------------------------
+Step3. install packages ( test purpose )
+#yum  install  vsftpd  -y
+=========================================================================================================================
+yum - is a default package management tool/command in rhel6/7
+dnf (dantified) - is a default package management tool/command in rhel8/9
+
+yum was develop in 2003, it code written in c or cpp ( approx. 56K lines of code )
+dnf was develop in 2013, it code written in c,cpp,python ( approx. 29K line of code )
+yum consume more memory as compare with dnf, yum is slower as compare with dnf.
+today dnf is better choice cause it is faster, use low memory, written in update programming, better community support etc.
+=========================================================================================================================
+NFS Server ( Network File System )
+NFS server is use for share file,dir,volume with client computers.
+It is very easy to configure.
+It use port number 2049
+
+Important Concepts -
+------------------------------------------------------
+Package 	-	nfs*
+service		- 	nfs-server
+firewall	-	nfs
+config file	-	/etc/exports
+port number	-	2049
+------------------------------------------------------
+Steps for configure nfs server ( server1 )
+
+1. install package
+#yum  install  nfs*
+------------------------------------------------------
+2. start and enable nfs service
+#systemctl  start  nfs-server
+#systemctl  enable  nfs-server
+------------------------------------------------------
+3. create contents for share
+#mkdir   /database
+#touch  /database/test{1..5}.txt
+#chmod   777  /database
+------------------------------------------------------
+4. update nfs configuration file
+#vim  /etc/exports
+/database	192.168.1.0/24(rw)
+:wq
+------------------------------------------------------
+5. restart nfs service
+#systemctl  restart  nfs-server
+------------------------------------------------------
+6. add nfs service into firewall
+#firewall-cmd  --permanent  --add-service=nfs
+#firewall-cmd  --reload
+------------------------------------------------------
+7. verify share
+#exportfs   -rv
+----------------------------------------------------------------------------
+Steps for client ( server2 )
+
+1. install package
+#yum  install  nfs-utils  -y
+-------------------------------------------------------
+2. create directory to mount 
+#mkdir   /info
+#mount   -t   nfs  192.168.1.2:/database   /info
+#ls  /info
+-------------------------------------------------------
+3. for permanent mount
+#vim  /etc/fstab
+192.168.1.2:/database  /info   nfs	defaults	0 0
+:wq
+#mount  -a
+#mount
+=================================================================================================================
+DHCP Server ( Dynamic Host Configuration Protocol )
+DHCP server use for provide automatic ip address to client computers.
+DHCP server provide always unique ip address to each client but dynamically.
+DHCP server use port number 67 & 68
+communication between DHCP server and client computer for provide automatic ip address is called DORA process.
+
+Important Concepts -
+---------------------------------------
+package		- dhcp-server
+service		- dhcpd
+firewall	- dhcp
+config file	- /etc/dhcp/dhcpd.conf
+port number	- 67 & 68
+-----------------------------------------------------------------------------------------------------------------
+Steps for configure DHCP server ( server1 )
+
+1. install package
+#yum  install  dhcp-server  -y
+-------------------------------------------------------------------------------
+2. update dhcp configuration file
+#cp  -rvf  /usr/share/doc/dhcp-server/dhcpd.conf.example  /etc/dhcp/dhcpd.conf
+#vim  /etc/dhcp/dhcpd.conf
+
+subnet  192.168.1.0  netmask  255.255.255.0  {            [ line 47 ] 
+range 192.168.1.5  192.168.1.254;			  [ line 48 ]
+options routers  192.168.1.1;				  [ line 51 ]
+options broadcast-address  192.168.1.255;                 [ line 52 ]
+default-lease-time  3600;			          [ line 53 ]
+:wq
+-------------------------------------------------------------------------------
+3. start and enable dhcp service
+#systemctl  start  dhcpd
+#systemctl  enable  dhcpd
+-------------------------------------------------------------------------------
+4. add dhcp service into firewall
+#firewall-cmd  --permanent  --add-service=dhcp
+#firewall-cmd  --reload
+----------------------------------------------------------------------------------------------------------------
+Step for client ( server2 )
+
+1. open terminal and activate enp0s3 connection
+#nmcli  conn   down  server2
+#nmcli  conn   up  enp0s3
+-------------------------------------------------------------------------------
+2. for verify
+#ifconfig
+-------------------------------------------------------------------------------
+DHCP Reservation -
+DHCP reservation is process of provide fix ip address to client computer by using mac address.
+
+3. open terminal on dhcp server ( server1 )
+#vim   /etc/dhcp/dhcpd.conf
+
+host  server2  {					[ line 79 ]
+   hardware ethernet   08:00:27:e6:e6:c2; 		[ line 80 ]
+   fixed-address  192.168.1.100;			[ line 81 ]
+}							[ line 82 ]
+:wq
+-------------------------------------------------------------------------------
+4. restart dhcpd service
+#sytsemctl  restart  dhcpd
+-------------------------------------------------------------------------------
+5. open terminal on server2
+#nmcli   conn  down  enp0s3
+#nmcli   conn  up  enp0s3
+-------------------------------------------------------------------------------
+6. for verify
+#ifconfig
+===============================================================================================================
+Apache Web Server -
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

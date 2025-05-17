@@ -1,0 +1,55 @@
+Basic Permission
+ACL Permission
+Special Permission.
+
+
+
+Special Permission:
+Special permission specialy use set executable files and directories.
+
+It divided into 3 type:
+
+1. SUID Permission (Set User ID)
+2. SGID Permission (Set Group ID)
+3. Sticky Bit
+
+=================================================================================================
+1. SUID Permission (Set User ID)
+If we set SUID permission on any executable file, then any one can execute that file as a owner.
+
+For set SUID permission
+#chmod  u+s  /usr/bin/nmtui
+
+For remove SUID permission
+#chmod  u-s /usr/bin/nmtui
+
+u+s=4
+===================================================================================================
+2. SGID Permission (Set Group ID)
+If we SGID permision on any directory,then that directory group ownerhip inherted on newly created contents inside that directory.
+
+For set SGID Permission
+#chmod  g+s   /india
+
+For remove SGID Permission
+#chmod  g-s   /india
+
+g+s=2
+===================================================================================================
+
+3. Sticky bit
+If we sticky bit permission on any directory, then only owner can delete content inside that directory.
+It is populary use for publicaly accessible directory.
+
+For set Sticky bit Permission
+#chmod  o+t  /india
+
+For remove stikcy bit permission
+#chmod  o-t   /india
+
+o+t=1
+=====================================================================================================
+u+s=4
+g+s=2
+o+t=1
+
