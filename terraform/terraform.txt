@@ -1,60 +1,157 @@
-Harshicorp terraform:
-    Terraform comes in to two types:
-    terraform community(CLI) , terraform enterprise(GUI)
-    
-what is provisioning?
-    provisoning: create , destroy 
-what is configuration:
-    configuration: changes in the existing resources
-similar product: cloud formation, azure resource manager template(arm template),gcp configuration--just like terraform
-Terraform is cloud agnostic/platform agnostic so it can run any platform.
+Chapter-1
+Terraform(IAAC) has two edition:
+1-community edition (free and open source)
+2-enterprise edition (paid)
+registry.terraform.io
+scope:identify resource where you want to write the data.scope can be multiple (like aws, azure, gcp etc)
+author:write code/ terraform configuration
+initialize: local file will be downloaded
+plan:get the result what is goint to happen before deploy
+apply: make the changes.
+
+plaform have multiple interface:
+	CLI:
+	GUI:
+	when program wants to connect to your application, then we need a account which is known as service account.
+	for authetication to any application we need service account.
+	application has own interface which is known as api
+	user interface : cli and gui, these are interactive, we give the input on demand
+	application interface : api for example git hub rest api endpoint, its non iteractive
+	curl https://qoogle.com -- vvv
+	vvv: verbocity mode has been increased.
+	chere will be get command bydefault being used.
+	plugins/provider (just like dictionary): when we run init , it downloads plugins, because how the terraform will undertand the language of target (aws/azure/gcp) .
+	terraform download provider from the registry, i.e. registry. terraform.io
+Note: there should be api on target and second thing provider should be there.
+	provider have three category:
+		1-official (managed by hasicorp)
+		2-partner (managed by provider it self)
+		3-community
+	there are versions of provider as well.
+	priovider written in go langualge even terraform written in go language.
+Exam Ques: does terraform need go language required to run terraform ? NO
+	key value language: json and yml and xml
+
+json : no indentation required
+yml: indentaion required
+terraform -- version
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Chapter-2:
+main.tf: file name could be any , only extension should be .tf
+	a-terraform init-download provider, initialize backend, download module. this is one time activity unless you change terraform block.backend is location where terraform keeps its state file, if you not mention
+					the location, its keep the same in the current directory.
+					when we run the terraform init, it initialize the backend, initializing provider plugins and terraform create a hcl file(terraform. lock.hcl) to record the provider selection it made made above.
+					Include this file in your version control system (vcs) like github, so that terraform can gurantee to make the same selection by default when you run the "terraform init" in future.
+					terraform download providers and downloads in .terraform folder (hidden file)
+
+	b-terraform plan-checks the config drift and present the summary of what changes are going to be provisioned.
+	c-terraform apply-apply the changes presented in your plan i.e provision infrastructure
+
+	all above these command , will read all the .tf files in the directory and aggregate them and then work on it, it is alos known as terraform configuration file.
+	code: Written in HCL
+	
+	blocks:
+	1-terraform : how many providers are required to this terraform to accomplish the task and those provider will be downloaded from this place., we can also mention the url here.
+	2-providers : aws configuration option for example region.
+	3-resource
+	4-variable
+	6-output
+	7-module
+	8-local
+
+main.tf:
+************single provider:
+
+#####################################################################################terraform block
+
+terraform {
+	required providers {
+		aws {
+			source = "hashicorp/aws"
+			version - "6.0.0-betal"
+		}
+	}
+}
+#####################################################################################provider block
+provider "aws" (
+	#Configuration options
+	region = "ap-south-1"
+}
+*****************************
 
 
-Writing the terraform configuration file:
-    scope: identify the infrastructure for your project.
-    Author - Write the configuration for your infrastructure.
-    Initialize - Install the plugins, Terraform needs to manage the infrastructure.
-    Plan - Preview the changes Terraform will make to match your configuration.
-    Apply - Make the planned changes.
+*********multiple provider:
+terraform {
+	required providers {
+		aws {
+			source = "hashicorp/aws"
+			version - "6.0.0-betal"
+		}
+		azurerm {
+		source = "hashicorp/azurerm
+		version = "4.28.0"
+		}
+	}
+}
 
-What is service account: 
-    this account can't be interactive, means it will not ask for input.
-    password never expire
-    not multifactor authentication.
+provider "aws"{
+	# Configuration options
+	region = "ap-south-1"
+}
+porovider "azurerm" {
+# Configuration options
+}
+******************************
 
-User interface: CLI and GUI (uses useraccount for login)
-application interface: API (uses service account)
+authentication with aws:
+	The machine from where we are running the terraform, authentication required from that machine to aws, in case of jenkins, authentication will be at jenkins machine where terraform is running.
+		1-not recommanded: in provider section , you can mention the same . but the problem is when you push the terraform code in git, it will be blocked.
+			provider "aws" {
+				#Configuration options
+				region - "ap-south-1"
+				access_key-""
+				secret key=""
 
-if you want to increase the verbocity mode:
-curl www.google.com -vvvvv
+		2-Environment variable:recommanded method while using CICD.
+			export AWS_ACCESS KEY_ID=""
+			export AWS_SECRET_ACCESS KEY-"
+			
+		3-download cli and configure
+			aws configure -- profile-profilel
+			export AWS DEFAULT PROFILE-profile1
 
-api and provider (plugins) should be available to run the terraform code.
+##################################################################################resource block:
 
-Installation of Terraform:
-    winget search terraform
-    winget install hashicorp.terraform
-    winget uninstall hashicorp.terraform
-    winget --help
-    winget list
+terraform {
+	required providers {
+		aws {
+			source = "hashicorp/aws"
+			version - "6.0.0-betal"
+		}
+	}
+}
+provider "aws" (
+	#Configuration options
+	region = "ap-south-1"
+}
 
-Commands in terraform:
-    --terraform init | download provider,initialize backend,download module |this is one time command oneless you change the terraform block.
-    --terraform plan | check the config drift and present the summary of what changes are going to be provisioned.
-    --terraform apply | apply the changes present in your plan i.e. provisoning the infra \resources.
-        backend: location where terraform init command keeps its statefile.
-            if backend location not mentioned , by default location will be current working directory
+resource "aws vpc" "ailiya"(
+	cidr block = ""
+	tags = {
+		name = "main"
+		}
+}
 
-*.tf is the terraform configuration file.
-configuration file written in HCL: hashicorp language
-blocks: json blocks , specific to specific use 
-    1-terraform block
-    2-provider block
-    3-resource block
-    4-variable block
-    5-data block
-    6-output block
-    7-module block
-    8-local block
+#note:any provider documentation only two block we will get, reources and data
+
+
+Q:how to delete reource?
+	original command
+	terraform apply -- destroy
+	alias
+	terraform destroy
+
+Note: If you want to delete a single resource, just comment it in configuration file and just fire command terraform apply.
 
 What is state file:
     when we run command terraform apply, same will be excuted on cloud end and a copy of information of that resource(resource id) is going to be
@@ -62,9 +159,7 @@ What is state file:
     and next time when we run apply, it is going to check first in the statefile whether we have those information or not
     then it reads on the cloud end, whether same resource is available on clould or not.
     state file is written in json format.
-
-How to destroy resource created by terraform:
-    terraform apply --destroy
+	
 
 If we manually do any modition in aws resource, then terraform is going to revert back the same because for terraform only source of truth is main.tf file.
 
@@ -72,546 +167,57 @@ resource name should be always diffrent.
 
 terraform validate: this command will check the error if we will have in conguration file.
 terraform apply -auto approve
+	
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+chapter-3
 
-semantic versioning:
+reource id shold be unique.
+
+when we run plan terraform plan, it first check the main.tf file then it goes in state file and check the resource just like aws_vpc.ailiya, if same is found in state file, it will refresh the satate file and fetch
+the id, once id will be there it will go in aws and check the resource id, if same exist with the given value in statefile , it will not do any thing , else it will create or chage the resource in aws.
+
+statefile keeps the recored of aws resource block.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+chapter-4
+
+in cicd , we will use environment varibale menthod for authenticatio.
+
+version contraints:
+	semantic versioning:
     1.0.0
     major.minor.patch
     major: incapitable api changes
     minor: added functionality,backward compatibility
     patch: incremented, backward compatibility, bugfixes
-
+	
+	in pipe line every time we do init , pipeline launches on diffrent lachine
+	
 version constraints:
-    version = ">= 1.2.0, < 2.0.0"
+    version = ">= 1.2.0, < 2.0.0" --> this is best option
     The following operators are valid:
         = (or no operator): Allows only one exact version number. Cannot be combined with other conditions.
         !=: Excludes an exact version number.
         >, >=, <, <=: Comparisons against a specified version, allowing versions for which the comparison is true. "Greater-than" requests newer versions, and "less-than" requests older versions.
-        ~>: Allows only the rightmost version component to increment. For example, to allow new patch releases within a specific minor release, use the full version number: ~> 1.0.4 will allow installation of 1.0.5 and 1.0.10 but not 1.1.0. This is usually called the pessimistic constraint operator.
-    terraform inint -upgrade, it will upgrade the provider , keeps both version which is installed previosly and the latest one as you mentioned in the command.
-
+        ~>: Allows only the rightmost version component to increment. For example, to allow new patch releases within a specific minor release, use the full version number: ~> 1.0.4 will allow installation of 1.0.5 and 
+		1.0.10 but not 1.1.0. This is usually called the pessimistic constraint operator.
+		
+		if provider already exist, so to download, user command
+			~>5.60.0
+			terraform init --upgrade
+		terraform inint -upgrade, it will upgrade the provider , keeps both version which is installed previosly and the latest one as you mentioned in the command.
+		
+		
 commenting:
     single line comment: //
     multiline comment: /*
                         */
 
-provider alias:
-    suppose resource need to create in diffrent region, then alias provider comes in to picture.
-    Note: not recommanded
 
-data types:
-    string
-    integer
-    list
-    map
-    boolean
-string="ashish"
-integer=123
-list=
-    integer [2,3,5,7]
-    string ["ram","shaym"]
-boolean: true false
-map{name="ashish"
-    age=18}
+suppose we do any manual change in aws, terraform will read the configuration file then it will check the same in state file, if resource is found, it will refresh the id, after getting the resource id, it will fetch the resouce id 
+details through api and match the details from the configuraion file and changes accordingly.
 
-variable passing:
+provider Alias:
+	if you want to create a resource not in given default region, but some resource you can create on diffrent region. then alias comes in to picture.
 
-1-  By argument:    either at the time of plan on command line
-    terraform plan -var v_name1=""
-2- by file name:    create a file with name like ashish or filename.tfvars(recommanded)-reading from file
-    
-        v_name1="192.168.0.0/24"
 
-    terraform plan -var-file=filename.tfvars
-3-terraform read variable file two extension
-    terraform.tfvars--> give the exact file name
-
-    if you want that given file name , terraform will read by default then file name should be:
-        ashish.auto.tfvars
-if you want to guive default value then we have to give default value in variable.tf
-    default="192.168.0.0/24"
-
-
-we have to variablised all the value with is written in map:
-
-very important which is used inn pipeline-variable passing:
-    enviornment variable:
-        if any variable will be in the form of TF_VAR_tags
-        for example in powershell:
-            $env:TF_VAR_cidr="192.168.0.0/24"
-
-        to get the child env value:
-            Get-ChildItem Env:TF_VAR_cidr
-This is specially used in pipeline like when we passing the password.
-
-local block-->> used to avoid repeated value in code.create another file with the name of locals.tf
-                while defining local block, don't need to create the variable file and also we don't need to mention the variable type in local block.
-                when calling its value to another block, just need to mention the local.variable name
-
------------------------------------------------------------code without local block---------------------------------------------------------------------------
-
-1-file:
-
-    main.tf
-
-        terraform {
-            required_providers {
-                aws = {
-                source  = "hashicorp/aws"
-                version = "~> 5.0"
-                }
-            }
-            }
-
-2-file:
-
-    provider.tf
-
-        provider "aws" {
-            region = var.region
-            }
-
-3-file:
-
-    resource.tf
-
-        resource "aws_vpc" "example" {
-            cidr_block = var.cidr
-            tags = var.tags
-            }
-
-4-file:
-
-    variable.tf
-
-        variable "cidr" {
-            type = string
-            }
-        variable "region" {
-            type = string
-            }
-        variable "tags" {
-            type = map(string)
-            default = {
-                "office" = "arun"
-            }
-            }
-
-5-file
-
-    terraform.AUTO.tfvars
-    
-        region = "ap-south-1"
-
-        tags = {
-        "Name" = "Yourvpc"
-        "village"="ailiya"
-}
-
-------------------------------------------------------------------**------------------------------------------------------------------------------------
-
-
-
-//date-12-4-205 -----------------------------------------------------local block------------------------------------------------------------------------
-
-------------------------------------------------------------------**------------------------------------------------------------------------------------
-local block-
-    always save with .tf 
-    used inside the code for the repeated value.
-    locals{
-        vpc_cidr="192.168.0.0./24"
-        tags={
-            name='ashish'
-            owner='ailiya'
-        }
-        region='ap-south-1'
-    }
-
-
-to call this we have to use local.name
-local.owner
-local.region
-
----------------------------------------------------------------------------------------code--------------------------------------------------------------------
-main.tf:
-
-    terraform {
-        required_providers {
-            aws = {
-            source  = "hashicorp/aws"
-            version = "~> 5.0"
-            }
-        }
-        }
-
-
-provider.tf:
-
-    provider "aws" {
-        region = local.region_1
-        }
-
-
-
-resource.tf
-
-    resource "aws_vpc" "example1" {
-        cidr_block = local.cidr
-        tags = local.tags
-        }
-
-
-
-locals {
-    region_1="ap-south-1"
-    cidr="192.168.0.0/24"
-    tags={
-        "name"="ashish"
-    }
-} 
-
----------------------------------------------------------------------------------------------------------------------------------------------------------------------
-Use Case: if you want to create vpc for prod and dev both.
-
-    locals {
-        dev={
-            region_1="ap-south-1"
-            cidr="192.168.0.0/24"
-            tags={
-                "name"="ashish"
-                }
-            },
-        prod={
-            locals {
-            region_1="ap-south-1"
-            cidr="192.168.0.0/24"
-            tags={
-                "name"="ashish"
-            }
-        } 
-        }
-        } 
-
-If you check formating is unreadable, so terraform support automatic formating.
-terraform validate
-terraform init
-terraform plan
-terraform apply
-FMT:
-    terraform fmt --check :
-        it will report the tf file name where formating is worng
-    terraform fmt:
-        it check and correct the formating in every files available in the current directory
-
-How to call variable if same is mentioned in two diffrent vpc?
-
-    local.dev.cidr
-    local.prod.cidr
-    local.dev.region_1
-    local.prod.region_1
-
-if you want that region should be same for both then:
-    region should be at the starting place.
-
-    locals {
-        region_1="ap-south-1"
-        dev={
-            cidr="192.168.0.0/24"
-            tags={
-                "name"="ashish"
-                }
-            },
-        prod={
-            locals {
-            cidr="192.168.0.0/24"
-            tags={
-                "name"="ashish"
-            }
-        } 
-        }
-        } 
-
-
-Q-What is default indentation for terraform?
-Ans: 2 spaces
-
-Q- What is required version in terraform?
-
-    check the required version on cmd terraform --version
-
- Q-Why we use version: 
-    when the code will execute it will only depend on the downloaded version. even if latest version is available it will not pull the latest one.
-----------------------------------------------------------------------------------------------------------------------------------------------------------
-
-Logging:
-    if we want meaningful result, then we debug
-        we need to enable the logging in debug mode.
-    In terraform, logging can be enabled by setting the environment variable only.
-$TF_LOG="debug"
-
-debug
-trace-rarely used
-
-Q-to set the terraform log in a file:
-    $TF_LOG_PATH=mylog.txt
-when we set the path , log output will be save in to file while ret of details will be shown on screen.
-    unset TF_LOG_PATH
-
-#----------------------------------------------------------------------output block----------------------------------------------------------------------
-output block:
-    terraform apply --auto-approve -destroy
-
-    output block is basically display the values which we mention in output block.
-    output block can have one value at a time.
-    in multiple output block value should be unique.
-note: if you want to mention the output in one then , there is concept of interpolation.
-
-code::
-main.tf
-    terraform {
-    required_providers {
-        aws = {
-        source  = "hashicorp/aws"
-        version = "~> 5.0"
-        }
-    }
-    }
-
-
-provider.tf
-    # Configure the AWS Provider
-    provider "aws" {
-    region = var.region
-    }
-
-resource,tf
-    # Create a instance
-    resource "aws_instance" "main" {
-    ami           = var.ami
-    tags          = var.tags
-    instance_type = var.instance_type
-    }
-
-variable.tf
-    variable "region" {
-    type = string
-    }
-
-    variable "tags" {
-    type = map(string)
-    }
-    variable "ami" {
-    type = string
-    }
-    variable "instance_type" {
-    type = string
-    }
-
-terraform.auto.tfvars
-    region = "ap-south-1"
-
-    tags = {
-    "name" = "ashish"
-    }
-    ami           = "ami-002f6e91abff6eb96"
-    instance_type = "t2.micro"
-
-output.tf
-    output "instance_private_ip" {
-    value = aws_instance.main.private_ip
-    }
-    output "instance_public_ip" {
-    value = aws_instance.main.public_ip
-    }
-
-output.tf:(using interpolation)
-    output "ipsofec2"{
-        value="public ip is :${aws_instance.main.public_ip} and private ip is: ${aws_instance.main.private_ip}"
-    }
-
-------------------------------------------------------------------------datablock--------------------------------------------------------------------------
-datablock:
-    datasourcing: to fetch the details of resources from the correspondance data source.
-
-                if we not use the datasource to our program will be not be reusable, by using the data sourcing, we can
-                use program any where else.
-
-        for example: using datablock get the ami id
-
-terraform {
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 5.0"
-    }
-  }
-}
-
-provider "aws" {
-  region = "ap-south-1"
-}
-
-data "aws_ami" "main" {
-
-  owners      = ["679593333241"]
-  most_recent = true
-
-  filter {
-    name   = "name"
-    values = ["ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"]
-  }
-}
-
-resource "aws_instance" "main" {
-  ami           = data.aws_ami.main.id
-  instance_type = "t2.micro"
-}
-
-output "ipsofec2" {
-  value = "public ip is :${aws_instance.main.public_ip} and private ip is: ${aws_instance.main.private_ip}"
-}
-
--------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-#state file management:
-    if you want to see all details of resource
-
-    state commands:
-        terraform state list
-        terraform state show aws.....
-
-Scenario -1:
-    If any reorce is managing through terraform, how could we manage that reource from aws.
-     suppose we delete the reource from main.tf , and it exist in state file then it will be destroyed, so we have to delete the same from both places
-     main.tf and state file.
-
-     terraform state list
-     terraform state show <state id of resource>
-     terraform state rm <state id of resource>
-
-//day -6 ------------------------------------------------------Terraform-------------------------------------------------------------------------
-
-Scenario -2:
-    suppose we have created a resource manually, now we want to manage the same through terraform.
-
-terraform {
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 5.0"
-    }
-  }
-}
-
-provider "aws" {
-  region = "ap-south-1"
-}
-
-data "aws_ami" "main" {
-
-  owners      = ["137112412989"]
-  most_recent = true
-
-  filter {
-    name   = "name"
-    values = ["al2023-ami-2023.7.20250414.0-kernel-6.1-x86_64"]
-  }
-}
-
-resource "aws_instance" "main" {
-  ami           = data.aws_ami.main.id
-  instance_type = "t2.micro"
-  tags = {"name"="TFVM"}
-}
-
-output "ipsofec2" {
-  value = "public ip is :${aws_instance.main.public_ip} and private ip is: ${aws_instance.main.private_ip}"
-}
-
-//terraform state list
-//terraform state rm "aws_instance.main"  received from terraform state list
-
-
-// we have to insert two entry -1 in terraform block second in state file:
-
-
-terraform {
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 5.0"
-    }
-  }
-}
-
-provider "aws" {
-  region = "ap-south-1"
-}
-
-data "aws_ami" "main" {
-
-  owners      = ["137112412989"]
-  most_recent = true
-
-  filter {
-    name   = "name"
-    values = ["al2023-ami-2023.7.20250414.0-kernel-6.1-x86_64"]
-  }
-}
-
-resource "aws_instance" "main" {
-  ami           = data.aws_ami.main.id
-  instance_type = "t2.micro"
-  tags = {"name"="TFVM"}
-}
-resource "aws_instance" "main2" {
-  # (resource arguments)
-}
-
-
-output "ipsofec2" {
-  value = "public ip is :${aws_instance.main.public_ip} and private ip is: ${aws_instance.main.private_ip}"
-}
-
-
-Solution for scenario 1:
-    terraform state list
-    terraform state rm "aws reource id"
-
-    one the resource detailed has been removed from state file , even if the same is remaining in configuration file it will create another resource if we run the code.
-    recommanded: delete the entry from configuration file as well
-
-Soltion for scenario 2:
-    in terraform configuration file, 
-    mention the other resource block without parameter.
-    copy the instance id from aws.
-    terraform state list
-    terraform import aws_instance.main i-instance id
-    terraform state show "resource id"
-    copy the instance type (t2.micro) and enter the same in the reource block.
-    provide the amit id as well euther from data block or directly.
-
-    terraform plan
-    terraform apply
-
-
------------------------------------------------------------------------Meta Argument-----------------------------------------------------------------------------------
-
-
------------------------------------------------------------------------Terraform Training----Day-11--------------------------------------------------------------------
-
-1-Where we can store the state file and where we can not store the state file:
-
-Ans: We can store state file in S3, azure blob
-     we can not store the state file in Source code management (SCM) like git.
-
-2-Where we can store module?
-
-Ans:we can store the module in git because in module we can only use pull option.
-    but in case of statefile we have to write.
-
-
-What is module:
-    module is like a block, 
-#======================================================================================================================================================================
-// always pull the data from remote before start working !!
-#======================================================================================================================================================================
