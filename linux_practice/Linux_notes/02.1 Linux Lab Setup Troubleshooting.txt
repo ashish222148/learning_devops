@@ -1,0 +1,23 @@
+Troubleshoot -
+----------------------------------------------------------------
+1. Make sure that virtualization technology is enabled.
+
+for verify -
+ task manager (atl+ctrl+del) - performance - cpu - check virtualization enabled or not.
+
+enable virtualization from "BIOS Settings"
+
+eg.
+HP Laptop -
+shutdown computer - press power on button - quicky 5-6 times press Esc key - press f9/f10 for bios settings - configuration/security - virtualization - enable it - press f10 for save.
+
+go to youtube  search "open bios settings in Acer aspire 5"
+
+---------------------------------------------------------------
+2. kernel is panic! or cpu is panic
+
+Solutions-
+
+1. power off vm - settings - system - processor - select 2 core - ok and start vm again.
+2. windows start menu - search - "core isolaton" memory integraton - off - reboot computer and then start vm again.
+3. windows start menu - search "cmd" open it as a administrator - type command "bcdedit /set  hypervisorlaunchtype   off" press enter - reboot computer and start vm again.

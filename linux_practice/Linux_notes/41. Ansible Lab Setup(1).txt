@@ -1,0 +1,64 @@
+Ansible Lab Setup:
+
+-----------------------------------------------------------
+Ansible Lab Setup Diagram
+--------------------------------------------------------------------------------------------------------
+
+Perform following command on all nodes - 
+
+create itadmin user with 111 password,give sudo privilege without password.
+up ssh configuration file (rootpermit and password authentication)
+set multi-user.target as a default runlevel
+set proper hostname and ip address
+update yum repo file on ansible server.
+---------------------------------------------------------------------------------------------------------
+Open terminal on ansible control node ( check connectivity ) -
+
+#ping  10.0.0.3
+#ping  10.0.0.4
+#ping  10.0.0.5
+
+for ping with name ( update host file )
+#vim    /etc/hosts
+10.0.0.3	node1
+10.0.0.4	node2
+10.0.0.5	node3
+:wq
+
+For verify
+#ping	node1
+#ping	node2
+#ping	node3
+-------------------------------------------------------------------------------------------
+install ansible package 
+
+#yum	install		ansible*	-y
+
+check version
+
+#ansible    --version
+---------------------------------------------------------------------------------------------
+Generate ssh key and transfer to all manage nodes -
+
+#su   itadmin
+$ssh-keygen
+
+$ssh-copy-id	itadmin@node1
+$ssh-copy-id	itadmin@node2
+$ssh-copy-id	itadmin@node3
+----------------------------------------------------------------------------------------------
+update ansible inventory file
+
+$sudo   vim    /etc/ansible/hosts
+[web]
+node1
+node2
+[dev]
+node3
+:wq
+----------------------------------------------------------------------------------------------
+ping all manage node via ansible
+
+$ansible	all	-m	ping
+============================================================================================================
+

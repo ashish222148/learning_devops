@@ -1,0 +1,85 @@
+Exam Practice Questions (RHCSA)
+=================================================================================================
+Set up two system:
+-------------------------------------------------------------------------------
+Server1 = node1.example.com 
+Assign hostname and IP address for your virtual machine.
+
+Hostname - node1.example.com
+
+IP Address:			172.24.0.10
+Subnet Mask:			255.255.255.0
+Gateway Address:		172.24.0.1
+Name Server Address:		172.24.0.254
+--------------------------------------------------------------------------------
+Server2 = node2.example.com 
+Assign hostname and IP address for your virtual machine.
+
+Hostname - node2.example.com
+
+IP Address:			172.24.0.11
+Subnet Mask:			255.255.255.0
+Gateway Address:		172.24.0.1
+Name Server Address:		172.24.0.254
+=====================================================================================================
+Questions for Node1
+=====================================================================================================
+1. Create user rechard, user should have 2020 UID and set /user/rechard as a default home directory.
+--------------------------------------------------------------------------------
+2. Create user adminuser1,adminuser2 and adminuser3. Create group RepublicGRP. adminuser1 & adminuser2 should have member of RepublicGRP, modify adminuser3 login shell and set non-interactive shell.
+--------------------------------------------------------------------------------
+3. Secure /business directory in such way that only RepublicGRP can fully access it. New content created inside /business directory should have bydefault RepublicGRP group ownership.
+--------------------------------------------------------------------------------
+4. Create TAR Archive /home/backup.tar.gz from /usr/sbin
+--------------------------------------------------------------------------------
+5. Configure YUM server for client on following address
+baseurl=http://node1.example.com/packages/AppStream
+baseurl=http://node1.example.com/packages/BaseOS
+--------------------------------------------------------------------------------
+6. Configure DHCP Server which can provide ip address from 192.168.0.5 - 192.168.0.254
+--------------------------------------------------------------------------------
+7. Create /root/script.sh file to Create TAR Archive /mnt/archive.tar.xz from /usr/sbin.
+--------------------------------------------------------------------------------
+8. Set crontab /root/script.sh for every 10 min. 
+--------------------------------------------------------------------------------
+9. Create directory /tcs. provide group ownership to "ceogrp". all group member should have full permission, all content created inside /tcs bydefault group ownership got to ceogrp.
+--------------------------------------------------------------------------------
+10. Search for the text 'strato' in the file /usr/share/dict/words & copy this to a file
+/root/lines.txt .The new file should not have any blank spaces or lines. The order of the
+names in the new file should be same as the order in which it appears in the original file
+--------------------------------------------------------------------------------
+11. ACL:
+Copy /etc/fstab to /var/tmp/fstab . The user & group owner of that file should be root. All
+users should be able to read the file. No one should be able to execute. adminuser1 should not be
+able to read nor write. adminuser2 should be able to read & write.
+--------------------------------------------------------------------------------
+12. Assign Sudo Privilege
+Assign the sudo Privilege for Group "ceogrp" and Group members can administrate without any password.
+--------------------------------------------------------------------------------
+13. FIND:
+Locate all files owned by user adminuser1 & copy them to /home/lost+found
+--------------------------------------------------------------------------------
+14. SELINUX :
+Set your system to permissive mode permanently 
+--------------------------------------------------------------------------------
+15. Set the Password expire date 
+The password for all new users in node1.net7.example.com should expires after 20 days.
+=====================================================================================================
+Questions for Node2
+=====================================================================================================
+1. Reset Root Password
+Reset root password and set new password “India@123"
+--------------------------------------------------------------------------------
+2.LVM
+Create one logical volume vshare and it should be on vgroup volume group with 100 extend and assign the vfat file system.
+The vgroup volume group extend should be 8 MB, mount vshare logical volume under the mount point /mnt/vshare.
+--------------------------------------------------------------------------------
+3. SWAP
+Create swap with 512MB space.
+--------------------------------------------------------------------------------
+4. Create partition with 1500MB partition, create file system xfs and mount it permanently /myparty1 directory.
+--------------------------------------------------------------------------------
+5. Configure NFS server which share /database directory with all network, provide full permission to all user, ensure that client user not have permission to remove share contents inside /database directory.(Create test.txt inside /database for testing purpose) 
+--------------------------------------------------------------------------------
+6. Protect your grub with username=jessica and password=Vu@123r to protect your single user mode.
+=====================================================================================================

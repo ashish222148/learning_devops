@@ -1,0 +1,244 @@
+Apache Web Hosting
+Apache is free and open-source software of web server that is used by approx 40% of websites all over the world. Apache HTTP Server is its official name. It is developed and maintained by the Apache Software Foundation. Apache permits the owners of the websites for serving content over the web.
+
+
+Configure Apache Basic Web Hosting (192.168.1.3)
+====================================================================================================
+Step1: install apache package
+#dnf install httpd -y
+
+ste2: start and enable httpd service
+#systemctl start httpd
+#systemctl enable httpd
+
+step3: add http into firewall
+#firewall-cmd --permanent --add-service=http
+#firewall-cmd  --reload
+
+step4: create test webpage
+#cd /var/www/html/
+#vim index.html
+<html>
+<head><title>Pune</title></head>
+<body bgcolor=skyblue>
+<h1>Welcome to pune website hosted by using apache web server</h1>
+</body>
+</html>
+:wq
+
+Step5: Open web browser (firefox) type following address
+http://192.168.1.3
+
+================================================================================================
+Configure Apache Virtual web hosting:
+Virtual hosting allow us host multiple web sites on single host (server).
+
+step6: create directory for second website and create test webpage
+
+#mkdir /mumbai
+#vim /mumbai/index.html
+#vim index.html
+<html>
+<head><title>Mumbai</title></head>
+<body bgcolor=yellow>
+<h1>Welcome to Mumbai website hosted by using apache web server</h1>
+</body>
+</html>
+:wq
+
+ste7: create configuration file for mumbai & pune
+#vim /etc/httpd/conf.d/mumbai.conf
+<VirtualHost *:80>
+ServerName mumbai.example.com
+ServerAdmin root@mumbai.example.com
+DocumentRoot /mumbai/
+</VirtualHost>
+<Directory /mumbai/>
+<RequireAll>
+Require all granted
+</RequireAll>
+</Directory>
+:wq
+
+Now create pune config file
+
+#vim /etc/httpd/conf.d/pune.conf
+<VirtualHost *:80>
+ServerName pune.example.com
+ServerAdmin root@pune.example.com
+DocumentRoot /var/www/html/
+</VirtualHost>
+<Directory /pune/>
+<RequireAll>
+Require all granted
+</RequireAll>
+</Directory>
+:wq
+
+Step8: restart httpd service
+#systemctl restart httpd
+
+update host file
+#vim /etc/hosts
+192.168.1.3 pune.example.com
+192.168.1.3 mumbai.example.com
+:wq
+
+step9: For verify:
+Open Firefox and visite following address
+
+http://pune.example.com
+new tab
+http://mumbai.example.com
+
+(note: apache home page cause of selinux permission restrict mumbai directory access)
+
+step10: set selinux permission on permissive mode
+#getenforce
+#setenforce 0
+
+Now open firefox and refresh mumbai page
+
+If httpd service failure to restart then use following to check syntax of *.conf
+
+#httpd -t
+
+step11: change selinux permanent label
+#setenforce 1
+
+#semanage fcontext -a -t httpd_sys_content_t "/mumbai(/.*)?"
+#restorcon -Rv /mumbai
+
+open firefox and verify mumbai website again
+===================================================================================================
+Configure Apache Web hosting with https (Secure hyper text transfer protocol):
+
+Step12: Install Require package for https
+
+#yum install httpd mod_ssl openssl -y
+
+Step13: add https service into firewall
+#firewall-cmd --permanent --add-service=https
+#firewall-cmd --reload
+
+Step14: create self-signed Certificate and Key for https site
+#openssl req  -x509 -nodes -days 365 -newkey rsa:2048 -keyout /home/server.key -out  /home/server.crt
+
+Step15: Modify ssl config file
+#vim /etc/httpd/conf.d/ssl.conf
+
+SSLCertificateFile /etc/pki/tls/certs/server.crt
+SSLCertificateKeyFile /etc/pki/tls/private/server.key
+
+:wq
+
+Step16: Copy generated crt and key on required location
+
+#cp -rvf /home/server.crt /etc/pki/tls/certs/
+#cp -rvf /home/server.crt /etc/pki/tls/private/
+
+Step17: Update configuration file of pune and mumbai
+
+#vim /etc/httpd/conf.d/pune.conf
+
+<VirtualHost *:443>
+SSLEngine on
+SSLCertificateFile /etc/pki/tls/certs/server.crt
+SSLCertificateKeyFile /etc/pki/tls/private/server.key
+ServerName pune.example.com
+ServerAdmin root@pune.example.com
+DocumentRoot /var/www/html/
+</VirtualHost>
+<Directory /pune/>
+<RequireAll>
+Require all granted
+</RequireAll>
+</Directory>
+:wq
+
+#vim /etc/httpd/conf.d/mumbai.conf
+
+<VirtualHost *:443>
+SSLEngine on
+SSLCertificateFile /etc/pki/tls/certs/server.crt
+SSLCertificateKeyFile /etc/pki/tls/private/server.key
+ServerName mumbai.example.com
+ServerAdmin root@mumbai.example.com
+DocumentRoot /mumbai/
+</VirtualHost>
+<Directory /mumbai/>
+<RequireAll>
+Require all granted
+</RequireAll>
+</Directory>
+:wq
+
+systemctl restart httpd
+
+step18: open firefox and verify https
+
+https://pune.example.com
+https://mumbai.example.com
+
+[Note: access security risk,it show cause of self-sign certificate]
+=====================================================================================================
+Redirect all client traffic on https protocol
+
+Edit configuration files
+
+#vim /etc/httpd/conf.d/pune.conf
+
+<VirtualHost *:443>
+SSLEngine on
+SSLCertificateFile /etc/pki/tls/certs/server.crt
+SSLCertificateKeyFile /etc/pki/tls/private/server.key
+ServerName pune.example.com
+ServerAdmin root@pune.example.com
+DocumentRoot /var/www/html/
+</VirtualHost>
+<Directory /pune/>
+<RequireAll>
+Require all granted
+</RequireAll>
+</Directory>
+
+<VirtualHost *:80>
+ServerName pune.example.com
+Redirect / https://pune.example.com
+</VirtualHost>
+
+:wq
+
+#vim /etc/httpd/conf.d/mumbai.conf
+
+<VirtualHost *:443>
+SSLEngine on
+SSLCertificateFile /etc/pki/tls/certs/server.crt
+SSLCertificateKeyFile /etc/pki/tls/private/server.key
+ServerName mumbai.example.com
+ServerAdmin root@mumbai.example.com
+DocumentRoot /mumbai/
+</VirtualHost>
+<Directory /mumbai/>
+<RequireAll>
+Require all granted
+</RequireAll>
+</Directory>
+
+
+<VirtualHost *:80>
+ServerName pune.example.com
+Redirect / https://mumbai.example.com
+</VirtualHost>
+
+:wq
+
+systemctl restart httpd
+
+step18: open firefox and verify https
+
+https://pune.example.com
+https://mumbai.example.com
+
+Note: if we type http://pune.example.com or only site name then by defalult server redirect us on https
+

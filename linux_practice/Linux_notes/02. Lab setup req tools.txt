@@ -1,0 +1,24 @@
+Linux Lab Setup Tools:
+======================================================================================================
+1. Virtual Machine :
+
+Oracle Virtual Box 
+
+Download oracle virtual box
+
+https://www.virtualbox.org/wiki/Download_Old_Builds_6_1
+or
+https://www.virtualbox.org/wiki/Downloads
+======================================================================================================
+2. Download RHEL 9.0 iso File
+
+https://developers.redhat.com/products/rhel/download
+
+For create redhat account (for download above ISO)
+
+https://www.redhat.com/wapps/ugc/register.html?_flowId=register-flow&_flowExecutionKey=e1s1
+
+======================================================================================================
+To download virtualbox and rhel9 iso file visit following link
+
+https://drive.google.com/drive/folders/1TvQpS3BSjLqyCaBQCdM64zuZBW_qqP-k?usp=drive_link

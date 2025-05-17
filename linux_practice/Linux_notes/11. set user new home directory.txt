@@ -1,0 +1,23 @@
+Resolve issue of user go into bash shell after change default home directory:
+
+useradd    sara
+grep   sara   /etc/passwd
+
+For change directory:
+mkdir  -p  /pune/fcroad
+
+usermod   -d   /pune/fcroad    sara
+grep   sara   /etc/passwd  
+
+home directory change but if you login as a sara then user go into bash shell to resolve this use following command
+
+chmod   700   /pune/fcroad
+chown    sara:sara    /pune/fcroad
+
+now copy sara profile hidden file into new directory
+cp  -rvf    /home/sara/.bash*    /pune/fcroad
+
+Now try to login with sara user
+su   sara
+cd
+pwd

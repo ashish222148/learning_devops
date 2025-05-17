@@ -1,0 +1,114 @@
+What is MariaDB:
+-------------------------------------------------------------------------
+MariaDB is a free and open source database management system.
+It acts as a drop replacement for Oracle MySQL server. 
+It is a fork of famous database server MySQL, developed by MariaDB
+Corporation Ab, led by original developers of MySQL.
+A relational Database is a mechanism that allows persistence data in
+organized way.
+mariadb default port number = 3306
+-------------------------------------------------------------------------
+Steps for Manage MariaDB
+-------------------------------------------------------------------------
+Step1. Install MariaDB
+#yum  install  mariadb  mariadb-server
+--------------------------------------------------------------
+Step2: start and enable mariadb
+#systemctl  start  mariadb
+#systemctl  enable  mariadb
+--------------------------------------------------------------
+Step3: add mysql service into firewall ( if required )
+#firewall-cmd  --permanent  --add-service=mysql
+#firewall-cmd  --reload
+--------------------------------------------------------------
+Step4: login into database as a root user
+#mysql  -u  root
+>show  databases;
+>exit
+--------------------------------------------------------------
+Step5: Secure Database
+#mysql_secure_installation
+--------------------------------------------------------------
+Step6: Logion into database with username and password
+#mysql  -u  root  -p
+--------------------------------------------------------------
+Step7: create database and user
+
+#mysql  -u  root  -p
+> show databases;
+> create database punedb;
+> show databases;
+> grant  all  on  punedb.*   to  ricky@localhost  identified   by   '111';
+> exit
+
+Now try to login as a ricky user
+#mysql  -u  ricky   -p
+> show databases;
+> exit
+-----------------------------------------------------------------
+Step8: create database,table,insert info
+
+#mysql  -u  root  -p
+
+>show  databases;
+>create  database  empdb;
+>show databases;
+>use  empdb;
+>show  tables;
+>create  table  details (ID INT,Name VARCHAR(30),City VARCHAR(30),PinCode INT,Email VARCHAR(30));
+>show tables;
+>insert  into   details (ID,Name,City,PinCode,Email) value(1,"Suraj","Pune",4001005,"suraj@yahoo.com");
+>insert  into   details (ID,Name,City,PinCode,Email) value(2,"Dhraj","Mumbai",4001006,"dhiraj@yahoo.com");
+>insert  into   details (ID,Name,City,PinCode,Email) value(3,"Virat","Delhi",4001009,"Virat@yahoo.com");
+
+>select * from  details;
+> exit
+-----------------------------------------------------------------------------------
+Step9: Take Backup of database
+#mysqldump   -u   root  -p  empdb  >   /home/employee.db
+#ls  /home
+------------------------------------------------------------------------------------
+Step10: now goto database and delete database
+
+#mysql  -u  root  -p
+> drop  database  empdb;
+> show  databases;
+
+for restore database from backup,first create empty database
+> create database empdb;
+>exit
+--------------------------------------------------------------------------------------
+Step11: Restore database
+#mysql  -u  root  -p  empdb  <  /home/employee.db
+--------------------------------------------------------------------------------------
+Step12: Verify Restore database.
+
+#mysql  -u  root  -p
+> show  databases;
+> use empdb;
+> show tables;
+> select  *  from details;
+> exit
+===========================================================================================
+Take backup every 5 min
+===========================================================================================
+#vim /myscript.sh
+
+#!/bin/bash
+mysqldump   -u   root  -p=india  empdb  >   /home/employee.db
+:wq
+
+#chmod  755  /myscript.sh
+
+#crontab  -e
+*/5	*	*	*	*	/myscript.sh
+:wq
+
+
+---------------------------------------------------------------------------------------------
+
+
+
+
+
+

@@ -1,0 +1,22 @@
+Redirect http to https :
+
+setup web server configuration file as follows
+
+<VirtualHost *:443>
+SSLEngine    on
+SSLCertificateFile    /etc/pki/tls/certs/server0.crt
+SSLCertificaeKeyFile     /etc/pki/tls/private/server0.key
+ServerName     server0.example.com
+DocumentRoot    /var/www/html
+</VirtualHost>
+
+<VirtualHost *:80>
+ServerName     server.example.com
+ServerAdmin      root@server0.example.com
+Redirect     /    https://server0.example.com
+</VirtualHost>
+
+
+
+
+

@@ -1,0 +1,341 @@
+Disk Partition in Linux:
+-------------------------------------------------------------------------------------------------
+what is partition -
+partition is process of divide hard disk drive into multiple logical storage unit (partition) called partition.
+partition is very useful for store data into a separate partition.
+
+Disk names:
+Linux maintain disk naming convention for SATA ,PATA and Virtual Disk as follows…
+
+1. SATA ( Serial Advance Technology Attachment )
+2. PATA ( Parallel Advance Technology Attachment )
+3. Virtual Disk
+=================================================================================================
+show hard disk details
+#lsblk
+or
+#fdisk  -l
+--------------------------------------------------------------
+Note:
+for partition practice add 2nd hard disk in VM
+
+Poweroff Linux - vm settings - storage- sata controller - add hard disk - create -10GB - ok -start vm - set proper screen resolution - take new one snapshot.
+--------------------------------------------------------------------------------------------------------
+Steps For Manage Partition
+
+1. Create Partition
+#fdisk  /dev/sdb
+
+m	help
+n	new partition
+d	delete partition
+p	print partition
+t	change partition type
+q	quit ( close without saving )
+w	write and quite ( save and close )
+l	show partition type list
+
+create 1 Gb partition
+--------------------------------------------------------------------------------------------------------
+2. for show partition
+#lsblk
+--------------------------------------------------------------------------------------------------------
+3. for create file system ( format )
+#mkfs.xfs	/dev/sdb1
+
+what is file system?
+file system is a process of create a structure on partition where OS can store data.
+
+eg.
+Linux - ext, ext2, ext3, ext4, xfs ( RHEL 7/8/9 - default file system XFS )
+windows - fat16, fat32, ntfs, refs
+--------------------------------------------------------------------------------------------------------
+4. Mount Partition ( temporary )
+#mkdir   /study
+#mount   /dev/sdb1	/study
+--------------------------------------------------------------------------------------------------------
+5. Mount partition ( permanently )
+#vim	/etc/fstab
+/dev/sdb1	/study		xfs	defaults	 0 0
+:wq
+--------------------------------------------------------------------------------------------------------
+6. Mount all partition ( written in fstab file )
+#mount   -a
+--------------------------------------------------------------------------------------------------------
+7. check partition mouting
+#lsblk
+--------------------------------------------------------------------------------------------------------
+8. unmount partition and remove record from /etc/fstab
+
+#umount  /study
+#vim   /etc/fstab
+
+remove partition line ( dd )
+:wq
+
+#mount  -a
+--------------------------------------------------------------------------------------------------------
+9. delete partition
+#fdisk   /dev/sdb
+
+delete partition ( d )
+:w
+--------------------------------------------------------------------------------------------------------
+10. we can mount partition with help of uuid ( Universal Unique ID ) also
+
+show UUID and file system
+#blkid	/dev/sdb1
+
+#vim   /etc/fstab
+UUID="b3039e27-5c11-49d7-b2e5-e34fe23"    /Chennai    xfs   defaults   0 0
+:wq
+============================================================================================================
+Resize Partition
+
+Note.
+Before resize partition always take backup first.
+
+eg.
+#tar  -cvzf  /mnt/mubai.tar.gz   /mumbai
+------------------------------------------------------------------------------
+1. Resize ext4 file system partition ( mounted in /Mumbai )
+
+I. unmount partition
+#umount   /Mumbai
+------------------------------------------------------------------------------
+II. resize partition
+#fdisk   /dev/sdb
+delete partition and create new one with required size
+
+Do you want remove signature - No
+:w
+-------------------------------------------------------------------------------
+III. check error of file system and resize FS
+#e2fsck   -f  /dev/sdb1
+#resize2fs  /dev/sdb1
+
+IV. mount partition
+#mount   -a
+#lsblk
+#ls   /Mumbai
+=======================================================================================================
+2. resize xfs file system partition  ( /pune )
+
+I. resize partition size
+#fdisk  /dev/sdb
+
+delete partition and create new one with extended size
+
+Do you want remove signature - No
+:w
+
+II. resize file sytem
+#xfs_growfs   /pune
+
+#lsblk
+#ls  /pune
+
+Note:
+ext4 file system support  increase or decrease ( extend/shrink ) partition size.
+xfs file system only support for extend ( increase ) partition size.
+===========================================================================================================
+Swap Memory
+swap memory is a one type of ram ( virtual ram )
+swap memory take space from hard disk space.
+It support physical ram to handle load when physical ram is full.
+expert recommended create your system swap approximately dual size of physical ram.
+
+
+Steps for create swap
+----------------------------------------------------------------------------
+1. check swap space
+#free  -m
+----------------------------------------------------------------------------
+2. create/extend swap memory
+#fdisk   /dev/sdb
+create partition with required size  and set partition id (82) for swap
+:w
+-----------------------------------------------------------------------------
+3. to make swap
+#mkswap		/dev/sdb3
+------------------------------------------------------------------------------
+4. to swap on
+#swapon		/dev/sdb3
+------------------------------------------------------------------------------
+5. permanent mount swap
+#vim   /etc/fstab
+/dev/sdb3	swap	swap	defaults	0 0
+:wq
+#mount  -a
+------------------------------------------------------------------------------
+6. for swapoff
+#swapoff  /dev/sdb3
+or
+for off all swap
+#swapoff   -a
+
+for on all swap
+#swapon   -a
+------------------------------------------------------------------------------
+7. For remove swap
+
+first swapoff then remove record form /etc/fstab file and finally remove partition.
+====================================================================================================
+LVM ( Logical Volume Manager )
+
+what is LVM?
+Storage technology plays a important role in improving the availability, performance, and ability to manage Linux servers.
+One of the most useful and helpful technology to Linux system administrator is Linux Logical Volume Manager(LVM).
+LVM is a widely-used technique and extremely flexible disk management scheme for deploying logical rather than physical storage. With LVM, system administrator can easily resize and extend the logical drive when it is required.
+--------------------------------------------------------------------------
+LVM create through three steps
+1.Physical Volume (PV)
+2.Volume Group (VG)
+3.Logical Volume (LV)
+
+Draw Diagram
+================================================================================================
+Steps For Manage LVM
+
+I. Create Partition for LVM ( with LVM ID=8e )
+
+1. create partition
+#fdisk  /dev/sdb
+create partition with 1 GB and set partition type (id=8e) LVM.
+
+:w
+-----------------------------------------------------------------
+2. check partition
+#lsblk
+================================================================================================
+II. Manage PV
+
+1. create PV
+#pvcreate   /dev/sdb1
+------------------------------------------------
+2. for display PV
+#pvdisplay   /dev/sdb1
+------------------------------------------------
+3. for remove PV
+#pvremove   /dev/sdb1
+================================================================================================
+III. Manage VG
+
+1. for create VG ( default PE size )
+#vgcreate  india   /dev/sdb1
+
+or
+
+1. for create VG ( custom PE size - eg. 4,8,16,32,64 etc )
+#vgcreate  -s  8  india   /dev/sdb1
+------------------------------------------------
+2. for display VG
+#vgdisplay   india
+------------------------------------------------
+3. for extend VG
+#vgextend   india   /dev/sdb2
+------------------------------------------------
+4. for reduce VG
+#vgreduce   india  /dev/sdb2
+------------------------------------------------
+5. for remove VG
+#vgremove   india
+================================================================================================
+IV. Manage LV
+
+1. Create LV ( -L = size in MB )
+#lvcreate  -L  200  -n   /dev/india/punelv
+
+or
+1. Create LV ( -l = PE )
+#lvcreate  -L  50  -n   /dev/india/punelv
+------------------------------------------------
+2. for extend LV
+#lvextend  -L  +100  /dev/india/punelv
+or
+#lvextend   -l  +25  /dev/india/punelv
+------------------------------------------------
+3. for reduce LV
+#lvreduce  -L  -100   /dev/india/punelv
+or
+#lvreduce  -l  -25  /dev/india/punelv
+------------------------------------------------
+4. for remove LV
+#lvremove   /dev/india/punelv
+================================================================================================
+V. Manage file system and mounting
+
+1. create file system on lv
+#mkfs.xfs   /dev/india/punelv
+------------------------------------------------
+2. create directory and temporary mount
+#mkdir  /pune
+#mount   /dev/india/punelv   /pune
+------------------------------------------------
+3. Permanent Mounting
+#vim  /etc/fstab
+/dev/india/punelv   /pune    xfs    defaults     0 0 
+:wq
+
+#mount  -a
+#lsblk
+=====================================================================================================
+
+Exam Question on LVM
+
+1. create logical volume dell with 400MB from volume group laptop. create xfs file system dell LV and mount it permanently into /dellinfo directory.
+Ans -
+partition size 	= 400 + 8 (2PE) = 408MB
+VG name 	= laptop
+LV name 	= dell ( 400MB )
+FS		=  xfs
+Mount Point 	=/dellinfo
+
+------------------------------------------------------------------------------------
+2. create logical volume sonlylv and nokialv respectively 300MB and 900MB from volume group android. create ext4 file system on both LV and mount /sony and /nokia directory permanently.
+Ans -
+partition size 	= 300+900+8 (2PE) = 1208 MB
+VG name 	= android
+LV name 	= sonylv and nokialv ( 300 + 900 )
+FS		=  ext4
+Mount Point 	= /sony and /nokia
+--------------------------------------------------------------------------------------
+3. extend your system swap with 700MB.
+--------------------------------------------------------------------------------------
+4. create logical volume bajajlv with 50 PE from volume group bike. create xfs file system on bajajlv and mount permanently /Bajaj directory.
+Ans -
+partition size 	= 200+8 (2PE) = 208 MB
+VG name 	= bike
+LV name 	= bajajlv ( 50PE *4 = 200 )
+FS		=  xfs
+Mount Point 	= /Bajaj
+
+--------------------------------------------------------------------------------------
+5. create logical volume mylv with 600 MB from volume group myvg. create xfs file system on mylv and mount it permanently /it/data directory. [ note PE Size = 8 MB ].
+
+Ans -
+partition size 	= 600 + 16 (2PE) = 616 MB
+VG name 	= myvg
+LV name 	= mylv ( 600MB )
+FS		=  xfs
+Mount Point 	=  /it/data
+===============================================================================================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
