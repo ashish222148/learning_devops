@@ -113,7 +113,7 @@ authentication with aws:
 				secret key=""
 
 		2-Environment variable:recommanded method while using CICD.
-			export AWS_ACCESS KEY_ID=""
+			export AWS_ACCESS_KEY_ID=""
 			export AWS_SECRET_ACCESS KEY-"
 			
 		3-download cli and configure
@@ -219,5 +219,112 @@ details through api and match the details from the configuraion file and changes
 
 provider Alias:
 	if you want to create a resource not in given default region, but some resource you can create on diffrent region. then alias comes in to picture.
+	
+	provider block support only one region but we can't mention duplicate block, so we mention alias.
+	
+terraform {
+	required providers {
+		aws {
+			source = "hashicorp/aws"
+			version - "6.0.0-betal"
+		}
+	}
+}
+provider "aws" (
+	#Configuration options
+	region = "ap-south-1"
+}
+
+provider "aws" {
+	region = "us-east-1"
+	alias = "dev"
+	}
+
+resource "aws vpc" "ailiya"(
+	cidr block = ""
+	tags = {
+		name = "main"
+		}
+}
+resource "aws vpc" "ailiya1"(
+	cidr block = ""
+	tags = {
+		name = "main"
+		}
+	provider =aws.dev
+}
+	
+#####################################################################################################################variable block
+
+variable will be define such as var.variable name .
+
+variable declaration will be from declaration block. for every variable , there should be seperate declaration block.
+in every variable declation block, we have to mention data type, else it will be considered as string by default. for example:
+
+terraform {
+	required providers {
+		aws {
+			source = "hashicorp/aws"
+			version - "6.0.0-betal"
+		}
+	}
+}
+
+variable "region" {
+	type = string
+}
+
+variable "cidr" {
+	type = string
+}
 
 
+provider "aws" (
+	#Configuration options
+	region = var.region_name
+}
+
+resource "aws vpc" "ailiya"(
+	cidr_block = var.cidr
+
+}
+
+
+
+Now the Question is , how we will provide the value of variable?
+
+variable Passing:
+	1-by argument
+		-var=<variable>=<value>
+	example:
+		terraform plan -var region="ap-south-1" -var cidr="192.168.1.2"
+	
+	2-by file:
+		Explicitly providing file name in command prompt
+			a-file with any name
+				for example, ashish
+				and mention the variable 
+					region = "ap-south-1"
+					cidr = 192.168.0.3/24
+			then pass file name
+			example:
+				terraform plan -var-file=ashish
+			Note: this is not recommended
+		
+		By default read file name from the same location
+			b-terraform read file name in two forms:
+				terraform.tfvars: give the exact file name
+				no need to pass variable name explicitly
+				for example:
+					terraform plan
+			c-keep any file name but extension will be auto.tfvars
+				for example:
+					ashish.auto.tfvars
+	if you want to mention the by default variable , so define the same in variable block such as :
+		variable "cidr" {
+		type = string
+		default="192.168.1.0/24"
+		}
+		
+
+			
