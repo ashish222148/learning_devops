@@ -1,3 +1,6 @@
+**********************************************************************************************************************************************************************************************************************
+chapter-1
+**********************************************************************************************************************************************************************************************************************
 Chapter-1
 Terraform(IAAC) has two edition:
 1-community edition (free and open source)
@@ -35,7 +38,19 @@ Exam Ques: does terraform need go language required to run terraform ? NO
 json : no indentation required
 yml: indentaion required
 terraform -- version
-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+COMMANDS:
+	terraform validate
+	terraform init
+	terraform plan
+	terraform deploy
+	terraform fmt --check ::it will report if the formating of tf file is wrong
+	terraform fmt :: it checks and correct the formating
+
+
+**********************************************************************************************************************************************************************************************************************
+chapter-2  terraform block, provider block, resource block
+**********************************************************************************************************************************************************************************************************************
 Chapter-2:
 main.tf: file name could be any , only extension should be .tf
 	a-terraform init-download provider, initialize backend, download module. this is one time activity unless you change terraform block.backend is location where terraform keeps its state file, if you not mention
@@ -60,9 +75,9 @@ main.tf: file name could be any , only extension should be .tf
 	8-local
 
 main.tf:
-************single provider:
+single provider:
 
-#####################################################################################terraform block
+//---->terraform block
 
 terraform {
 	required providers {
@@ -72,15 +87,14 @@ terraform {
 		}
 	}
 }
-#####################################################################################provider block
+//---->provider block
 provider "aws" (
 	#Configuration options
 	region = "ap-south-1"
 }
-*****************************
 
 
-*********multiple provider:
+multiple provider:
 terraform {
 	required providers {
 		aws {
@@ -101,7 +115,7 @@ provider "aws"{
 porovider "azurerm" {
 # Configuration options
 }
-******************************
+
 
 authentication with aws:
 	The machine from where we are running the terraform, authentication required from that machine to aws, in case of jenkins, authentication will be at jenkins machine where terraform is running.
@@ -120,7 +134,7 @@ authentication with aws:
 			aws configure -- profile-profilel
 			export AWS DEFAULT PROFILE-profile1
 
-##################################################################################resource block:
+//---->resource block:
 
 terraform {
 	required providers {
@@ -167,8 +181,11 @@ resource name should be always diffrent.
 
 terraform validate: this command will check the error if we will have in conguration file.
 terraform apply -auto approve
+
 	
-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+**********************************************************************************************************************************************************************************************************************
+chapter-3
+**********************************************************************************************************************************************************************************************************************
 chapter-3
 
 reource id shold be unique.
@@ -178,7 +195,10 @@ the id, once id will be there it will go in aws and check the resource id, if sa
 
 statefile keeps the recored of aws resource block.
 
-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+**********************************************************************************************************************************************************************************************************************
+chapter-4      variable block and version contraints
+**********************************************************************************************************************************************************************************************************************
 chapter-4
 
 in cicd , we will use environment varibale menthod for authenticatio.
@@ -254,7 +274,7 @@ resource "aws vpc" "ailiya1"(
 	provider =aws.dev
 }
 	
-#####################################################################################################################variable block
+//---->variable block
 
 variable will be define such as var.variable name .
 
@@ -295,7 +315,7 @@ Now the Question is , how we will provide the value of variable?
 
 variable Passing:
 	1-by argument
-		-var=<variable>=<value>
+		-var <variable>=<value>
 	example:
 		terraform plan -var region="ap-south-1" -var cidr="192.168.1.2"
 	
@@ -326,5 +346,200 @@ variable Passing:
 		default="192.168.1.0/24"
 		}
 		
+**********************************************************************************************************************************************************************************************************************
+chapter-5
+**********************************************************************************************************************************************************************************************************************
+how we use variable in pipe line:
+	in this method, we do not pass the value of variable from any file , we set environment variable like TF_VAR_cidr="192.168.1.0/24"
+	
+	to check echo $TF_VAR_cidr
+	
 
+	🧠 Priority Order (Highest to Lowest)
+	Terraform resolves variables in this order:
+
+	1-CLI -var flag
+	2-terraform.tfvars or *.auto.tfvars file
+	3-Environment variables (TF_VAR_*)
+	4-Default values in the variable block
+
+	✅ When to Use Each
+	| Use Case                            | Recommended Method            |
+	| ----------------------------------- | ----------------------------- |
+	| One-time override or quick test     | `-var="name=value"`           |
+	| CI/CD environment config or secrets | `TF_VAR_name` (env vars)      |
+	| Shared defaults in team projects    | `terraform.tfvars` files      |
+	| Default fallback                    | `default =` in variable block |
+
+
+	to check how many TF_VAR envirnment variable set in linux:
+		printenv | grep TF_VAR*
+	
+Scenario:1
+	suppose you want to create the same reource in all environment, like dev ppte and prod.
+	then what will be option we can use to pass the variable:
+1:	terraform plan -var-file=filename.dev
+
+
+		if there is any variable which is repetating the code or 
+		any value which is same in all environment
+		then new concept come in to picture:
+			
+	Local block:
+		it can be used to replacemnent of variable block.
+		when you defile local block, no need to define type and value will be passwing directly. and moost important thing, like we was using varibale as var.variable name
+		but when we use local block variable, it will be as local.variablename, for example:
+		
+	main.tf:
+		terraform {
+		  required_providers {
+			aws = {
+			  source  = "hashicorp/aws"
+			  version = "~> 5.0"
+			}
+		  }
+		}
+		
+	terrafom.auto.tfvars
+		cidr = "192.168.1.0/24"
+	
+	locals.tf
+		locals {
+		  region="ap-south-1"
+		  tags={
+			Name="ashish"
+		  }
+		}
+	provider.tf
+
+		provider "aws" {
+		  region = local.region
+		}
+
+	resource.tf
+		resource "aws_vpc" "example" {
+		  cidr_block = var.cidr
+		  tags = local.tags
+		}
+
+	variable.tf
+
+		variable "cidr" {
+		  type = string
+		}
+
+
+2:  in first method, we have passed the value through diffrent file, but here we can mentyion all the environment in locals block. (but same is not recommanded)
+
+	for example:
+		locals{
+		region="ap-south-1"
+			dev = {				
+						  tags={
+								Name="ashish"
+								}
+			}
+			
+			prod ={
+						  tags={
+								Name="arun"
+								}
+			}			
+			
+			
+		}
+		
+		
+	here region is command , so we have mention the same just after the locals, while all others are in repective dev or prod block.
+		
+		
+
+code:
+
+
+	main.tf:
+		terraform {
+		  required_providers {
+			aws = {
+			  source  = "hashicorp/aws"
+			  version = "~> 5.0"
+			}
+		  }
+		}
+		
+	terrafom.auto.tfvars
+		cidr = "192.168.1.0/24"
+	
+	locals.tf
+		locals {
+		  region="ap-south-1"
+		  tags={
+			Name="ashish"
+		  }
+		}
+	provider.tf
+
+		provider "aws" {
+		  region = local.region
+		}
+
+	resource.tf
+		resource "aws_vpc" "dev_vpc" {
+		  cidr_block = var.cidr
+		  tags = local.dev.tags
+		}
+		resource "aws_vpc" "prod_vpc" {
+		  cidr_block = var.cidr
+		  tags = local.prod.tags
+		}
+
+	variable.tf
+
+		variable "cidr" {
+		  type = string
+		}
+
+Q: what is default standard follows in terraform?
+	2 spaces
+	
+	
+Required Version in Terraform:
+	why we write version in code?
+		to make sure what the code we have written will keep on working even if new version available.
+	
+	
+	main.tf:
+		terraform {
+		  required_version ="~>1.12.0"
+		  required_providers {
+			aws = {
+			  source  = "hashicorp/aws"
+			  version = "~> 5.0"
+			}
+		  }
+		}
+
+
+LOG:
+	by default logging is in info mode.
+	in terraform we can enable the logging through environment variable.
+	debug level:
+		export TF_LOG=debug
+		terraform plan
+	trace level:(not used)
+		export TF_LOG=trace
+		terraform plan
+	to save the log on a location:
+		export TF_LOG_PATH=mylog.txt
+		
+	Note:	while we run terraform plan, on display only standard output we will get, rest of logs will be in log file.
+	
+	to unset log:
+		unset TF_LOG
+		unset TF_LOG_PATH
+
+
+
+
+	
 			
