@@ -70,9 +70,9 @@ main.tf: file name could be any , only extension should be .tf
 	2-providers : aws configuration option for example region.
 	3-resource
 	4-variable
-	6-output
-	7-module
-	8-local
+	5-output
+	6-module
+	7-local
 
 main.tf:
 single provider:
@@ -537,9 +537,160 @@ LOG:
 	to unset log:
 		unset TF_LOG
 		unset TF_LOG_PATH
+		
+//---->output block:
 
-
-
-
+	we can print the value of reource on screen with the help of output block.
 	
+	
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.0"
+    }
+  }
+}
+
+# Configure the AWS Provider
+provider "aws" {
+  region = "ap-south-1"
+}
+
+# Create a VPC
+resource "aws_instance" "main" {
+  ami           = "ami-0af9569868786b23a"
+  instance_type = "t2.micro"
+}
+
+output "pubip" {
+  value = aws_instance.main.public_ip
+}
+
+Note: here in output block , we can provide only one value to print.
+
+but if you want to print multiple value in out put value, you have to use concept of interpolation.
+
+
+
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.0"
+    }
+  }
+}
+
+# Configure the AWS Provider
+provider "aws" {
+  region = "ap-south-1"
+}
+
+# Create a VPC
+resource "aws_instance" "main" {
+  ami           = "ami-0af9569868786b23a"
+  instance_type = "t2.micro"
+}
+
+output "pubip" {
+  value = "for newly created instance public ip is ${aws_instance.main.public_ip} and private ip is ${aws_instance.main.private_ip}"
+}
+
+
+//---->data block:
+
+data sourcing: by using data block, fetch the details of resource from the region is known as data sourcing, for example :
+	to get the ami id of os.
+	
+	there are two block mentioned in the aws documentation: resource block and data source lock.
+	
+data "aws_ami" "main"{
+	owners = ""
+	most_recent=true
+	filter{
+	name="name"
+	values=["/ubuntu/images/hvs-ssd"]
+	}
+	}
+resource "aws_instance" "main"{
+ami=data.aws_ami.main.id
+}
+
+data.aws_ami.main : data block fetch the information of aws ami so that we can use it.
+
+State file manangement:
+	state command:
+		terraform state list: 
+			how many resource in terrafom state file.
+		terrafom state show <state id of resource>:
+			to check the property of list
 			
+			
+How to send any resource to managge manual?
+	remove the entry from the configuration file:
+	terraform state list: get the id from resource file
+	terraform state rm <styate id of resource>
+	
+How we will get to know which resource is managed by terraform?
+
+	terraform state list
+	terraform state show <state id of resource>
+	check the instance id and match the same from aws.
+	
+**********************************************************************************************************************************************************************************************************************
+chapter-6
+**********************************************************************************************************************************************************************************************************************
+If we want to manage any resource through terraform which is create earlier manually.
+	--entry should be in state file and configuration file:
+		terraform import aws_instance.main instance_id_in_aws
+		
+		this command will prepare instance id in state file, entry will be fetched to state file after running this command .
+		
+		Note: there should be a resource block with the below configuration:
+			resource "aws_instance" "main"
+			{
+			
+			}
+		get the entry from the state file to the configuration file.
+		for example:
+			resource "aws_instance" "main"
+			{
+			ami="id-123456778"
+			instance_type="t2.micro"
+			}
+	
+		terraform plan
+		terraform apply
+		
+
+Meta Argument:
+	meta arguments are argument that can be used with any resource type:
+		1-provider
+		2-dependes_on:
+			used for explicitly dependancy , it should be always in list.
+		3-count
+		4-for_each
+		
+	Implicit Dependancies:
+		terraform maintain implicit dependancy by default like before creating subnet , vpc should be available there.
+	Explicit Dependancies:
+		some cases where we have to provide the same explicitly.
+		for example:
+			resource "aws_vpc" "dev_vpc"{
+				cidr_block=var.cidr
+				tags =local.dev.tags
+				dependes_on=[aws_vpc.prod_vpc,etc..]
+			}
+			resource "aws_vpc" "prod_vpc"{
+				cidr_block=var.cidr
+				tags=local.prod.tags
+			}
+	Most Imp and widely used:
+		count
+		for_each
+		
+	both are used in loop
+	
+	count:
+		work on the list items and outcome will be required in numbers only
