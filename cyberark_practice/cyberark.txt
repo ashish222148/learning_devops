@@ -382,3 +382,31 @@ CCP:    The Central Credential Provider consists of the Credential Provider for 
         Credential Provider web service. 
 
 
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Administration Practice:
+    Policies:Platform:Safe:accounts
+
+    1-Policies: Master Policy  
+        a-Privilege Access Workflow
+        b-Password Management
+        c-seesiomn management
+        d-audit
+    2-Platform: platform have three main functions:
+        a-Technical setting for managing password: passwortd policy setting such as minimum length , forbidden character and so on.
+        b-connecting to the target system:points to the relevent plugins and connection component.
+        c-The basis for exceptions to the master policy
+            Platform Types:
+                1-Targets: define the techinical settings that determine how the system manages accounts on diffrent type of server.
+
+                2-Dependents: also known as usages:
+                    define additional service accounts such as windows service or schedule tasks
+
+        platform managements:
+            in order to configure platform, you need to be a member of vault admin group.otherwise you will not see the administratioon menu, which is where 
+            you find platform management.
+
+        Edit Platform:
+            Platform are divided in to 2 broad sections:
+                1-UI and workflows
+                2-Automatic Password Management
+                
