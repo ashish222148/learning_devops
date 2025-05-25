@@ -764,3 +764,114 @@ program of count:
 	output "vpcname" {
 	  value = aws_vpc.name
 	}
+	
+Q: How to get availability zone from data and loop it , take cidr list and create subnet one one in every zone.
+
+A: 
+
+	terraform {
+	  required_providers {
+		aws = {
+		  source  = "hashicorp/aws"
+		  version = "~> 5.0"
+		}
+	  }
+	}
+
+	# Configure the AWS Provider
+	provider "aws" {
+	  region = "ap-south-1"
+	}
+
+	# Create a VPC
+	resource "aws_vpc" "name" {
+	  cidr_block = "192.168.0.0/16"
+	}
+
+	data "aws_availability_zones" "this" {
+	  state = "availability"
+	}
+	locals {
+	  subnet_cidr = ["192.168.0.0/24", "192.168.1.0/24", "192.168.2.0/24"]
+	}
+	resource "aws_subnet" "name" {
+	  count             = length(data.aws_availability_zones.this.names)
+	  vpc_id            = aws_vpc.name.id
+	  availability_zone = data.aws_availability_zones.this.names[count.index]
+	  cidr_block        = local.subnet_cidr[count.index]
+	  depends_on        = [aws_vpc.name]
+	}
+	output "myazlist" {
+	  value = data.aws_availability_zones.this.names
+	}
+	
+
+for_each:
+
+	count is limited to list data but in case of map data , we have to use for_each.it works for each work items.
+	locals{
+		mysubnets={
+			subneta={
+				az="ap-south-1"
+				cidr="192.168.0.0/24"
+			}
+			subnetb={
+				az="ap-south-1"
+				cidr="92.168.1.0/24"
+			}
+		}
+	}
+	for_each=local.subnet
+	value=each.value.az
+	value=each.value.cidr
+	
+note : here item should be unique, such as subneta and subnetb
+
+code:
+
+	terraform {
+	  required_providers {
+		aws = {
+		  source  = "hashicorp/aws"
+		  version = "~> 5.0"
+		}
+	  }
+	}
+
+	# Configure the AWS Provider
+	provider "aws" {
+	  region = "ap-south-1"
+	}
+
+	# Create a VPC
+	resource "aws_vpc" "name" {
+	  cidr_block = "192.168.0.0/16"
+	}
+
+	data "aws_availability_zones" "this" {
+	  state = "available"
+	}
+
+	locals {
+	  subnets = {
+		subneta = {
+		  az   = "ap-south-1a"
+		  cidr = "192.168.0.0/24"
+		}
+		subnetb = {
+		  az   = "ap-south-1b"
+		  cidr = "192.168.1.0/24"
+		}
+	  }
+	}
+	resource "aws_subnet" "name" {
+	  for_each          = local.subnets
+	  vpc_id            = aws_vpc.name.id
+	  availability_zone = each.value.az
+	  cidr_block        = each.value.cidr
+	  depends_on        = [aws_vpc.name]
+	}
+
+	output "myazlist" {
+	  value = data.aws_availability_zones.this.names
+	}
