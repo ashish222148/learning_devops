@@ -543,29 +543,29 @@ LOG:
 	we can print the value of reource on screen with the help of output block.
 	
 	
-terraform {
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 5.0"
-    }
-  }
-}
+	terraform {
+	  required_providers {
+		aws = {
+		  source  = "hashicorp/aws"
+		  version = "~> 5.0"
+		}
+	  }
+	}
 
-# Configure the AWS Provider
-provider "aws" {
-  region = "ap-south-1"
-}
+	# Configure the AWS Provider
+	provider "aws" {
+	  region = "ap-south-1"
+	}
 
-# Create a VPC
-resource "aws_instance" "main" {
-  ami           = "ami-0af9569868786b23a"
-  instance_type = "t2.micro"
-}
+	# Create a VPC
+	resource "aws_instance" "main" {
+	  ami           = "ami-0af9569868786b23a"
+	  instance_type = "t2.micro"
+	}
 
-output "pubip" {
-  value = aws_instance.main.public_ip
-}
+	output "pubip" {
+	  value = aws_instance.main.public_ip
+	}
 
 Note: here in output block , we can provide only one value to print.
 
@@ -573,29 +573,29 @@ but if you want to print multiple value in out put value, you have to use concep
 
 
 
-terraform {
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 5.0"
-    }
-  }
-}
+	terraform {
+	  required_providers {
+		aws = {
+		  source  = "hashicorp/aws"
+		  version = "~> 5.0"
+		}
+	  }
+	}
 
-# Configure the AWS Provider
-provider "aws" {
-  region = "ap-south-1"
-}
+	# Configure the AWS Provider
+	provider "aws" {
+	  region = "ap-south-1"
+	}
 
 # Create a VPC
-resource "aws_instance" "main" {
-  ami           = "ami-0af9569868786b23a"
-  instance_type = "t2.micro"
-}
+	resource "aws_instance" "main" {
+	  ami           = "ami-0af9569868786b23a"
+	  instance_type = "t2.micro"
+	}
 
-output "pubip" {
-  value = "for newly created instance public ip is ${aws_instance.main.public_ip} and private ip is ${aws_instance.main.private_ip}"
-}
+	output "pubip" {
+	  value = "for newly created instance public ip is ${aws_instance.main.public_ip} and private ip is ${aws_instance.main.private_ip}"
+	}
 
 
 //---->data block:
@@ -605,17 +605,17 @@ data sourcing: by using data block, fetch the details of resource from the regio
 	
 	there are two block mentioned in the aws documentation: resource block and data source lock.
 	
-data "aws_ami" "main"{
-	owners = ""
-	most_recent=true
-	filter{
-	name="name"
-	values=["/ubuntu/images/hvs-ssd"]
+	data "aws_ami" "main"{
+		owners = ""
+		most_recent=true
+		filter{
+		name="name"
+		values=["/ubuntu/images/hvs-ssd"]
+		}
+		}
+	resource "aws_instance" "main"{
+	ami=data.aws_ami.main.id
 	}
-	}
-resource "aws_instance" "main"{
-ami=data.aws_ami.main.id
-}
 
 data.aws_ami.main : data block fetch the information of aws ami so that we can use it.
 
@@ -630,7 +630,7 @@ State file manangement:
 How to send any resource to managge manual?
 	remove the entry from the configuration file:
 	terraform state list: get the id from resource file
-	terraform state rm <styate id of resource>
+	terraform state rm <state id of resource>
 	
 How we will get to know which resource is managed by terraform?
 
@@ -693,4 +693,74 @@ Meta Argument:
 	both are used in loop
 	
 	count:
-		work on the list items and outcome will be required in numbers only
+		work on the list items and outcome will be required in numbers only.
+		
+		resource "aws_vpc" "name"
+		{
+		count=2
+		cidr_block="192.168.1.0"
+		}
+	there will be two resource create with the following name:
+	aws_vpc.name[0]
+	aws_vpc.name[1]
+	
+program of count:
+	terraform {
+	  required_providers {
+		aws = {
+		  source  = "hashicorp/aws"
+		  version = "~> 5.0"
+		}
+	  }
+	}
+
+	# Configure the AWS Provider
+	provider "aws" {
+	  region = "ap-south-1"
+	}
+
+	locals {
+	  cidr_block = ["192.168.0.0/24","10.0.0.0/24"]
+	}
+	resource "aws_vpc" "name" {
+	  count      = 2
+	  cidr_block = local.cidr_block[count.index]
+	}
+	output "vpcname" {
+	  value = aws_vpc.name
+	}
+
+Question: Does terraform support user defined function?
+
+Ans: No treeaform does not support user defined function.
+
+function testing:
+	length(["192.168.1.0/24","192.168.0.0/24"])
+	toset(["192.168.1.0/24","192.168.0.0/24"])
+
+program of count:
+	
+	terraform {
+	  required_providers {
+		aws = {
+		  source  = "hashicorp/aws"
+		  version = "~> 5.0"
+		}
+	  }
+	}
+
+	# Configure the AWS Provider
+	provider "aws" {
+	  region = "ap-south-1"
+	}
+
+	locals {
+	  cidr_block = ["192.168.0.0/24","10.0.0.0/24"]
+	}
+	resource "aws_vpc" "name" {
+	  count      = length(local.cidr_block)
+	  cidr_block = local.cidr_block[count.index]
+	}
+	output "vpcname" {
+	  value = aws_vpc.name
+	}
