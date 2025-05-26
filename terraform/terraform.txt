@@ -875,3 +875,168 @@ code:
 	output "myazlist" {
 	  value = data.aws_availability_zones.this.names
 	}
+
+**********************************************************************************************************************************************************************************************************************
+chapter-7
+**********************************************************************************************************************************************************************************************************************
+if you want to use for_each with list(instaed of map):
+	locals{
+		cidr=["192.168.1.0/24","192.168.2.0"]
+	}
+	resource "aws_vpc" "main"{
+	for_each =toset(local.cidr)
+	cidr_block=each.value
+	}
+	
+	
+Functions:
+	-numeric:
+		max,min
+	-string:
+		lower,upper,split,regex,replace,join,strcontains,startswith,endswith
+	-collection:
+		index,flatten,keys,map,list,lookup,elements,concat,values,range,reverse
+	-encoding:
+		base64encode,base64decode,json,yaml
+	-filesystem:
+		file,dirname,basename,fileexists,
+	-date &time:
+		
+	-ip network:
+		cidrhost,cidrnetmask,cidrsubnet,cidrsubnets
+	-type:
+		toset,tobool
+		
+terraform console:
+	> max(2,8,3)
+	8
+	> min(2,3,8)
+	2
+	> lower("ASHISH")
+	"ashish"
+	> upper("ashish"
+	: )
+	"ASHISH"
+	> split(".","I.am.ashish")
+	tolist([
+	  "I",
+	  "am",
+	  "ashish",
+	])
+
+	> regex("[a-z]+","abc54778hgyfc8990")
+	"abc"
+	
+	> replace("my name is ashish","ashish","arun")
+	"my name is arun"
+	
+	> join (" ",["my","name","is","ashish"])
+	"my name is ashish"
+
+	> join (" ",["my","name","is","ashish"])
+	"my name is ashish"
+	
+	> strcontains("my name is ashish","my")
+	true
+	> startswith("my name is ashish","my")
+	true
+	> endswith("my name is ashish","my")
+	false
+	> endswith("my name is ashish","sh")
+	true
+	above three function only return boolean value.
+	
+	> index(["ram","shyam","mohan","bholebaba"],"shyam")
+	1
+	> index(["ram","shyam","mohan","bholebaba"],"ram")
+	0
+	> element(["ram","shyam","mohan","bholebaba"],1)
+	"shyam"
+	> element(["ram","shyam","mohan","bholebaba"],0)
+	"ram"
+	>
+	
+flatten function covert all list in to a single list, even works on list within list.
+
+	> flatten([["ram","shyam"],["mohan","bholebaba"]])
+	[
+	  "ram",
+	  "shyam",
+	  "mohan",
+	  "bholebaba",
+	]
+
+	> keys({"name"="vijay","city"="ailiya"})
+	[
+	  "city",
+	  "name",
+	]
+	> values({"name"="vijay","city"="ailiya"})
+	[
+	  "ailiya",
+	  "vijay",
+	]
+	>
+	> length(["a","b"])
+	2
+	works on map, if mentioned key found, value will be shown else default value can also show.
+	> lookup({"name"="vijay","city"="ailiya"},"name")
+	"vijay"
+	>
+	> lookup({"name"="vijay","city"="ailiya"},"names","ashish")
+	"ashish"
+	>
+	tolist([
+	  0,
+	  1,
+	  2,
+	])
+	
+	> base64encode("ashish")
+	"YXNoaXNo"
+	
+	> base64decode("YXNoaXNo")
+	"ashish"
+file:	to pass the content of file:
+	> file("./main.tf")
+	""
+	> fileexists("./main.tf")
+	true
+	> fileexists("./mai.tf")
+	false
+	>
+basename: only present file name
+
+	> basename("/root/ashish.txt")
+	"ashish.txt"
+		
+	> dirname("/root/ashish.txt")
+	"/root"
+	>
+	
+Most Imp:
+cidrhost: if you want to get any specific ip from cidr
+	> cidrhost("192.168.1.0/24",4)
+	"192.168.1.4"
+	>
+	> cidrnetmask("192.168.1.0/29")
+	"255.255.255.248"
+
+	> cidrsubnet("192.168.1.0/24",2,1)
+	"192.168.1.64/26"
+	> cidrsubnet("192.168.1.0/24",2,0)
+	"192.168.1.0/26"
+	> cidrsubnet("192.168.1.0/24",2,2)
+	"192.168.1.128/26"
+	> cidrsubnet("192.168.1.0/24",2,3)
+	"192.168.1.192/26"
+Note: from where two comes:
+	cidr value is 192.168.1.0/24, suppose we want 64 ips in each block, then we will use 192.168.1.0/26, because 32-26=6, and 2^6=64, so we will add in 24 , 2 to become 26.
+	0 ,1, 2, 4 is the index number
+	
+VIMP: State file lock: at the same time only one can use the state file , for example if you have open terraform console and want to run the terraform plan on the same location , it will through an error that state lock.
+
+
+**********************************************************************************************************************************************************************************************************************
+chapter-8
+**********************************************************************************************************************************************************************************************************************
