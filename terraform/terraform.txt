@@ -46,6 +46,10 @@ COMMANDS:
 	terraform deploy
 	terraform fmt --check ::it will report if the formating of tf file is wrong
 	terraform fmt :: it checks and correct the formating
+	terraform graph
+	terraform graph | dot -Tsvg > graph.svg
+	terraform taint
+	terraform untent --help
 
 
 **********************************************************************************************************************************************************************************************************************
@@ -400,7 +404,7 @@ Scenario:1
 		  }
 		}
 		
-	terrafom.auto.tfvars
+	terraform.auto.tfvars
 		cidr = "192.168.1.0/24"
 	
 	locals.tf
@@ -467,7 +471,7 @@ code:
 		  }
 		}
 		
-	terrafom.auto.tfvars
+	terraform.auto.tfvars
 		cidr = "192.168.1.0/24"
 	
 	locals.tf
@@ -622,8 +626,8 @@ data.aws_ami.main : data block fetch the information of aws ami so that we can u
 State file manangement:
 	state command:
 		terraform state list: 
-			how many resource in terrafom state file.
-		terrafom state show <state id of resource>:
+			how many resource in terraform state file.
+		terraform state show <state id of resource>:
 			to check the property of list
 			
 			
@@ -1040,3 +1044,123 @@ VIMP: State file lock: at the same time only one can use the state file , for ex
 **********************************************************************************************************************************************************************************************************************
 chapter-8
 **********************************************************************************************************************************************************************************************************************
+ec2 with functions:
+	ssh-keygen -f awskey
+ami details to create instance:
+	amazon/al2023-ami-2023.7.20250512.0-kernel-6.1-x86_64
+	ami-0af9569868786b23a
+	137112412989
+	
+How to create instance with the help of ami id filter:
+
+	terraform {
+	  required_providers {
+		aws = {
+		  source  = "hashicorp/aws"
+		  version = "~> 5.0"
+		}
+	  }
+	}
+
+	# Configure the AWS Provider
+	provider "aws" {
+	  region = "ap-south-1"
+	}
+
+	# Create a VPC
+	resource "aws_vpc" "ailiya_vpc" {
+	  cidr_block = "192.168.0.0/16"
+	}
+
+	data "aws_ami" "main" {
+	  owners = ["137112412989"]
+	  most_recent = true
+	  filter {
+		name = "name"
+		values = ["al2023-ami-2023.7.20250512.0-kernel-6.1-x86_64"] // it should be the ami name.
+	  }
+	}
+	resource "aws_instance" "pubsrv" {
+	  ami = data.aws_ami.main.id
+	  instance_type = "t2.micro"
+	}
+	output "amiid" {
+	  //value = "ami id is {data.aws_ami.main}"
+	 value = data.aws_ami.main.id
+	}
+Note:values = ["al2023-ami-2023.7.20250512.0-kernel-6.1-x86_64"] // it should be the ami name. , we can choose it from ami section in aws 
+
+
+Create subnet in ery availability zone:
+---code -1 using count
+
+	terraform {
+	  required_providers {
+		aws = {
+		  source  = "hashicorp/aws"
+		  version = "~> 5.0"
+		}
+	  }
+	}
+
+	# Configure the AWS Provider
+	provider "aws" {
+	  region = "ap-south-1"
+	}
+	locals {
+	  cidr = "192.168.0.0/16"
+	}
+	# Create a VPC
+	resource "aws_vpc" "ailiya_vpc" {
+	  cidr_block = local.cidr
+	}
+
+	data "aws_availability_zones" "this" {
+	  state = "available"
+	}
+	resource "aws_subnet" "main" {
+	  count             = length(data.aws_availability_zones.this.names)
+	  vpc_id            = aws_vpc.ailiya_vpc.id
+	  availability_zone = data.aws_availability_zones.this.names[count.index]
+	  cidr_block        = cidrsubnet(local.cidr, 8, count.index)
+	}
+
+
+---code -2 using for_each
+	terraform {
+	  required_providers {
+		aws = {
+		  source  = "hashicorp/aws"
+		  version = "~> 5.0"
+		}
+	  }
+	}
+
+	# Configure the AWS Provider
+	provider "aws" {
+	  region = "ap-south-1"
+	}
+	locals {
+	  cidr = "192.168.0.0/16"
+	}
+	# Create a VPC
+	resource "aws_vpc" "ailiya_vpc" {
+	  cidr_block = local.cidr
+	}
+
+	data "aws_availability_zones" "this" {
+	  state = "available"
+	}
+	resource "aws_subnet" "main" {
+	  for_each          = toset(data.aws_availability_zones.this.names)
+	  vpc_id            = aws_vpc.ailiya_vpc.id
+	  availability_zone = each.key
+	  cidr_block        = cidrsubnet(local.cidr, 8, index(data.aws_availability_zones.this.names, each.key))
+	}
+	
+	
+taint: to recreate reource
+terraform taint: in state file any reource file will be labeled as taint.
+	terraform taint reourceid
+	terraform untent
+	
