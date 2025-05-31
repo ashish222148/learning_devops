@@ -1,1 +1,68 @@
+git jenkins:
+**********************************************************************************************************************************************************************************************************************
+chapter-1
+**********************************************************************************************************************************************************************************************************************
+DevOps:
+Dev:
+	1-Plan		:jira, rally
+	2-Code		:python->vcs(git)
+	3-bulid		:terraform,ansible,puppet
+	4-test		:
+Ops:
+	5-release
+	6-deploy
+	7-operator
+	8-monitor
+	
+1-How to set username and email id:
 
+	$ git config --global user.name "ashish"
+	$ git config --global user.email "ailiya222148.in"
+	$ git config --list
+
+location:
+	there are two directory basically where the configuration stored, if you select the option globally then it will be stored in 1 location:
+	1-if you select the option globally then it will be stored in 1 location:
+		$ cat ~/.gitconfig
+			[user]
+					name = ashish
+					email = ailiya222148.in
+	2-when you select the option locallly:
+		cat .git/config
+		$ cat config
+		[core]
+				repositoryformatversion = 0
+				filemode = false
+				bare = false
+				logallrefupdates = true
+				symlinks = false
+				ignorecase = true
+		[remote "origin"]
+				url = https://github.com/ashish222148/learning_devops.git
+				fetch = +refs/heads/*:refs/remotes/origin/*
+		[branch "main"]
+				remote = origin
+				merge = refs/heads/main
+
+clone:
+	$ git clone https://github.com/ashish222148/learning_devops.git
+	$ ls -la
+
+how to create alias for any command:
+	git config --global alias.cl clone
+	
+	we can check the alias at global level:
+		$ cat ~/.gitconfig
+		[user]
+				name = ashish
+				email = ailiya222148.in
+		[alias]
+				cl = clone
+
+
+When we create repository on git hub , there are two options:
+	1-add readme file
+	2-add .gitignore-file format will be ignored at the time of commit
+	
+	
+	

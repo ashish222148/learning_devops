@@ -409,4 +409,15 @@ Administration Practice:
             Platform are divided in to 2 broad sections:
                 1-UI and workflows
                 2-Automatic Password Management
-                
+    
+	Safes:
+		Safes stored in the vault twice:
+			first in the valut file system with encryption and second in vault database.
+			safes can be viewed through a number of diffrent means:
+				1-vault file system:
+				2-privateark client
+				3-through pvwa , in policies tab
+				
+**********************************************************************************************************************************************************************************************************************
+1-Export Vault Data
+**********************************************************************************************************************************************************************************************************************
