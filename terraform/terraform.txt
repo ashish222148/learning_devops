@@ -1164,3 +1164,65 @@ terraform taint: in state file any reource file will be labeled as taint.
 	terraform taint reourceid
 	terraform untent
 	
+**********************************************************************************************************************************************************************************************************************
+chapter-9
+**********************************************************************************************************************************************************************************************************************
+meta arguments: completed: used mostly in resource block.
+expression:
+	expressions ca be used anywhere. there are two type of expression
+		1-condition:
+			outcome sholud be : true | false
+				statement=condition?<true value>:<false value>
+		2-dynamic block:
+		
+	
+
+	module "s3-bucket" {
+	  source  = "terraform-aws-modules/s3-bucket/aws"
+	  version = "4.10.0"
+	}
+
+	sources:
+		1-local path:./athofmodule
+			local file system does not support versioning.
+		2-github:github.com/hashiscorp/example?ref=(branchname/tagname)
+			version is in line for exm: ?ref(branchname/tagname)
+		3-private registry:tfe.gcp.mylab.local/pmr/aws_network_vpc
+		4-public registry:terraform-aws-modules/s3-bucket/aws
+			if source is started with terraform ...then its public registry
+		5-s3-bucket: s3::https://s3-ap-south-1.amazon.com/example.zip
+			always end with zip and no versioning in s3.
+		http:https://myregis.local.asd.zip
+
+	every time when we use module, we have to initialize the same, by command terraform init
+	
+
+private module:
+	local->git->private-registry
+module development:
+	1-don't use loop
+	2-variable shold be variablsed
+	3-child output parent me output
+	
+	child block should not contain in terraform block and provider block.
+	
+
+
+
+
+**********************************************************************************************************************************************************************************************************************
+chapter-11
+**********************************************************************************************************************************************************************************************************************
+State file can't be save on source code management system(git)
+module can be stored on git.
+
+module have only pull action.
+
+module has diffrent version constarints:
+module is like a block:
+	module is being called in child modulle. and current directory where module is calling is known as root module.
+	
+	module  is of two types:
+		1-private module
+		2-public moduule
+		
