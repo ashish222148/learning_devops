@@ -1,0 +1,30 @@
+Date:01-06-2025
+
+Q: Not able to login in to PVWA using ldap authentication?
+	check the bind account 
+	reset the bind account and add the same is ldap integration.
+	there are two method to reset the password of bind account:
+		1-login to private ark client-vault internal safe-open the domain name.pass and reset the password
+		2-go to pvwa-administration-ldap integation-directories-bind password
+		
+	to check whether password is working or not, got to domain server , in cmd, ldp.exp->bindaccountname/password test
+	
+Q: How to get ldap directory location:
+	Get-ADGroup -Identity "cyberark auditors" | fl DistinguishedName
+	
+when we click on the connect button:
+	pvwa server sends RDP file to our local machine.rdp file contain address of psm server and psm user.
+	    PSMConnect:A windows user that is created in order to start PSM session on the PSM machine.
+        PSMAdminConnect:A windows user that is created in order to monitor live privilege session.
+		PSMGW_<MachineName>:This is the Gateway user through which the PSM users will access the Vault. The credentials file for this user is PSMGW_<MachineName>.ini.
+					This user is added automatically to the following group: PVWAGWAccounts,Being a member of this group with enable this user to access all 
+					password Safes.
+					
+Note:
+	name of the PSMConnect user in PSM safe is PSMServer
+	name of the PSMAdminConnect user in PSM safe is PSMAdmin
+	
+	
+page24
+
+QndC,8@4cr]cNLANf_s[uxNV-x@(rh1I{K{y}tJ

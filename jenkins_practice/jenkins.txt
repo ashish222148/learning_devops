@@ -64,5 +64,35 @@ When we create repository on git hub , there are two options:
 	1-add readme file
 	2-add .gitignore-file format will be ignored at the time of commit
 	
+
+If you want to clone only 1 or some numbers of commit to be clone.
+	git clone --depth=1 git@github.com:ashish222148/learning_devops.git
+	
+We create repository in github via two ways:
+	repository with some containlike readme file or git ignore file. (we can clone as per the above method)
+	repository without contain any file:
+	
+.git : it is very impotant file, changes which we done on git client saved on .git folder
+
+HEAD: determine on which branch you are currently, we can check it either with command cat .git/HEAD or git log
+
+how to clone any existing branch:
+	$ git clone --branch=ashishwsl git@github.com:ashish222148/learning_devops.git
+	
+	if you don't allow which branch need to be clone, then by default it clone default branch.
+	
+
+Clone with tag:
+	git clone --branch=tag git@github.com:ashish222148/learning_devops.git/
+	
+so in conclusion: we can clone the repo in three ways:
+	1-git clone git@github.com:ashish222148/learning_devops.git-> it will clone default branch by default
+	2-git clone --branch = branchname git@github.com:ashish222148/learning_devops.git -> it will clone to mentioned branch
+	3-git clone --branch= tagname git@github.com:ashish222148/learning_devops.git -> it will clone the mentioned tag only
+	
+How many branches create on git hub:
+	git branch -a 
+	
+
 	
 	
