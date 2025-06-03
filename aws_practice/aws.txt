@@ -221,6 +221,42 @@ ec2 service:
 	
 
 
+AWS Cloud Formation:
+    Script and Tool : every polular thing based on these two thing.
+        terraform,ansible platform agnostic but cloud formation is platform dependent(aws).
+
+        Cloud formation is the automation tool for infrastructure creation from Script.
+            1-EC2 creation (values) script: also called stack(what i need)
+            2-Handover to cloudformation
+            3-permission
+create json file for creating ec2 instance
+create iam role for cloud formation
+add ec2 full permission to that role
+
+we can also delete the stack.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------
+what is template:
+	the code we have written in josn or yml format is known as template.
+stack:
+	we create stack with the template.
+	
+Resources:
+  SimpleEC2Instance:
+    Type: "AWS::EC2::Instance"
+    Properties:
+      InstanceType: t2.micro
+      ImageId: ami-0af9569868786b23a # AMI ID for your region
+      Tags:
+        - Key: Name
+          Value: MySimpleInstance
 
 
-
+Step:1
+	create or use an existing template
+Step:2
+	save locally or in s3 bucket
+Step:3
+	use aws cloud formation to create a stack based on your template. It constructs and configures your stack resources.
+	
+	

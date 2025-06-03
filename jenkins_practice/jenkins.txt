@@ -93,6 +93,90 @@ so in conclusion: we can clone the repo in three ways:
 How many branches create on git hub:
 	git branch -a 
 	
+git remote -v:
+	to check the destination:
+		here origin indicates remote
+	when we clone first time, it update the origin in remote.
+git remote add bitbucket urlofbitbucket
+git remote -v
+	bitbucket       urlofbitbucket (fetch)
+	bitbucket       urlofbitbucket (push)
+	origin  git@github.com:ashish222148/learning_devops.git (fetch)
+	origin  git@github.com:ashish222148/learning_devops.git (push)
 
+here two remote has been updated.
+	git push bitbucket ashishlearning
+	git push origin ashishlearning
+	
+how to rename remote:
+	git remote rename bitbucket BB
+
+How to change the url in remote:
+	git remote set-url BB abc.com
+
+git remote show origin
+
+How to delete remote:
+	git remote rm BB
+	
+
+How to rename branch:
+	git branch -M main
+	
+Most IMP:
+	suppose you crate an empty repo on git hub:
+	then you have perform multiple thing:
+	create a new repository on the command line
+		echo "# dummy" >> README.md
+		git init
+		git add README.md
+		git commit -m "first commit"
+		git branch -M main
+		git remote add origin git@github.com:ashish222148/dummy.git
+		git push -u origin main
+
+	git remote add origin git@github.com:ashish222148/dummy.git
+		git branch -M main
+		git push -u origin main
+
+**********************************************************************************************************************************************************************************************************************
+Completed -git_seesion2_part2
+**********************************************************************************************************************************************************************************************************************
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+**********************************************************************************************************************************************************************************************************************
+chapter-2
+**********************************************************************************************************************************************************************************************************************
+git fork:
+	clone public rpo server to server
+git branch:
+	git branch f12345
+	git checkout f12345
+git checkout -b f6789
+git branch -a:
+	it will show the branch on local as well as remote.
+to delete branch:
+	git branch -d branchname
+to forcefully delte:
+	git branch -D branch
+	
+if branch exist local and remote:
+	git branch -D branchname
+	git push origin --delete branchname
+	
+how to rename branch:
+	exit from the branch which you want to rename:
+		git branch -m oldname newname
+	but on remote it will be same, it will remain same.
+git checkout filename.txt:
+	will will revert the changes from stage re, later it is replaced by command git restore filename.
 	
 	
+Branching strategy:
+	trunk based: where we have stable code, for example main branch.
+	branch based:
+		master branch-hotfixses-release branch-develop branch-featcher branch
+
+git commit --amend -m "message":
+	this will work only on latest commit, if you want to club last commit and current commit, even you can changes the commit message of last message
+	
+Note: all file in staging area will be committed at once, if you want to remove any file from commit, then we have to first that file in working directory.
