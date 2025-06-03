@@ -140,25 +140,27 @@ authentication with aws:
 
 //---->resource block:
 
-terraform {
-	required providers {
-		aws {
-			source = "hashicorp/aws"
-			version - "6.0.0-betal"
+	terraform {
+	  required_providers {
+		aws = {
+		  source  = "hashicorp/aws"
+		  version = "6.0.0-beta2"
 		}
+	  }
 	}
-}
-provider "aws" (
-	#Configuration options
-	region = "ap-south-1"
-}
 
-resource "aws vpc" "ailiya"(
-	cidr block = ""
-	tags = {
+	provider "aws" {
+	  region = "ap-south-1"
+	}
+
+
+
+	resource "aws_vpc" "ailiya" {
+	  cidr_block = "192.168.1.0"
+	  tags = {
 		name = "main"
-		}
-}
+	  }
+	}
 
 #note:any provider documentation only two block we will get, reources and data
 
