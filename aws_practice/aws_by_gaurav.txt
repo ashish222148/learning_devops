@@ -23,6 +23,18 @@ Question: where we use this, suppose we need instance id from user data:
 VIMP: this will work in case of when we do the below setting:
 	Go to EC2 > Instances > Select Instance > Actions > Instance Settings > Modify Instance Metadata Options > IMDSv2. If the setting is set to Required, change it to Optional". This will allow the curl command to get the instance metadata.
 	
-chapter 23:
+AWS Tutorials - 23 - Elastic Block Storage (EBS) | Instance Store |
 	Elastic Block Storage (EBS) | Instance Store
+		Elastic block storage is online storage attch to any instance over the network.
+		EBS volume is alos multiple type. io1 and io2 can be attached to multiple instance.
+		if you create a ebs volume in created a availability zone ap-south-1a , then you can attach the same with the instance which is created in the same availability zone.
+		when you create ebs volume , aws by default create a replica within the same availability zone.
+		we can move the esb storage to another availaility zone with the help of snapshot.
+	Instance store:
+		it is temprory storage.data will be lost after stop.
+		
+AWS Tutorials - 24 - Create First Elastic Block Storage Vol | Mount EBS in Linux |
+	if last command you want to run with sudo permission then you have to run command 
+		sudo !!
+		mountpoint /test
 		
